@@ -1,0 +1,16 @@
+{
+  "total_files": 2341,
+  "pdf_count": 2208,
+  "jpg_count": 132,
+  "png_count": 1,
+  "total_size_mb": 3234.8,
+  "werke_count": 2084,
+  "psalmen_count": 257,
+  "unique_work_numbers": 1849,
+  "catalogs_processed": [
+    "main_work_list",
+    "gema_list",
+    "werke_list",
+    "psalmen_list"
+  ]
+}

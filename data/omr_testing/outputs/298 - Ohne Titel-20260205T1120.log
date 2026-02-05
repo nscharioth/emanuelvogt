@@ -1,0 +1,115 @@
+2026-02-05 11:20:45,307 INFO [298 - Ohne Titel]                 Book.java:560  | 1 sheet in /Users/nicolasscharioth/Documents/Git/emanuelvogt/data/omr_testing/processed_candidates/298 - Ohne Titel.png
+2026-02-05 11:20:45,369 INFO []                 Book.java:2577 | Stored /book.xml
+2026-02-05 11:20:45,369 INFO []                 Book.java:2537 | Book stored as /Users/nicolasscharioth/Documents/Git/emanuelvogt/data/omr_testing/outputs/298 - Ohne Titel.omr
+2026-02-05 11:20:45,371 INFO []                 Book.java:1929 | Book reaching PAGE on sheets:[#1]
+2026-02-05 11:20:45,371 INFO [298 - Ohne Titel]       StepMonitoring.java:98   | LOAD
+2026-02-05 11:20:45,634 INFO [298 - Ohne Titel]            SheetStub.java:1273 | Loaded image #1 3567x5045 from /Users/nicolasscharioth/Documents/Git/emanuelvogt/data/omr_testing/processed_candidates/298 - Ohne Titel.png
+2026-02-05 11:20:45,635 INFO [298 - Ohne Titel]            ImageUtil.java:124  | Converting max RGB to gray
+2026-02-05 11:20:45,888 INFO [298 - Ohne Titel]       StepMonitoring.java:98   | BINARY
+2026-02-05 11:20:46,357 INFO [298 - Ohne Titel]       StepMonitoring.java:98   | SCALE
+2026-02-05 11:20:46,377 INFO [298 - Ohne Titel]         ScaleBuilder.java:241  | Beam  guessed height: 14 -- 0.50 of 29 interline
+2026-02-05 11:20:46,377 INFO [298 - Ohne Titel]         ScaleBuilder.java:264  | Beam measured height: 24 -- 0.75 of [9..29] range at 12% of needed quorum
+2026-02-05 11:20:46,377 WARN [298 - Ohne Titel]         ScaleBuilder.java:293  | No reliable beam height found, guessed value: 14
+2026-02-05 11:20:46,378 INFO [298 - Ohne Titel]            ScaleStep.java:65   | Scale{ interline(32,34,36) line(4,5,6) beam(14 extra)}
+2026-02-05 11:20:46,378 INFO [298 - Ohne Titel]       StepMonitoring.java:98   | GRID
+2026-02-05 11:20:46,925 INFO [298 - Ohne Titel]       LinesRetriever.java:1500 | Global slope: -0.00563
+2026-02-05 11:20:46,952 INFO [298 - Ohne Titel]    ClustersRetriever.java:326  | Retrieved raw line clusters: 14 of sizes [5] with interline(32,34,36)
+2026-02-05 11:20:47,087 INFO [298 - Ohne Titel]            PeakGraph.java:310  | Systems: #1[1] #2[2] #3[3] #4[4] #5[5] #6[6] #7[7] #8[8] #9[9] #10[10] #11[11] #12[12] #13[13] #14[14]
+2026-02-05 11:20:47,537 INFO [298 - Ohne Titel]        SystemManager.java:779  | 1 part along 14 systems
+2026-02-05 11:20:47,537 INFO [298 - Ohne Titel]                 Book.java:543  | Created scores: [{Score 1}]
+2026-02-05 11:20:47,538 INFO [298 - Ohne Titel]       StepMonitoring.java:98   | HEADERS
+2026-02-05 11:20:47,683 INFO [298 - Ohne Titel]      BasicClassifier.java:286  | Classifier loaded XML norms.
+2026-02-05 11:20:47,684 INFO [298 - Ohne Titel]   AbstractClassifier.java:396  | Classifier data loaded from default uri jar:file:/Applications/Audiveris.app/Contents/app/audiveris.jar!/res/basic-classifier.zip
+2026-02-05 11:20:47,707 WARN [298 - Ohne Titel]          ClefBuilder.java:658  | Staff#1 no recognized header clef.
+2026-02-05 11:20:47,725 WARN [298 - Ohne Titel]          ClefBuilder.java:658  | Staff#2 no recognized header clef.
+2026-02-05 11:20:47,726 WARN [298 - Ohne Titel]          ClefBuilder.java:658  | Staff#3 no recognized header clef.
+2026-02-05 11:20:47,728 WARN [298 - Ohne Titel]          ClefBuilder.java:658  | Staff#4 no recognized header clef.
+2026-02-05 11:20:47,732 WARN [298 - Ohne Titel]          ClefBuilder.java:658  | Staff#5 no recognized header clef.
+2026-02-05 11:20:47,736 WARN [298 - Ohne Titel]          ClefBuilder.java:658  | Staff#6 no recognized header clef.
+2026-02-05 11:20:47,737 WARN [298 - Ohne Titel]          ClefBuilder.java:658  | Staff#7 no recognized header clef.
+2026-02-05 11:20:47,738 WARN [298 - Ohne Titel]          ClefBuilder.java:658  | Staff#8 no recognized header clef.
+2026-02-05 11:20:47,909 WARN [298 - Ohne Titel]          ClefBuilder.java:658  | Staff#9 no recognized header clef.
+2026-02-05 11:20:47,914 WARN [298 - Ohne Titel]          ClefBuilder.java:658  | Staff#10 no recognized header clef.
+2026-02-05 11:20:47,932 WARN [298 - Ohne Titel]          ClefBuilder.java:658  | Staff#11 no recognized header clef.
+2026-02-05 11:20:47,943 WARN [298 - Ohne Titel]          ClefBuilder.java:658  | Staff#12 no recognized header clef.
+2026-02-05 11:20:47,947 WARN [298 - Ohne Titel]          ClefBuilder.java:658  | Staff#13 no recognized header clef.
+2026-02-05 11:20:47,948 WARN [298 - Ohne Titel]          ClefBuilder.java:658  | Staff#14 no recognized header clef.
+2026-02-05 11:20:47,949 INFO [298 - Ohne Titel]       StepMonitoring.java:98   | STEM_SEEDS
+2026-02-05 11:20:47,997 INFO [298 - Ohne Titel]           StemScaler.java:143  | No stem peak found, computing defaults
+2026-02-05 11:20:47,998 INFO [298 - Ohne Titel]        StemSeedsStep.java:86   | stem(5 max:6)
+2026-02-05 11:20:48,027 INFO [298 - Ohne Titel]       StepMonitoring.java:98   | BEAMS
+2026-02-05 11:20:54,724 INFO [298 - Ohne Titel]       StepMonitoring.java:98   | LEDGERS
+2026-02-05 11:20:54,848 INFO [298 - Ohne Titel]       StepMonitoring.java:98   | HEADS
+2026-02-05 11:21:09,210 INFO [298 - Ohne Titel]        HeadSeedTally.java:235  | Scale information: HeadSeeds{}
+2026-02-05 11:21:09,211 INFO [298 - Ohne Titel]       StepMonitoring.java:98   | STEMS
+2026-02-05 11:21:09,328 INFO [298 - Ohne Titel]       StepMonitoring.java:98   | REDUCTION
+2026-02-05 11:21:09,341 INFO [298 - Ohne Titel]        ReductionStep.java:105  | Stems free length median value: 72 pixels, 2.1 interlines
+2026-02-05 11:21:09,342 INFO [298 - Ohne Titel]       StepMonitoring.java:98   | CUE_BEAMS
+2026-02-05 11:21:09,342 INFO [298 - Ohne Titel]         CueBeamsStep.java:81   | Step CUE_BEAMS is skipped because small heads switch is off
+2026-02-05 11:21:09,342 INFO [298 - Ohne Titel]       StepMonitoring.java:98   | TEXTS
+2026-02-05 11:21:09,416 WARN [298 - Ohne Titel]         TesseractOCR.java:335  | The collection of supported languages is empty
+2026-02-05 11:21:09,416 INFO [298 - Ohne Titel]              OcrUtil.java:106  | Missing support for 'eng' language(s)
+2026-02-05 11:21:09,422 INFO [298 - Ohne Titel]       StepMonitoring.java:98   | MEASURES
+2026-02-05 11:21:09,426 INFO [298 - Ohne Titel]                 Page.java:307  | 15 raw measures: [2 in system#1, 1 in system#2, 1 in system#3, 1 in system#4, 1 in system#5, 1 in system#6, 1 in system#7, 1 in system#8, 1 in system#9, 1 in system#10, 1 in system#11, 1 in system#12, 1 in system#13, 1 in system#14]
+2026-02-05 11:21:09,426 INFO [298 - Ohne Titel]       StepMonitoring.java:98   | CHORDS
+2026-02-05 11:21:09,429 INFO [298 - Ohne Titel]       StepMonitoring.java:98   | CURVES
+2026-02-05 11:21:12,204 INFO [298 - Ohne Titel]         SlursBuilder.java:240  | Slurs: 1
+2026-02-05 11:21:12,248 INFO [298 - Ohne Titel]      SegmentsBuilder.java:155  | Segments: 48
+2026-02-05 11:21:12,251 INFO [298 - Ohne Titel]       StepMonitoring.java:98   | SYMBOLS
+2026-02-05 11:21:14,378 INFO [298 - Ohne Titel]       StepMonitoring.java:98   | LINKS
+2026-02-05 11:21:14,382 WARN [298 - Ohne Titel]             KeyInter.java:1150 | No effective clef before AlterInter#5705{(0.180) staff:1 FLAT pitch:3.0}
+2026-02-05 11:21:14,382 WARN [298 - Ohne Titel]             KeyInter.java:1150 | No effective clef before AlterInter#5712{(0.158) staff:1 FLAT pitch:0.0}
+2026-02-05 11:21:14,382 WARN [298 - Ohne Titel]             KeyInter.java:1150 | No effective clef before AlterInter#5715{(0.337) staff:1 FLAT pitch:1.0}
+2026-02-05 11:21:14,382 WARN [298 - Ohne Titel]             KeyInter.java:1150 | No effective clef before AlterInter#5742{(0.158) staff:1 FLAT pitch:0.0}
+2026-02-05 11:21:14,383 INFO [298 - Ohne Titel]             KeyInter.java:1298 | Key built KeyInter#7131{(0.140) staff:1 KEY_FLAT_1 pitch:2.7 fifths:-1}
+2026-02-05 11:21:14,384 INFO [298 - Ohne Titel]             KeyInter.java:1298 | Key built KeyInter#7133{(0.264) staff:1 KEY_FLAT_1 pitch:2.4 fifths:-1}
+2026-02-05 11:21:14,388 WARN [298 - Ohne Titel]             KeyInter.java:1150 | No effective clef before AlterInter#5901{(0.144) staff:3 FLAT pitch:3.0}
+2026-02-05 11:21:14,388 WARN [298 - Ohne Titel]             KeyInter.java:1150 | No effective clef before AlterInter#5909{(0.470) staff:3 FLAT pitch:-3.0}
+2026-02-05 11:21:14,388 WARN [298 - Ohne Titel]             KeyInter.java:1150 | No effective clef before AlterInter#5917{(0.574) staff:3 FLAT pitch:-1.0}
+2026-02-05 11:21:14,388 WARN [298 - Ohne Titel]             KeyInter.java:1150 | No effective clef before AlterInter#5941{(0.494) staff:3 FLAT pitch:-3.0}
+2026-02-05 11:21:14,388 WARN [298 - Ohne Titel]             KeyInter.java:1150 | No effective clef before AlterInter#6011{(0.154) staff:4 NATURAL pitch:-1.0}
+2026-02-05 11:21:14,391 INFO [298 - Ohne Titel]             KeyInter.java:1298 | Key built KeyInter#7135{(0.759) staff:6 KEY_FLAT_1 pitch:-0.2 fifths:-1}
+2026-02-05 11:21:14,391 INFO [298 - Ohne Titel]             KeyInter.java:1298 | Key built KeyInter#7137{(0.569) staff:6 KEY_FLAT_1 pitch:-0.7 fifths:-1}
+2026-02-05 11:21:14,393 WARN [298 - Ohne Titel]             KeyInter.java:1150 | No effective clef before AlterInter#6283{(0.590) staff:7 FLAT pitch:4.0}
+2026-02-05 11:21:14,393 WARN [298 - Ohne Titel]             KeyInter.java:1150 | No effective clef before AlterInter#6300{(0.735) staff:7 FLAT pitch:4.0}
+2026-02-05 11:21:14,393 WARN [298 - Ohne Titel]             KeyInter.java:1150 | No effective clef before AlterInter#6302{(0.311) staff:7 FLAT pitch:5.0}
+2026-02-05 11:21:14,393 WARN [298 - Ohne Titel]             KeyInter.java:1150 | No effective clef before AlterInter#6317{(0.348) staff:7 FLAT pitch:4.0}
+2026-02-05 11:21:14,393 WARN [298 - Ohne Titel]             KeyInter.java:1150 | No effective clef before AlterInter#6346{(0.148) staff:7 FLAT pitch:2.0}
+2026-02-05 11:21:14,394 WARN [298 - Ohne Titel]             KeyInter.java:1150 | No effective clef before AlterInter#6343{(0.498) staff:7 FLAT pitch:2.0}
+2026-02-05 11:21:14,394 WARN [298 - Ohne Titel]             KeyInter.java:1150 | No effective clef before AlterInter#6351{(0.671) staff:7 FLAT pitch:-2.0}
+2026-02-05 11:21:14,394 WARN [298 - Ohne Titel]             KeyInter.java:1150 | No effective clef before AlterInter#6371{(0.783) staff:7 FLAT pitch:1.0}
+2026-02-05 11:21:14,396 WARN [298 - Ohne Titel]             KeyInter.java:1150 | No effective clef before AlterInter#6562{(0.536) staff:9 FLAT pitch:-2.0}
+2026-02-05 11:21:14,396 WARN [298 - Ohne Titel]             KeyInter.java:1150 | No effective clef before AlterInter#6565{(0.339) staff:9 FLAT pitch:-1.0}
+2026-02-05 11:21:14,396 WARN [298 - Ohne Titel]             KeyInter.java:1150 | No effective clef before AlterInter#6579{(0.352) staff:9 FLAT pitch:4.0}
+2026-02-05 11:21:14,398 WARN [298 - Ohne Titel]             KeyInter.java:1150 | No effective clef before AlterInter#6879{(0.158) staff:11 FLAT pitch:6.0}
+2026-02-05 11:21:14,398 WARN [298 - Ohne Titel]             KeyInter.java:1150 | No effective clef before AlterInter#6944{(0.376) staff:11 FLAT pitch:5.0}
+2026-02-05 11:21:14,398 WARN [298 - Ohne Titel]             KeyInter.java:1150 | No effective clef before AlterInter#7000{(0.366) staff:11 FLAT pitch:4.0}
+2026-02-05 11:21:14,398 WARN [298 - Ohne Titel]             KeyInter.java:1150 | No effective clef before AlterInter#7002{(0.709) staff:11 FLAT pitch:5.0}
+2026-02-05 11:21:14,399 INFO [298 - Ohne Titel]       StepMonitoring.java:98   | RHYTHMS
+2026-02-05 11:21:14,411 INFO [298 - Ohne Titel]       StepMonitoring.java:98   | PAGE
+2026-02-05 11:21:14,414 WARN [298 - Ohne Titel]         MeasureFixer.java:343  | System#1 No target duration for measures local IDs [1, 2], please check time signatures
+2026-02-05 11:21:14,414 WARN [298 - Ohne Titel]         MeasureFixer.java:343  | System#2 No target duration for measures local IDs [3], please check time signatures
+2026-02-05 11:21:14,414 WARN [298 - Ohne Titel]         MeasureFixer.java:343  | System#3 No target duration for measures local IDs [4], please check time signatures
+2026-02-05 11:21:14,414 WARN [298 - Ohne Titel]         MeasureFixer.java:343  | System#4 No target duration for measures local IDs [5], please check time signatures
+2026-02-05 11:21:14,414 WARN [298 - Ohne Titel]         MeasureFixer.java:343  | System#5 No target duration for measures local IDs [6], please check time signatures
+2026-02-05 11:21:14,414 WARN [298 - Ohne Titel]         MeasureFixer.java:343  | System#6 No target duration for measures local IDs [7], please check time signatures
+2026-02-05 11:21:14,414 WARN [298 - Ohne Titel]         MeasureFixer.java:343  | System#7 No target duration for measures local IDs [8], please check time signatures
+2026-02-05 11:21:14,414 WARN [298 - Ohne Titel]         MeasureFixer.java:343  | System#8 No target duration for measures local IDs [9], please check time signatures
+2026-02-05 11:21:14,414 WARN [298 - Ohne Titel]         MeasureFixer.java:343  | System#9 No target duration for measures local IDs [10], please check time signatures
+2026-02-05 11:21:14,415 WARN [298 - Ohne Titel]         MeasureFixer.java:343  | System#10 No target duration for measures local IDs [11], please check time signatures
+2026-02-05 11:21:14,415 WARN [298 - Ohne Titel]         MeasureFixer.java:343  | System#11 No target duration for measures local IDs [12], please check time signatures
+2026-02-05 11:21:14,415 WARN [298 - Ohne Titel]         MeasureFixer.java:343  | System#12 No target duration for measures local IDs [13], please check time signatures
+2026-02-05 11:21:14,415 WARN [298 - Ohne Titel]         MeasureFixer.java:343  | System#13 No target duration for measures local IDs [14], please check time signatures
+2026-02-05 11:21:14,415 WARN [298 - Ohne Titel]         MeasureFixer.java:343  | System#14 No target duration for measures local IDs [15], please check time signatures
+2026-02-05 11:21:14,415 INFO [298 - Ohne Titel]                 Book.java:2596 | Book{298 - Ohne Titel} storing
+2026-02-05 11:21:14,457 INFO [298 - Ohne Titel]                 Book.java:2577 | Stored /book.xml
+2026-02-05 11:21:14,591 INFO [298 - Ohne Titel]           DataHolder.java:348  | Stored /sheet#1/BINARY.png
+2026-02-05 11:21:15,234 INFO [298 - Ohne Titel]                Sheet.java:1583 | Stored /sheet#1/sheet#1.xml
+2026-02-05 11:21:15,235 INFO [298 - Ohne Titel]                 Book.java:2537 | Book stored as /Users/nicolasscharioth/Documents/Git/emanuelvogt/data/omr_testing/outputs/298 - Ohne Titel.omr
+2026-02-05 11:21:15,236 INFO [298 - Ohne Titel]            SheetStub.java:1660 | Disposed sheet
+2026-02-05 11:21:15,254 INFO [298 - Ohne Titel]                 Book.java:2064 | End of Stub#1
+2026-02-05 11:21:15,254 INFO [298 - Ohne Titel]                 Book.java:2071 | Book processed.
+2026-02-05 11:21:15,542 INFO [298 - Ohne Titel]            SheetStub.java:997  | Loaded /sheet#1/sheet#1.xml
+2026-02-05 11:21:15,769 INFO [298 - Ohne Titel]      PartwiseBuilder.java:2688 | Exporting sheet(s): [#1]
+2026-02-05 11:21:15,789 INFO [298 - Ohne Titel]        ScoreExporter.java:164  | Score 298 - Ohne Titel exported to /Users/nicolasscharioth/Documents/Git/emanuelvogt/data/omr_testing/outputs/298 - Ohne Titel.mxl
+2026-02-05 11:21:15,821 INFO [298 - Ohne Titel]                Score.java:181  | Closing {Score 1}

@@ -1,0 +1,91 @@
+2026-02-05 10:56:02,897 INFO [48 - Psalm 47 - Seite 1]                 Book.java:560  | 1 sheet in /Users/nicolasscharioth/Documents/Git/emanuelvogt/data/omr_testing/processed_candidates/48 - Psalm 47 - Seite 1.png
+2026-02-05 10:56:02,970 INFO []                 Book.java:2577 | Stored /book.xml
+2026-02-05 10:56:02,970 INFO []                 Book.java:2537 | Book stored as /Users/nicolasscharioth/Documents/Git/emanuelvogt/data/omr_testing/outputs/48 - Psalm 47 - Seite 1.omr
+2026-02-05 10:56:02,972 INFO []                 Book.java:1929 | Book reaching PAGE on sheets:[#1]
+2026-02-05 10:56:02,972 INFO [48 - Psalm 47 - Seite 1]       StepMonitoring.java:98   | LOAD
+2026-02-05 10:56:03,227 INFO [48 - Psalm 47 - Seite 1]            SheetStub.java:1273 | Loaded image #1 3568x5044 from /Users/nicolasscharioth/Documents/Git/emanuelvogt/data/omr_testing/processed_candidates/48 - Psalm 47 - Seite 1.png
+2026-02-05 10:56:03,229 INFO [48 - Psalm 47 - Seite 1]            ImageUtil.java:124  | Converting max RGB to gray
+2026-02-05 10:56:03,483 INFO [48 - Psalm 47 - Seite 1]       StepMonitoring.java:98   | BINARY
+2026-02-05 10:56:03,951 INFO [48 - Psalm 47 - Seite 1]       StepMonitoring.java:98   | SCALE
+2026-02-05 10:56:03,970 INFO [48 - Psalm 47 - Seite 1]         ScaleBuilder.java:241  | Beam  guessed height: 14 -- 0.50 of 27 interline
+2026-02-05 10:56:03,970 INFO [48 - Psalm 47 - Seite 1]         ScaleBuilder.java:264  | Beam measured height: 11 -- 0.06 of [10..27] range at 1066% of needed quorum
+2026-02-05 10:56:03,971 INFO [48 - Psalm 47 - Seite 1]            ScaleStep.java:65   | Scale{ interline(33,35,37) line(7,8,8) beam(11)}
+2026-02-05 10:56:03,971 INFO [48 - Psalm 47 - Seite 1]       StepMonitoring.java:98   | GRID
+2026-02-05 10:56:04,490 INFO [48 - Psalm 47 - Seite 1]       LinesRetriever.java:1500 | Global slope: 0.00234
+2026-02-05 10:56:04,515 INFO [48 - Psalm 47 - Seite 1]    ClustersRetriever.java:326  | Retrieved raw line clusters: 12 of sizes [5] with interline(33,35,37)
+2026-02-05 10:56:04,897 INFO [48 - Psalm 47 - Seite 1]            PeakGraph.java:310  | Systems: #1[1, 2] #2[3] #3[4] #4[5] #5[6, 7, 8] #6[9] #7[10] #8[11] #9[12]
+2026-02-05 10:56:05,399 INFO [48 - Psalm 47 - Seite 1]        SystemManager.java:134  | Indentation detected for system #6
+2026-02-05 10:56:05,400 INFO [48 - Psalm 47 - Seite 1]        SystemManager.java:723  | 2 pages found in sheet
+2026-02-05 10:56:05,400 INFO [48 - Psalm 47 - Seite 1]        SystemManager.java:779  | Page #1: 3 parts along 5 systems
+2026-02-05 10:56:05,400 INFO [48 - Psalm 47 - Seite 1]        SystemManager.java:779  | Page #2: 1 part along 4 systems
+2026-02-05 10:56:05,400 INFO [48 - Psalm 47 - Seite 1]                 Book.java:543  | Created scores: [{Score 1}, {Score 2}]
+2026-02-05 10:56:05,400 INFO [48 - Psalm 47 - Seite 1]       StepMonitoring.java:98   | HEADERS
+2026-02-05 10:56:05,546 INFO [48 - Psalm 47 - Seite 1]      BasicClassifier.java:286  | Classifier loaded XML norms.
+2026-02-05 10:56:05,547 INFO [48 - Psalm 47 - Seite 1]   AbstractClassifier.java:396  | Classifier data loaded from default uri jar:file:/Applications/Audiveris.app/Contents/app/audiveris.jar!/res/basic-classifier.zip
+2026-02-05 10:56:06,422 WARN [48 - Psalm 47 - Seite 1]          ClefBuilder.java:658  | Staff#5 no recognized header clef.
+2026-02-05 10:56:07,131 WARN [48 - Psalm 47 - Seite 1]          ClefBuilder.java:658  | Staff#10 no recognized header clef.
+2026-02-05 10:56:07,274 WARN [48 - Psalm 47 - Seite 1]          ClefBuilder.java:658  | Staff#12 no recognized header clef.
+2026-02-05 10:56:07,274 INFO [48 - Psalm 47 - Seite 1]       StepMonitoring.java:98   | STEM_SEEDS
+2026-02-05 10:56:07,339 INFO [48 - Psalm 47 - Seite 1]        StemSeedsStep.java:86   | stem(10 max:12)
+2026-02-05 10:56:07,428 INFO [48 - Psalm 47 - Seite 1]       StepMonitoring.java:98   | BEAMS
+2026-02-05 10:56:13,640 INFO [48 - Psalm 47 - Seite 1]       StepMonitoring.java:98   | LEDGERS
+2026-02-05 10:56:14,175 INFO [48 - Psalm 47 - Seite 1]       StepMonitoring.java:98   | HEADS
+2026-02-05 10:56:29,691 INFO [48 - Psalm 47 - Seite 1]        HeadSeedTally.java:235  | Scale information: HeadSeeds{NOTEHEAD_VOID[L:-1.5,R:-2.9] NOTEHEAD_BLACK[L:-5.8,R:-5.8]}
+2026-02-05 10:56:29,691 INFO [48 - Psalm 47 - Seite 1]       StepMonitoring.java:98   | STEMS
+2026-02-05 10:56:30,319 INFO [48 - Psalm 47 - Seite 1]           BeamLinker.java:1729 | Not linking shorter BeamInter#2946{(0.606) BEAM}
+2026-02-05 10:56:31,361 INFO [48 - Psalm 47 - Seite 1]           BeamLinker.java:1729 | Not linking shorter BeamHookInter#3282{(0.350/0.581) BEAM_HOOK}
+2026-02-05 10:56:31,433 INFO [48 - Psalm 47 - Seite 1]       StepMonitoring.java:98   | REDUCTION
+2026-02-05 10:56:31,487 INFO [48 - Psalm 47 - Seite 1]        ReductionStep.java:105  | Stems free length median value: 80 pixels, 2.3 interlines
+2026-02-05 10:56:31,494 INFO [48 - Psalm 47 - Seite 1]       StepMonitoring.java:98   | CUE_BEAMS
+2026-02-05 10:56:31,494 INFO [48 - Psalm 47 - Seite 1]         CueBeamsStep.java:81   | Step CUE_BEAMS is skipped because small heads switch is off
+2026-02-05 10:56:31,494 INFO [48 - Psalm 47 - Seite 1]       StepMonitoring.java:98   | TEXTS
+2026-02-05 10:56:31,637 WARN [48 - Psalm 47 - Seite 1]         TesseractOCR.java:335  | The collection of supported languages is empty
+2026-02-05 10:56:31,637 INFO [48 - Psalm 47 - Seite 1]              OcrUtil.java:106  | Missing support for 'eng' language(s)
+2026-02-05 10:56:31,642 INFO [48 - Psalm 47 - Seite 1]       StepMonitoring.java:98   | MEASURES
+2026-02-05 10:56:31,647 INFO [48 - Psalm 47 - Seite 1]                 Page.java:307  | 10 raw measures: [4 in system#1, 2 in system#2, 2 in system#3, 1 in system#4, 1 in system#5]
+2026-02-05 10:56:31,647 INFO [48 - Psalm 47 - Seite 1]                 Page.java:307  | 4 raw measures: [1 in system#6, 1 in system#7, 1 in system#8, 1 in system#9]
+2026-02-05 10:56:31,647 INFO [48 - Psalm 47 - Seite 1]       StepMonitoring.java:98   | CHORDS
+2026-02-05 10:56:31,654 INFO [48 - Psalm 47 - Seite 1]       StepMonitoring.java:98   | CURVES
+2026-02-05 10:56:45,323 INFO [48 - Psalm 47 - Seite 1]         SlursBuilder.java:240  | Slurs: 28
+2026-02-05 10:56:47,265 INFO [48 - Psalm 47 - Seite 1]        CurvesBuilder.java:532  | Curve: SegmentInfo{#7719[845,3987][898,3987] dist:0.00} Too many rookies: 54, giving up!
+2026-02-05 10:56:47,945 INFO [48 - Psalm 47 - Seite 1]      SegmentsBuilder.java:155  | Segments: 36
+2026-02-05 10:56:47,968 INFO [48 - Psalm 47 - Seite 1]       StepMonitoring.java:98   | SYMBOLS
+2026-02-05 10:57:14,517 INFO [48 - Psalm 47 - Seite 1]       StepMonitoring.java:98   | LINKS
+2026-02-05 10:57:14,695 INFO [48 - Psalm 47 - Seite 1]        SymbolsLinker.java:258  | No chord linked to OctaveShiftInter#25439{(0.226) staff:6 QUINDICESIMA BASSA}
+2026-02-05 10:57:14,698 INFO [48 - Psalm 47 - Seite 1]             KeyInter.java:1165 | No effective key before AlterInter#25534{(0.259) staff:6 NATURAL pitch:0.0}
+2026-02-05 10:57:14,701 INFO [48 - Psalm 47 - Seite 1]             KeyInter.java:1165 | No effective key before AlterInter#25806{(0.702) staff:7 NATURAL pitch:-3.0}
+2026-02-05 10:57:14,723 WARN [48 - Psalm 47 - Seite 1]             KeyInter.java:1150 | No effective clef before AlterInter#26284{(0.283) staff:12 NATURAL pitch:-1.0}
+2026-02-05 10:57:14,727 INFO [48 - Psalm 47 - Seite 1]       StepMonitoring.java:98   | RHYTHMS
+2026-02-05 10:57:14,838 INFO [48 - Psalm 47 - Seite 1]       StepMonitoring.java:98   | PAGE
+2026-02-05 10:57:14,843 INFO [48 - Psalm 47 - Seite 1]       SheetReduction.java:154  | Gutter. Different glyphs 5/6 BreathMarkInter#25565{(0.508/0.782) staff:8 BREATH_MARK} vs LedgerInter#3577{(0.232/0.232) staff:9 LEDGER}
+2026-02-05 10:57:14,856 WARN [48 - Psalm 47 - Seite 1]         MeasureFixer.java:343  | System#1 No target duration for measures local IDs [1, 2, 3, 4], please check time signatures
+2026-02-05 10:57:14,857 WARN [48 - Psalm 47 - Seite 1]         MeasureFixer.java:343  | System#2 No target duration for measures local IDs [5, 6], please check time signatures
+2026-02-05 10:57:14,858 WARN [48 - Psalm 47 - Seite 1]         MeasureFixer.java:343  | System#3 No target duration for measures local IDs [7, 8], please check time signatures
+2026-02-05 10:57:14,859 WARN [48 - Psalm 47 - Seite 1]         MeasureFixer.java:343  | System#4 No target duration for measures local IDs [9], please check time signatures
+2026-02-05 10:57:14,859 WARN [48 - Psalm 47 - Seite 1]         MeasureFixer.java:343  | System#5 No target duration for measures local IDs [10], please check time signatures
+2026-02-05 10:57:14,862 WARN [48 - Psalm 47 - Seite 1]         MeasureFixer.java:343  | System#6 No target duration for measures local IDs [1], please check time signatures
+2026-02-05 10:57:14,863 WARN [48 - Psalm 47 - Seite 1]         MeasureFixer.java:343  | System#7 No target duration for measures local IDs [2], please check time signatures
+2026-02-05 10:57:14,863 WARN [48 - Psalm 47 - Seite 1]         MeasureFixer.java:343  | System#8 No target duration for measures local IDs [3], please check time signatures
+2026-02-05 10:57:14,864 WARN [48 - Psalm 47 - Seite 1]         MeasureFixer.java:343  | System#9 No target duration for measures local IDs [4], please check time signatures
+2026-02-05 10:57:14,870 INFO [48 - Psalm 47 - Seite 1]                 Book.java:2596 | Book{48 - Psalm 47 - Seite 1} storing
+2026-02-05 10:57:15,201 INFO [48 - Psalm 47 - Seite 1]                 Book.java:2577 | Stored /book.xml
+2026-02-05 10:57:15,681 INFO [48 - Psalm 47 - Seite 1]           DataHolder.java:348  | Stored /sheet#1/BINARY.png
+2026-02-05 10:57:18,894 INFO [48 - Psalm 47 - Seite 1]                Sheet.java:1583 | Stored /sheet#1/sheet#1.xml
+2026-02-05 10:57:18,894 INFO [48 - Psalm 47 - Seite 1]                 Book.java:2537 | Book stored as /Users/nicolasscharioth/Documents/Git/emanuelvogt/data/omr_testing/outputs/48 - Psalm 47 - Seite 1.omr
+2026-02-05 10:57:18,901 INFO [48 - Psalm 47 - Seite 1]            SheetStub.java:1660 | Disposed sheet
+2026-02-05 10:57:18,953 INFO [48 - Psalm 47 - Seite 1]                 Book.java:2064 | End of Stub#1
+2026-02-05 10:57:18,954 INFO [48 - Psalm 47 - Seite 1]                 Book.java:2071 | Book processed.
+2026-02-05 10:57:20,908 INFO [48 - Psalm 47 - Seite 1]            SheetStub.java:997  | Loaded /sheet#1/sheet#1.xml
+2026-02-05 10:57:21,664 INFO [48 - Psalm 47 - Seite 1]      PartwiseBuilder.java:2688 | Exporting sheet(s): [#1]
+2026-02-05 10:57:21,667 INFO [48 - Psalm 47 - Seite 1]                 Part.java:351  | Sheet#1 System#1 Part#2{ staves[1] configs:[5]} dummyPart id: 1
+2026-02-05 10:57:21,675 INFO [48 - Psalm 47 - Seite 1]                 Part.java:351  | Sheet#1 System#2 Part#3{ staves[3] configs:[5]} dummyPart id: 1
+2026-02-05 10:57:21,676 INFO [48 - Psalm 47 - Seite 1]                 Part.java:351  | Sheet#1 System#3 Part#3{ staves[4] configs:[5]} dummyPart id: 1
+2026-02-05 10:57:21,677 INFO [48 - Psalm 47 - Seite 1]                 Part.java:351  | Sheet#1 System#4 Part#3{ staves[5] configs:[5]} dummyPart id: 1
+2026-02-05 10:57:21,688 INFO [48 - Psalm 47 - Seite 1]                 Part.java:351  | Sheet#1 System#2 Part#3{ staves[3] configs:[5]} dummyPart id: 2
+2026-02-05 10:57:21,688 INFO [48 - Psalm 47 - Seite 1]                 Part.java:351  | Sheet#1 System#3 Part#3{ staves[4] configs:[5]} dummyPart id: 2
+2026-02-05 10:57:21,689 INFO [48 - Psalm 47 - Seite 1]                 Part.java:351  | Sheet#1 System#4 Part#3{ staves[5] configs:[5]} dummyPart id: 2
+2026-02-05 10:57:21,825 INFO [48 - Psalm 47 - Seite 1]        ScoreExporter.java:164  | Score 48 - Psalm 47 - Seite 1.mvt1 exported to /Users/nicolasscharioth/Documents/Git/emanuelvogt/data/omr_testing/outputs/48 - Psalm 47 - Seite 1.mvt1.mxl
+2026-02-05 10:57:21,827 INFO [48 - Psalm 47 - Seite 1]      PartwiseBuilder.java:2688 | Exporting sheet(s): [#1]
+2026-02-05 10:57:21,838 INFO [48 - Psalm 47 - Seite 1]        ScoreExporter.java:164  | Score 48 - Psalm 47 - Seite 1.mvt2 exported to /Users/nicolasscharioth/Documents/Git/emanuelvogt/data/omr_testing/outputs/48 - Psalm 47 - Seite 1.mvt2.mxl
+2026-02-05 10:57:21,987 INFO [48 - Psalm 47 - Seite 1]                Score.java:181  | Closing {Score 1}
+2026-02-05 10:57:21,987 INFO [48 - Psalm 47 - Seite 1]                Score.java:181  | Closing {Score 2}

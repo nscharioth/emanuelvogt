@@ -1,0 +1,18 @@
+2026-02-05 10:49:29,161 INFO [7 - Psalm 19 - Seite 2]                 Book.java:560  | 1 sheet in /Users/nicolasscharioth/Documents/Git/emanuelvogt/data/omr_testing/processed_candidates/7 - Psalm 19 - Seite 2.png
+2026-02-05 10:49:29,222 INFO []                 Book.java:2577 | Stored /book.xml
+2026-02-05 10:49:29,222 INFO []                 Book.java:2537 | Book stored as /Users/nicolasscharioth/Documents/Git/emanuelvogt/data/omr_testing/outputs/7 - Psalm 19 - Seite 2.omr
+2026-02-05 10:49:29,224 INFO []                 Book.java:1929 | Book reaching PAGE on sheets:[#1]
+2026-02-05 10:49:29,225 INFO [7 - Psalm 19 - Seite 2]       StepMonitoring.java:98   | LOAD
+2026-02-05 10:49:29,864 INFO [7 - Psalm 19 - Seite 2]            SheetStub.java:1273 | Loaded image #1 6889x9739 from /Users/nicolasscharioth/Documents/Git/emanuelvogt/data/omr_testing/processed_candidates/7 - Psalm 19 - Seite 2.png
+2026-02-05 10:49:29,872 WARN [7 - Psalm 19 - Seite 2]            SheetStub.java:412  | Too large image: 67,091,971 pixels (vs 20,000,000 max)
+2026-02-05 10:49:29,872 INFO [7 - Psalm 19 - Seite 2]                 Book.java:543  | Created scores: []
+2026-02-05 10:49:29,872 INFO [7 - Psalm 19 - Seite 2]            SheetStub.java:1191 | Sheet 7 - Psalm 19 - Seite 2 flagged as invalid.
+2026-02-05 10:49:29,873 INFO [7 - Psalm 19 - Seite 2]            SheetStub.java:1410 | StepException cause detected in [LOAD, BINARY, SCALE, GRID, HEADERS, STEM_SEEDS, BEAMS, LEDGERS, HEADS, STEMS, REDUCTION, CUE_BEAMS, TEXTS, MEASURES, CHORDS, CURVES, SYMBOLS, LINKS, RHYTHMS, PAGE]
+2026-02-05 10:49:29,874 INFO [7 - Psalm 19 - Seite 2]                 Book.java:2596 | Book{7 - Psalm 19 - Seite 2} storing
+2026-02-05 10:49:29,882 INFO [7 - Psalm 19 - Seite 2]                 Book.java:2577 | Stored /book.xml
+2026-02-05 10:49:29,972 INFO [7 - Psalm 19 - Seite 2]                Sheet.java:1583 | Stored /sheet#1/sheet#1.xml
+2026-02-05 10:49:29,972 INFO [7 - Psalm 19 - Seite 2]                 Book.java:2537 | Book stored as /Users/nicolasscharioth/Documents/Git/emanuelvogt/data/omr_testing/outputs/7 - Psalm 19 - Seite 2.omr
+2026-02-05 10:49:29,973 INFO [7 - Psalm 19 - Seite 2]            SheetStub.java:1660 | Disposed sheet
+2026-02-05 10:49:29,981 INFO [7 - Psalm 19 - Seite 2]                 Book.java:2064 | End of Stub#1
+2026-02-05 10:49:29,981 INFO [7 - Psalm 19 - Seite 2]                 Book.java:2071 | Book processed.
+2026-02-05 10:49:29,981 INFO [7 - Psalm 19 - Seite 2]                 Book.java:596  | Could not export since transcription did not complete successfully

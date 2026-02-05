@@ -1,0 +1,18 @@
+{
+  "total_analyzed": 15,
+  "grade_distribution": {
+    "B": 10,
+    "C": 4,
+    "D": 1
+  },
+  "scanned_count": 7,
+  "avg_pages": 1.5,
+  "encrypted_count": 0,
+  "has_images_count": 15,
+  "recommendations": [
+    "\u2705 Most files contain images (expected for scanned music)",
+    "\u2705 No encrypted files (good for processing)",
+    "\u26a0\ufe0f Install poppler to analyze actual image quality (DPI, contrast)",
+    "\ud83d\udca1 Test sample files with OMR software (Audiveris, MuseScore) to confirm quality"
+  ]
+}

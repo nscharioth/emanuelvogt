@@ -1,0 +1,18 @@
+2026-02-05 10:49:24,158 INFO [11 - EG 11 - Wie soll ich dich..]                 Book.java:560  | 1 sheet in /Users/nicolasscharioth/Documents/Git/emanuelvogt/data/omr_testing/processed_candidates/11 - EG 11 - Wie soll ich dich...png
+2026-02-05 10:49:24,239 INFO []                 Book.java:2577 | Stored /book.xml
+2026-02-05 10:49:24,239 INFO []                 Book.java:2537 | Book stored as /Users/nicolasscharioth/Documents/Git/emanuelvogt/data/omr_testing/outputs/11 - EG 11 - Wie soll ich dich...omr
+2026-02-05 10:49:24,241 INFO []                 Book.java:1929 | Book reaching PAGE on sheets:[#1]
+2026-02-05 10:49:24,242 INFO [11 - EG 11 - Wie soll ich dich..]       StepMonitoring.java:98   | LOAD
+2026-02-05 10:49:24,873 INFO [11 - EG 11 - Wie soll ich dich..]            SheetStub.java:1273 | Loaded image #1 6889x9739 from /Users/nicolasscharioth/Documents/Git/emanuelvogt/data/omr_testing/processed_candidates/11 - EG 11 - Wie soll ich dich...png
+2026-02-05 10:49:24,883 WARN [11 - EG 11 - Wie soll ich dich..]            SheetStub.java:412  | Too large image: 67,091,971 pixels (vs 20,000,000 max)
+2026-02-05 10:49:24,883 INFO [11 - EG 11 - Wie soll ich dich..]                 Book.java:543  | Created scores: []
+2026-02-05 10:49:24,883 INFO [11 - EG 11 - Wie soll ich dich..]            SheetStub.java:1191 | Sheet 11 - EG 11 - Wie soll ich dich.. flagged as invalid.
+2026-02-05 10:49:24,884 INFO [11 - EG 11 - Wie soll ich dich..]            SheetStub.java:1410 | StepException cause detected in [LOAD, BINARY, SCALE, GRID, HEADERS, STEM_SEEDS, BEAMS, LEDGERS, HEADS, STEMS, REDUCTION, CUE_BEAMS, TEXTS, MEASURES, CHORDS, CURVES, SYMBOLS, LINKS, RHYTHMS, PAGE]
+2026-02-05 10:49:24,884 INFO [11 - EG 11 - Wie soll ich dich..]                 Book.java:2596 | Book{11 - EG 11 - Wie soll ich dich..} storing
+2026-02-05 10:49:24,891 INFO [11 - EG 11 - Wie soll ich dich..]                 Book.java:2577 | Stored /book.xml
+2026-02-05 10:49:24,984 INFO [11 - EG 11 - Wie soll ich dich..]                Sheet.java:1583 | Stored /sheet#1/sheet#1.xml
+2026-02-05 10:49:24,985 INFO [11 - EG 11 - Wie soll ich dich..]                 Book.java:2537 | Book stored as /Users/nicolasscharioth/Documents/Git/emanuelvogt/data/omr_testing/outputs/11 - EG 11 - Wie soll ich dich...omr
+2026-02-05 10:49:24,985 INFO [11 - EG 11 - Wie soll ich dich..]            SheetStub.java:1660 | Disposed sheet
+2026-02-05 10:49:24,993 INFO [11 - EG 11 - Wie soll ich dich..]                 Book.java:2064 | End of Stub#1
+2026-02-05 10:49:24,993 INFO [11 - EG 11 - Wie soll ich dich..]                 Book.java:2071 | Book processed.
+2026-02-05 10:49:24,993 INFO [11 - EG 11 - Wie soll ich dich..]                 Book.java:596  | Could not export since transcription did not complete successfully

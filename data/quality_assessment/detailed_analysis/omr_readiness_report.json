@@ -1,0 +1,17 @@
+{
+  "total_analyzed": 15,
+  "omr_grade_distribution": {
+    "A": 7,
+    "B": 6,
+    "C": 2
+  },
+  "avg_dpi": 259.7,
+  "avg_contrast": 252.4,
+  "color_vs_bw": {
+    "true": 15
+  },
+  "recommendations": [
+    "Excellent: 70%+ of samples are OMR-ready (Grade A/B)",
+    "Proceed with automated OMR processing for bulk of archive"
+  ]
+}

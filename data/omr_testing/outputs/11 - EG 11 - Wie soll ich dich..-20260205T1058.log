@@ -1,0 +1,77 @@
+2026-02-05 10:58:52,577 INFO [11 - EG 11 - Wie soll ich dich..]                 Book.java:560  | 1 sheet in /Users/nicolasscharioth/Documents/Git/emanuelvogt/data/omr_testing/processed_candidates/11 - EG 11 - Wie soll ich dich...png
+2026-02-05 10:58:52,692 INFO []                 Book.java:2577 | Stored /book.xml
+2026-02-05 10:58:52,692 INFO []                 Book.java:2537 | Book stored as /Users/nicolasscharioth/Documents/Git/emanuelvogt/data/omr_testing/outputs/11 - EG 11 - Wie soll ich dich...omr
+2026-02-05 10:58:52,696 INFO []                 Book.java:1929 | Book reaching PAGE on sheets:[#1]
+2026-02-05 10:58:52,698 INFO [11 - EG 11 - Wie soll ich dich..]       StepMonitoring.java:98   | LOAD
+2026-02-05 10:58:52,943 INFO [11 - EG 11 - Wie soll ich dich..]            SheetStub.java:1273 | Loaded image #1 3568x5044 from /Users/nicolasscharioth/Documents/Git/emanuelvogt/data/omr_testing/processed_candidates/11 - EG 11 - Wie soll ich dich...png
+2026-02-05 10:58:52,945 INFO [11 - EG 11 - Wie soll ich dich..]            ImageUtil.java:124  | Converting max RGB to gray
+2026-02-05 10:58:53,210 INFO [11 - EG 11 - Wie soll ich dich..]       StepMonitoring.java:98   | BINARY
+2026-02-05 10:58:53,660 INFO [11 - EG 11 - Wie soll ich dich..]       StepMonitoring.java:98   | SCALE
+2026-02-05 10:58:53,677 INFO [11 - EG 11 - Wie soll ich dich..]         ScaleBuilder.java:222  | Significant beam peak detected: 11 pixels
+2026-02-05 10:58:53,677 INFO [11 - EG 11 - Wie soll ich dich..]            ScaleStep.java:65   | Scale{ interline(37,38,40) line(7,8,8) beam(11)}
+2026-02-05 10:58:53,678 INFO [11 - EG 11 - Wie soll ich dich..]       StepMonitoring.java:98   | GRID
+2026-02-05 10:58:54,025 INFO [11 - EG 11 - Wie soll ich dich..]       LinesRetriever.java:1500 | Global slope: 0.00000
+2026-02-05 10:58:54,037 INFO [11 - EG 11 - Wie soll ich dich..]    ClustersRetriever.java:326  | Retrieved raw line clusters: 11 of sizes [5] with interline(37,38,40)
+2026-02-05 10:58:54,212 INFO [11 - EG 11 - Wie soll ich dich..]            PeakGraph.java:310  | Systems: #1[1, 2] #2[3, 4] #3[5] #4[6] #5[7, 8] #6[9] #7[10] #8[11]
+2026-02-05 10:58:54,613 INFO [11 - EG 11 - Wie soll ich dich..]        SystemManager.java:134  | Indentation detected for system #2
+2026-02-05 10:58:54,614 INFO [11 - EG 11 - Wie soll ich dich..]        SystemManager.java:134  | Indentation detected for system #8
+2026-02-05 10:58:54,614 INFO [11 - EG 11 - Wie soll ich dich..]        SystemManager.java:723  | 3 pages found in sheet
+2026-02-05 10:58:54,614 INFO [11 - EG 11 - Wie soll ich dich..]        SystemManager.java:779  | Page #1: 2 parts along 1 system
+2026-02-05 10:58:54,614 INFO [11 - EG 11 - Wie soll ich dich..]        SystemManager.java:779  | Page #2: 2 parts along 6 systems
+2026-02-05 10:58:54,615 INFO [11 - EG 11 - Wie soll ich dich..]        SystemManager.java:779  | Page #3: 1 part along 1 system
+2026-02-05 10:58:54,615 INFO [11 - EG 11 - Wie soll ich dich..]                 Book.java:543  | Created scores: [{Score 1}, {Score 2}, {Score 3}]
+2026-02-05 10:58:54,616 INFO [11 - EG 11 - Wie soll ich dich..]       StepMonitoring.java:98   | HEADERS
+2026-02-05 10:58:54,768 INFO [11 - EG 11 - Wie soll ich dich..]      BasicClassifier.java:286  | Classifier loaded XML norms.
+2026-02-05 10:58:54,769 INFO [11 - EG 11 - Wie soll ich dich..]   AbstractClassifier.java:396  | Classifier data loaded from default uri jar:file:/Applications/Audiveris.app/Contents/app/audiveris.jar!/res/basic-classifier.zip
+2026-02-05 10:58:57,262 WARN [11 - EG 11 - Wie soll ich dich..]          ClefBuilder.java:658  | Staff#8 no recognized header clef.
+2026-02-05 10:58:58,670 WARN [11 - EG 11 - Wie soll ich dich..]          ClefBuilder.java:658  | Staff#11 no recognized header clef.
+2026-02-05 10:58:58,672 INFO [11 - EG 11 - Wie soll ich dich..]       StepMonitoring.java:98   | STEM_SEEDS
+2026-02-05 10:58:58,729 INFO [11 - EG 11 - Wie soll ich dich..]        StemSeedsStep.java:86   | stem(13 max:14)
+2026-02-05 10:58:58,785 INFO [11 - EG 11 - Wie soll ich dich..]       StepMonitoring.java:98   | BEAMS
+2026-02-05 10:59:03,679 WARN [11 - EG 11 - Wie soll ich dich..]            SheetStub.java:1412 | Error in performing [LOAD, BINARY, SCALE, GRID, HEADERS, STEM_SEEDS, BEAMS, LEDGERS, HEADS, STEMS, REDUCTION, CUE_BEAMS, TEXTS, MEASURES, CHORDS, CURVES, SYMBOLS, LINKS, RHYTHMS, PAGE] java.util.concurrent.ExecutionException: java.lang.RuntimeException: java.lang.ArrayIndexOutOfBoundsException: Index 3568 out of bounds for length 3568
+java.util.concurrent.ExecutionException: java.lang.RuntimeException: java.lang.ArrayIndexOutOfBoundsException: Index 3568 out of bounds for length 3568
+	at java.base/java.util.concurrent.FutureTask.report(Unknown Source)
+	at java.base/java.util.concurrent.FutureTask.get(Unknown Source)
+	at org.audiveris.omr.sheet.SheetStub.doOneStep(SheetStub.java:516)
+	at org.audiveris.omr.sheet.SheetStub.reachStep(SheetStub.java:1394)
+	at org.audiveris.omr.sheet.Book.reachBookStep(Book.java:2041)
+	at org.audiveris.omr.sheet.Book.transcribe(Book.java:2638)
+	at org.audiveris.omr.sheet.Book.export(Book.java:593)
+	at org.audiveris.omr.CLI$ProcessingTask.processBook(CLI.java:897)
+	at org.audiveris.omr.CLI$CliTask.call(CLI.java:505)
+	at org.audiveris.omr.Main.runBatchTasks(Main.java:358)
+	at org.audiveris.omr.Main.main(Main.java:260)
+	at Audiveris.main(Audiveris.java:50)
+Caused by: java.lang.RuntimeException: java.lang.ArrayIndexOutOfBoundsException: Index 3568 out of bounds for length 3568
+	at org.audiveris.omr.step.AbstractSystemStep.doitPerSystem(AbstractSystemStep.java:185)
+	at org.audiveris.omr.step.AbstractSystemStep.doit(AbstractSystemStep.java:125)
+	at org.audiveris.omr.step.OmrStep.doit(OmrStep.java:138)
+	at org.audiveris.omr.sheet.SheetStub.lambda$doOneStep$0(SheetStub.java:500)
+	at java.base/java.util.concurrent.FutureTask.run(Unknown Source)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.base/java.lang.Thread.run(Unknown Source)
+Caused by: java.lang.ArrayIndexOutOfBoundsException: Index 3568 out of bounds for length 3568
+	at org.audiveris.omr.math.Projection$Short.getValue(Projection.java:216)
+	at org.audiveris.omr.sheet.grid.StaffProjector.findPeaksInRange(StaffProjector.java:901)
+	at org.audiveris.omr.sheet.grid.StaffProjector.processMultiRestSide(StaffProjector.java:1290)
+	at org.audiveris.omr.sheet.beam.MultipleRestsBuilder.getSerifPeaks(MultipleRestsBuilder.java:265)
+	at org.audiveris.omr.sheet.beam.MultipleRestsBuilder.process(MultipleRestsBuilder.java:320)
+	at org.audiveris.omr.sheet.beam.BeamsStep.doSystem(BeamsStep.java:119)
+	at org.audiveris.omr.sheet.beam.BeamsStep.doSystem(BeamsStep.java:50)
+	at org.audiveris.omr.step.AbstractSystemStep.lambda$doitPerSystem$0(AbstractSystemStep.java:158)
+	at org.audiveris.omr.step.AbstractSystemStep.doitPerSystem(AbstractSystemStep.java:178)
+	... 7 common frames omitted
+2026-02-05 10:59:03,681 INFO [11 - EG 11 - Wie soll ich dich..]                 Book.java:2596 | Book{11 - EG 11 - Wie soll ich dich..} storing
+2026-02-05 10:59:03,709 INFO [11 - EG 11 - Wie soll ich dich..]                 Book.java:2577 | Stored /book.xml
+2026-02-05 10:59:03,889 INFO [11 - EG 11 - Wie soll ich dich..]           DataHolder.java:348  | Stored /sheet#1/BINARY.png
+2026-02-05 10:59:04,013 INFO [11 - EG 11 - Wie soll ich dich..]           DataHolder.java:348  | Stored /sheet#1/HEAD_SPOTS.png
+2026-02-05 10:59:05,277 INFO [11 - EG 11 - Wie soll ich dich..]                Sheet.java:1583 | Stored /sheet#1/sheet#1.xml
+2026-02-05 10:59:05,278 INFO [11 - EG 11 - Wie soll ich dich..]                 Book.java:2537 | Book stored as /Users/nicolasscharioth/Documents/Git/emanuelvogt/data/omr_testing/outputs/11 - EG 11 - Wie soll ich dich...omr
+2026-02-05 10:59:05,279 INFO [11 - EG 11 - Wie soll ich dich..]            SheetStub.java:1660 | Disposed sheet
+2026-02-05 10:59:05,292 INFO [11 - EG 11 - Wie soll ich dich..]                 Book.java:2064 | End of Stub#1
+2026-02-05 10:59:05,293 INFO [11 - EG 11 - Wie soll ich dich..]                 Book.java:2071 | Book processed.
+2026-02-05 10:59:05,293 INFO [11 - EG 11 - Wie soll ich dich..]                 Book.java:596  | Could not export since transcription did not complete successfully
+2026-02-05 10:59:05,306 INFO [11 - EG 11 - Wie soll ich dich..]                Score.java:181  | Closing {Score 1}
+2026-02-05 10:59:05,306 INFO [11 - EG 11 - Wie soll ich dich..]                Score.java:181  | Closing {Score 2}
+2026-02-05 10:59:05,306 INFO [11 - EG 11 - Wie soll ich dich..]                Score.java:181  | Closing {Score 3}
