@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emanuel Vogt Archive | Digital Library</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header Section -->
+        <header class="main-header">
+            <div class="brand">
+                <h1>Emanuel Vogt</h1>
+                <p class="subtitle">Digitales Werkverzeichnis (1925–2007)</p>
+            </div>
+            
+            <div class="search-controls">
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="Suche nach Titel oder Werknummer..." autocomplete="off">
+                    <span class="search-icon">🔍</span>
+                </div>
+                <select id="genreFilter" class="genre-select">
+                    <option value="All">Alle Gattungen</option>
+                </select>
+            </div>
+            
+            <div class="stats" id="statsCounter">
+                Lade Archiv...
+            </div>
+        </header>
+
+        <!-- Content Area -->
+        <main class="content-grid" id="resultsGrid">
+            <!-- Cards will be injected here -->
+        </main>
+
+        <!-- PDF Viewer Modal -->
+        <div id="viewerModal" class="modal">
+            <div class="modal-content">
+                <header class="modal-header">
+                    <div class="modal-info">
+                        <span class="work-num" id="modalWorkNum"></span>
+                        <h2 id="modalTitle"></h2>
+                    </div>
+                    <button class="close-btn" onclick="closeViewer()">&times;</button>
+                </header>
+                <div class="viewer-body">
+                    <div class="file-sidebar" id="fileList">
+                        <!-- File buttons -->
+                    </div>
+                    <div class="pdf-frame">
+                        <iframe id="pdfFrame" src="" frameborder="0"></iframe>
+                        <div id="viewerPlaceholder" class="placeholder">
+                            <p>Wählen Sie eine Datei zur Ansicht aus</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>
