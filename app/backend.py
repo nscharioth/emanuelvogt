@@ -17,12 +17,13 @@ app.mount("/static", StaticFiles(directory=BASE_DIR / "app/static"), name="stati
 
 @app.get("/", response_class=HTMLResponse)
 async def get_index():
-    with open(BASE_DIR / "app/index.html", "r") as f:
+    with open(BASE_DIR / "app/index.html", "r", encoding="utf-8") as f:
         return f.read()
 
 @app.get("/api/works")
 async def get_works(q: str = "", genre: str = "All"):
     conn = sqlite3.connect(DB_PATH)
+    conn.text_factory = lambda x: x.decode('utf-8', errors='replace')
     c = conn.cursor()
     
     query = "SELECT id, work_number, title, genre FROM works WHERE 1=1"
@@ -56,6 +57,7 @@ async def get_works(q: str = "", genre: str = "All"):
 @app.get("/api/work/{work_id}")
 async def get_work_detail(work_id: int):
     conn = sqlite3.connect(DB_PATH)
+    conn.text_factory = lambda x: x.decode('utf-8', errors='replace')
     c = conn.cursor()
     
     # Get Work
@@ -90,6 +92,7 @@ async def get_work_detail(work_id: int):
 @app.get("/pdf/{file_id}")
 async def get_pdf(file_id: int):
     conn = sqlite3.connect(DB_PATH)
+    conn.text_factory = lambda x: x.decode('utf-8', errors='replace')
     c = conn.cursor()
     c.execute("SELECT filepath FROM files WHERE id = ?", (file_id,))
     row = c.fetchone()
@@ -108,6 +111,7 @@ async def get_pdf(file_id: int):
 @app.get("/api/genres")
 async def get_genres():
     conn = sqlite3.connect(DB_PATH)
+    conn.text_factory = lambda x: x.decode('utf-8', errors='replace')
     c = conn.cursor()
     c.execute("SELECT DISTINCT genre FROM works WHERE genre IS NOT NULL")
     genres = [r[0] for r in c.fetchall()]
