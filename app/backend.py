@@ -54,10 +54,19 @@ async def get_works(q: str = "", genre: str = "All", instrumentation: str = "All
         params.append(genre)
     
     if instrumentation != "All":
-        query += " AND instrumentation = ?"
-        params.append(instrumentation)
+        # Match works where instrumentation contains the selected instrument
+        # Handles: "Sopran", "Sopran, Alt", "Alt, Sopran", etc.
+        query += " AND (instrumentation LIKE ? OR instrumentation LIKE ? OR instrumentation LIKE ? OR instrumentation = ?)"
+        params.extend([
+            f"{instrumentation},%",  # Start: "Sopran, ..."
+            f"%, {instrumentation},%",  # Middle: "..., Sopran, ..."
+            f"%, {instrumentation}",  # End: "..., Sopran"
+            instrumentation  # Exact match: "Sopran"
+        ])
     
-    query += " ORDER BY CASE WHEN work_number LIKE 'P-%' THEN 1 ELSE 0 END, CAST(work_number AS INTEGER), work_number"
+    # Sort by Database ID (which puts Psalms P-1 through P-206 at the end, IDs 2080-2323)
+    # Regular works 1-2099 have IDs 1-2039
+    query += " ORDER BY id"
     
     c.execute(query, params)
     rows = c.fetchall()
@@ -143,13 +152,22 @@ async def get_genres():
 
 @app.get("/api/instrumentations")
 async def get_instrumentations():
+    """Get list of individual instruments from comma-separated instrumentation field."""
     conn = sqlite3.connect(DB_PATH)
     conn.text_factory = lambda x: x.decode('utf-8', errors='replace')
     c = conn.cursor()
-    c.execute("SELECT DISTINCT instrumentation FROM works WHERE instrumentation IS NOT NULL ORDER BY instrumentation")
-    instrumentations = [r[0] for r in c.fetchall()]
+    c.execute("SELECT DISTINCT instrumentation FROM works WHERE instrumentation IS NOT NULL")
+    
+    # Parse comma-separated values and flatten to individual instruments
+    all_instruments = set()
+    for (inst,) in c.fetchall():
+        if inst:
+            # Split by comma and trim whitespace
+            parts = [p.strip() for p in inst.split(',')]
+            all_instruments.update(parts)
+    
     conn.close()
-    return ["All"] + instrumentations
+    return ["All"] + sorted(list(all_instruments))
 
 @app.get("/api/musicxml/list")
 async def get_musicxml_files():
