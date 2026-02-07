@@ -1,6 +1,7 @@
 let allWorks = [];
 const searchInput = document.getElementById('searchInput');
 const genreFilter = document.getElementById('genreFilter');
+const instrumentationFilter = document.getElementById('instrumentationFilter');
 const resultsGrid = document.getElementById('resultsGrid');
 const viewerModal = document.getElementById('viewerModal');
 const statsCounter = document.getElementById('statsCounter');
@@ -8,6 +9,7 @@ const statsCounter = document.getElementById('statsCounter');
 // Initial Load
 async function init() {
     await fetchGenres();
+    await fetchInstrumentations();
     await performSearch();
 }
 
@@ -17,11 +19,18 @@ async function fetchGenres() {
     genreFilter.innerHTML = genres.map(g => `<option value="${g}">${g === 'All' ? 'Alle Gattungen' : g}</option>`).join('');
 }
 
+async function fetchInstrumentations() {
+    const res = await fetch('/api/instrumentations');
+    const instrumentations = await res.json();
+    instrumentationFilter.innerHTML = instrumentations.map(i => `<option value="${i}">${i === 'All' ? 'Alle Besetzungen' : i}</option>`).join('');
+}
+
 async function performSearch() {
     const query = searchInput.value;
     const genre = genreFilter.value;
+    const instrumentation = instrumentationFilter.value;
 
-    const res = await fetch(`/api/works?q=${encodeURIComponent(query)}&genre=${encodeURIComponent(genre)}`);
+    const res = await fetch(`/api/works?q=${encodeURIComponent(query)}&genre=${encodeURIComponent(genre)}&instrumentation=${encodeURIComponent(instrumentation)}`);
     const works = await res.json();
     renderWorks(works);
     statsCounter.innerText = `${works.length} Werke gefunden`;
@@ -53,6 +62,16 @@ async function openWorkDetail(workId) {
             <small>${(file.size / 1024 / 1024).toFixed(2)} MB</small>
         </div>
     `).join('');
+
+    // Show MusicXML notice if available
+    const musicxmlNotice = document.getElementById('musicxmlNotice');
+    if (work.has_musicxml) {
+        musicxmlNotice.style.display = 'block';
+        const musicxmlLink = document.getElementById('musicxmlLink');
+        musicxmlLink.href = `/musicxml-player?work=${encodeURIComponent(work.work_number)}`;
+    } else {
+        musicxmlNotice.style.display = 'none';
+    }
 
     // Clear prev viewer
     document.getElementById('pdfFrame').src = '';
@@ -94,6 +113,7 @@ searchInput.addEventListener('input', () => {
 });
 
 genreFilter.addEventListener('change', performSearch);
+instrumentationFilter.addEventListener('change', performSearch);
 
 // Close on escape
 window.addEventListener('keydown', (e) => {
