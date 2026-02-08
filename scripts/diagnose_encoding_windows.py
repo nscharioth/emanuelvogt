@@ -129,23 +129,36 @@ def test_backend_simulation():
     print("SIMULATING BACKEND.PY CONNECTION")
     print("=" * 70)
     
+    import unicodedata
+    
     conn = sqlite3.connect(DB_PATH)
     conn.text_factory = lambda x: x.decode('utf-8', errors='replace')
     c = conn.cursor()
     
-    # Simulate API query
-    print("\nSimulating: GET /api/works?q=grüßen")
-    c.execute("""
-        SELECT id, work_number, title 
-        FROM works 
-        WHERE title LIKE ? 
-        LIMIT 3
-    """, ('%grüßen%',))
+    # Simulate API query with Unicode normalization
+    search_term = "grüßen"
+    print(f"\nSimulating: GET /api/works?q={search_term}")
+    print(f"Search term (normalized NFC): {unicodedata.normalize('NFC', search_term)}")
+    print(f"Search term (bytes): {search_term.encode('utf-8')}")
     
-    results = c.fetchall()
+    # Get all works and filter in Python (like new backend.py)
+    c.execute("SELECT id, work_number, title FROM works")
+    all_works = c.fetchall()
+    
+    search_normalized = unicodedata.normalize('NFC', search_term).lower()
+    results = []
+    
+    for work_id, work_num, title in all_works:
+        title_normalized = unicodedata.normalize('NFC', title or '').lower()
+        work_num_normalized = unicodedata.normalize('NFC', work_num or '').lower()
+        
+        if search_normalized in title_normalized or search_normalized == work_num_normalized:
+            results.append((work_id, work_num, title))
+    
     print(f"Found {len(results)} results:")
-    for work_id, work_num, title in results:
+    for work_id, work_num, title in results[:5]:  # Show first 5
         print(f"  {work_num}: {title}")
+        print(f"    Title (normalized): {unicodedata.normalize('NFC', title)}")
         print(f"    Contains �: {'�' in title}")
     
     conn.close()

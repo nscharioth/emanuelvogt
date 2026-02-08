@@ -1,0 +1,139 @@
+{
+  "timestamp": "2026-02-08T17:11:54.860111",
+  "dry_run": false,
+  "summary": {
+    "total_files": 2829,
+    "files_copied": 2829,
+    "files_skipped": 0,
+    "files_missing": 0,
+    "errors": 0
+  },
+  "slug_statistics": {
+    "unique_slugs": 2829,
+    "duplicate_slugs": 0,
+    "max_slug_length": 109
+  },
+  "sample_slugs": [
+    {
+      "id": 1,
+      "original": "16 - Fahren wir froh... - Seiten 2 und 3.pdf",
+      "slug": "16-fahren-wir-froh-seiten-2-und-3.pdf",
+      "work": "16"
+    },
+    {
+      "id": 2,
+      "original": "16 - Fahren wir froh... - Seiten 2 und 3.pdf",
+      "slug": "16-fahren-wir-froh-seiten-2-und-3-2.pdf",
+      "work": "16"
+    },
+    {
+      "id": 3,
+      "original": "14a - Hör, hör, hör....pdf",
+      "slug": "14a-hoer-hoer-hoer.pdf",
+      "work": "14a"
+    },
+    {
+      "id": 4,
+      "original": "9c - Der Rosengarten.pdf",
+      "slug": "9c-der-rosengarten.pdf",
+      "work": "9c"
+    },
+    {
+      "id": 5,
+      "original": "7 - Solo-Suite für Violine für Sabine Kötz - Seite 1.pdf",
+      "slug": "7-solo-suite-fuer-violine-fuer-sabine-koetz-seite-1.pdf",
+      "work": "7"
+    },
+    {
+      "id": 6,
+      "original": "20 - Mit Schall von Zungen.pdf",
+      "slug": "20-mit-schall-von-zungen.pdf",
+      "work": "20"
+    },
+    {
+      "id": 7,
+      "original": "18 - Du Gott des Friedens.pdf",
+      "slug": "18-du-gott-des-friedens.pdf",
+      "work": "18"
+    },
+    {
+      "id": 8,
+      "original": "15 - O Lebensbrünnleit....pdf",
+      "slug": "15-o-lebensbruennleit.pdf",
+      "work": "15"
+    },
+    {
+      "id": 9,
+      "original": "17 - Horch, wie die Schar.pdf",
+      "slug": "17-horch-wie-die-schar.pdf",
+      "work": "17"
+    },
+    {
+      "id": 10,
+      "original": "19 - Kommt alle bei Nacht.pdf",
+      "slug": "19-kommt-alle-bei-nacht.pdf",
+      "work": "19"
+    },
+    {
+      "id": 11,
+      "original": "11 - EG 11 - Wie soll ich dich....pdf",
+      "slug": "11-eg-11-wie-soll-ich-dich.pdf",
+      "work": "11"
+    },
+    {
+      "id": 12,
+      "original": "13 - Es lagen im Felde....pdf",
+      "slug": "13-es-lagen-im-felde.pdf",
+      "work": "13"
+    },
+    {
+      "id": 13,
+      "original": "12i - Rosen im Haag.pdf",
+      "slug": "12i-rosen-im-haag.pdf",
+      "work": "12i"
+    },
+    {
+      "id": 14,
+      "original": "7 - Solo-Suite für Violine für Sabine Kötz - Seiten 2, 3 und 4.pdf",
+      "slug": "7-solo-suite-fuer-violine-fuer-sabine-koetz-seiten-2-3-und-4.pdf",
+      "work": "7"
+    },
+    {
+      "id": 15,
+      "original": "7 - Solo-Suite für Violine für Sabine Kötz - Seiten 2, 3 und 4.pdf",
+      "slug": "7-solo-suite-fuer-violine-fuer-sabine-koetz-seiten-2-3-und-4-15.pdf",
+      "work": "7"
+    },
+    {
+      "id": 16,
+      "original": "5 - Die sieben flotten Lieselotten - Seiten 2 und.pdf",
+      "slug": "5-die-sieben-flotten-lieselotten-seiten-2-und.pdf",
+      "work": "5"
+    },
+    {
+      "id": 17,
+      "original": "12d - Gänseblümchen.pdf",
+      "slug": "12d-gaensebluemchen.pdf",
+      "work": "12d"
+    },
+    {
+      "id": 18,
+      "original": "12e - Rosen im Haag.pdf",
+      "slug": "12e-rosen-im-haag.pdf",
+      "work": "12e"
+    },
+    {
+      "id": 19,
+      "original": "12f - Psalm 130 für Annegret Krause.pdf",
+      "slug": "12f-psalm-130-fuer-annegret-krause.pdf",
+      "work": "12f"
+    },
+    {
+      "id": 20,
+      "original": "5 - Die sieben flotten Lieselotten - Seite 1.pdf",
+      "slug": "5-die-sieben-flotten-lieselotten-seite-1.pdf",
+      "work": "5"
+    }
+  ],
+  "errors": []
+}

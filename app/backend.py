@@ -7,6 +7,7 @@ import os
 import re
 from PyPDF2 import PdfReader, PdfWriter
 import io
+import unicodedata
 
 app = FastAPI()
 
@@ -46,10 +47,11 @@ async def get_works(q: str = "", genre: str = "All", instrumentation: str = "All
     query = "SELECT id, work_number, title, genre, instrumentation FROM works WHERE 1=1"
     params = []
     
+    # Note: We'll do text search in Python to handle Unicode normalization properly
+    search_term = None
     if q:
-        # Exact match for work_number, partial match for title
-        query += " AND (title LIKE ? OR work_number = ?)"
-        params.extend([f"%{q}%", q])
+        # Normalize search term to NFC (precomposed) for consistent comparison
+        search_term = unicodedata.normalize('NFC', q).lower()
     
     if genre != "All":
         query += " AND genre = ?"
@@ -75,6 +77,16 @@ async def get_works(q: str = "", genre: str = "All", instrumentation: str = "All
     
     works = []
     for r in rows:
+        # Apply text search in Python with proper Unicode normalization
+        if search_term:
+            # Normalize database values to NFC for consistent comparison
+            title_normalized = unicodedata.normalize('NFC', r[2] or '').lower()
+            work_num_normalized = unicodedata.normalize('NFC', r[1] or '').lower()
+            
+            # Check if search term matches (case-insensitive, normalized)
+            if search_term not in title_normalized and search_term != work_num_normalized:
+                continue
+        
         works.append({
             "id": r[0],
             "work_number": r[1],
@@ -136,8 +148,8 @@ async def get_pdf(file_id: int):
     conn.text_factory = lambda x: x.decode('utf-8', errors='replace')
     c = conn.cursor()
     
-    # Get file path
-    c.execute("SELECT filepath FROM files WHERE id = ?", (file_id,))
+    # Get file paths (including new flat_path if available)
+    c.execute("SELECT filepath, filename, flat_path, slug FROM files WHERE id = ?", (file_id,))
     row = c.fetchone()
     
     # Get saved rotation
@@ -148,15 +160,83 @@ async def get_pdf(file_id: int):
     conn.close()
     
     if not row:
-        raise HTTPException(status_code=404, detail="File not found")
+        raise HTTPException(status_code=404, detail="File not found in database")
     
-    file_path = ARCHIVE_DIR / row[0]
-    if not file_path.exists():
-        raise HTTPException(status_code=404, detail=f"File not found on disk: {row[0]}")
+    filepath_str = row[0]
+    filename_from_db = row[1] if len(row) > 1 else None
+    flat_path_str = row[2] if len(row) > 2 else None
+    slug = row[3] if len(row) > 3 else None
+    
+    # HYBRID PATH RESOLUTION: Try flat/ first (preferred), fallback to files/
+    file_path = None
+    tried_paths = []
+    
+    # Strategy 1: Try flat/ archive (URL-safe, normalized)
+    if flat_path_str:
+        flat_full_path = ARCHIVE_DIR / flat_path_str
+        tried_paths.append(('flat', str(flat_full_path)))
+        if flat_full_path.exists():
+            file_path = flat_full_path
+    
+    # Strategy 2: Try old files/ archive (backward compatibility)
+    if not file_path and filepath_str:
+        # Handle path separators for cross-platform compatibility
+        relative_path = Path(filepath_str.replace('/', os.sep))
+        old_full_path = ARCHIVE_DIR / relative_path
+        tried_paths.append(('files (normalized)', str(old_full_path)))
+        if old_full_path.exists():
+            file_path = old_full_path
+        else:
+            # Try without path separator conversion
+            alt_file_path = ARCHIVE_DIR / filepath_str
+            tried_paths.append(('files (direct)', str(alt_file_path)))
+            if alt_file_path.exists():
+                file_path = alt_file_path
+    
+    # Strategy 3: Last resort - search by filename in expected directory
+    if not file_path and filename_from_db:
+        # Try to find in old location
+        expected_dir = (ARCHIVE_DIR / Path(filepath_str)).parent
+        if expected_dir.exists():
+            tried_paths.append(('search', f"{expected_dir}/{filename_from_db}"))
+            # Exact match
+            possible_files = list(expected_dir.glob(filename_from_db))
+            if possible_files:
+                file_path = possible_files[0]
+            else:
+                # Case-insensitive search
+                all_files = list(expected_dir.glob('*.pdf'))
+                for f in all_files:
+                    if f.name.lower() == filename_from_db.lower():
+                        file_path = f
+                        break
+    
+    # If still not found, raise detailed error
+    if not file_path:
+        error_detail = f"File not found. Tried {len(tried_paths)} locations:\n"
+        for i, (method, path) in enumerate(tried_paths, 1):
+            error_detail += f"{i}. [{method}] {path}\n"
+        raise HTTPException(status_code=404, detail=error_detail.strip())
+    
+    # Set Content-Disposition header with original filename for downloads
+    headers = {}
+    if filename_from_db:
+        # Encode filename properly for Content-Disposition header (RFC 5987)
+        # Use ASCII fallback for filename and UTF-8 encoded filename* for modern browsers
+        from urllib.parse import quote
+        
+        # Create ASCII-safe fallback (replace non-ASCII with underscore)
+        ascii_filename = filename_from_db.encode('ascii', 'replace').decode('ascii').replace('?', '_')
+        
+        # URL-encode the UTF-8 filename for filename* parameter
+        utf8_filename = quote(filename_from_db.encode('utf-8'))
+        
+        # RFC 5987: filename* parameter with encoding indicator
+        headers["Content-Disposition"] = f'inline; filename="{ascii_filename}"; filename*=UTF-8\'\'{utf8_filename}'
     
     # If no rotation, serve file directly
     if rotation == 0:
-        return FileResponse(file_path, media_type="application/pdf")
+        return FileResponse(file_path, media_type="application/pdf", headers=headers)
     
     # Apply rotation using PyPDF2
     try:
@@ -172,10 +252,33 @@ async def get_pdf(file_id: int):
         writer.write(buffer)
         buffer.seek(0)
         
-        return Response(content=buffer.getvalue(), media_type="application/pdf")
+        return Response(content=buffer.getvalue(), media_type="application/pdf", headers=headers)
     except Exception as e:
         # Fallback to original file if rotation fails
-        return FileResponse(file_path, media_type="application/pdf")
+        return FileResponse(file_path, media_type="application/pdf", headers=headers)
+
+@app.get("/pdf/by-slug/{slug}")
+async def get_pdf_by_slug(slug: str):
+    """
+    Get PDF by URL-safe slug (e.g., '0528-improperion.pdf')
+    This is the preferred method for web access - SEO friendly and human-readable.
+    """
+    conn = sqlite3.connect(DB_PATH)
+    conn.text_factory = lambda x: x.decode('utf-8', errors='replace')
+    c = conn.cursor()
+    
+    # Look up file by slug
+    c.execute("SELECT id FROM files WHERE slug = ?", (slug,))
+    row = c.fetchone()
+    conn.close()
+    
+    if not row:
+        raise HTTPException(status_code=404, detail=f"File with slug '{slug}' not found")
+    
+    file_id = row[0]
+    
+    # Delegate to existing PDF endpoint
+    return await get_pdf(file_id)
 
 @app.get("/api/genres")
 async def get_genres():
