@@ -68,10 +68,7 @@ async def get_works(q: str = "", genre: str = "All", instrumentation: str = "All
             instrumentation  # Exact match: "Sopran"
         ])
     
-    # Sort by Database ID (which puts Psalms P-1 through P-206 at the end, IDs 2080-2323)
-    # Regular works 1-2099 have IDs 1-2039
-    query += " ORDER BY id"
-    
+    # Don't sort in SQL - we'll sort in Python for proper alphanumeric ordering
     c.execute(query, params)
     rows = c.fetchall()
     
@@ -94,6 +91,40 @@ async def get_works(q: str = "", genre: str = "All", instrumentation: str = "All
             "genre": r[3],
             "instrumentation": r[4]
         })
+    
+    # Sort by work_number with natural sorting (1, 2, 3a, 3b, 10, 11, P-1, P-2, etc.)
+    def natural_sort_key(work):
+        work_num = work["work_number"] or ""
+        
+        # Split into parts: numbers and letters
+        # Examples: "14a" -> [(0,14), (1,"a")], "P-123" -> [(1,"P"), (1,"-"), (0,123)]
+        parts = []
+        current_num = ""
+        current_alpha = ""
+        
+        for char in work_num:
+            if char.isdigit():
+                if current_alpha:
+                    parts.append((1, current_alpha))  # (1, str) for alpha
+                    current_alpha = ""
+                current_num += char
+            else:
+                if current_num:
+                    parts.append((0, int(current_num)))  # (0, int) for numbers
+                    current_num = ""
+                current_alpha += char
+        
+        # Add remaining
+        if current_num:
+            parts.append((0, int(current_num)))
+        if current_alpha:
+            parts.append((1, current_alpha))
+        
+        # This ensures proper sorting: numbers come before letters at each position
+        # So: 1 < 2 < 3 < 3a < 3b < 10 < 14 < 14a < P-1 < P-10
+        return tuple(parts) if parts else ((1, work_num),)
+    
+    works.sort(key=natural_sort_key)
     
     conn.close()
     return works
@@ -218,6 +249,18 @@ async def get_pdf(file_id: int):
             error_detail += f"{i}. [{method}] {path}\n"
         raise HTTPException(status_code=404, detail=error_detail.strip())
     
+    # Determine media type based on file extension
+    file_extension = file_path.suffix.lower()
+    media_type_map = {
+        '.pdf': 'application/pdf',
+        '.jpg': 'image/jpeg',
+        '.jpeg': 'image/jpeg',
+        '.png': 'image/png',
+        '.gif': 'image/gif',
+    }
+    media_type = media_type_map.get(file_extension, 'application/pdf')
+    is_image = file_extension in ['.jpg', '.jpeg', '.png', '.gif']
+    
     # Set Content-Disposition header with original filename for downloads
     headers = {}
     if filename_from_db:
@@ -234,11 +277,15 @@ async def get_pdf(file_id: int):
         # RFC 5987: filename* parameter with encoding indicator
         headers["Content-Disposition"] = f'inline; filename="{ascii_filename}"; filename*=UTF-8\'\'{utf8_filename}'
     
-    # If no rotation, serve file directly
-    if rotation == 0:
-        return FileResponse(file_path, media_type="application/pdf", headers=headers)
+    # For images, serve directly without rotation
+    if is_image:
+        return FileResponse(file_path, media_type=media_type, headers=headers)
     
-    # Apply rotation using PyPDF2
+    # For PDFs: If no rotation, serve file directly
+    if rotation == 0:
+        return FileResponse(file_path, media_type=media_type, headers=headers)
+    
+    # Apply rotation using PyPDF2 (only for PDFs)
     try:
         reader = PdfReader(str(file_path))
         writer = PdfWriter()
@@ -252,10 +299,10 @@ async def get_pdf(file_id: int):
         writer.write(buffer)
         buffer.seek(0)
         
-        return Response(content=buffer.getvalue(), media_type="application/pdf", headers=headers)
+        return Response(content=buffer.getvalue(), media_type=media_type, headers=headers)
     except Exception as e:
         # Fallback to original file if rotation fails
-        return FileResponse(file_path, media_type="application/pdf", headers=headers)
+        return FileResponse(file_path, media_type=media_type, headers=headers)
 
 @app.get("/pdf/by-slug/{slug}")
 async def get_pdf_by_slug(slug: str):

@@ -58,12 +58,15 @@ async function openWorkDetail(workId) {
     document.getElementById('modalTitle').innerText = work.title;
 
     const fileList = document.getElementById('fileList');
-    fileList.innerHTML = work.files.map(file => `
-        <div class="file-item" onclick="loadPDF(${file.id}, ${file.rotation || 0}, this)">
+    fileList.innerHTML = work.files.map(file => {
+        const isImage = /\.(jpg|jpeg|png|gif)$/i.test(file.filename);
+        return `
+        <div class="file-item" onclick="loadFile(${file.id}, ${file.rotation || 0}, '${file.filename}', this)">
             <p>${file.filename}</p>
             <small>${(file.size / 1024 / 1024).toFixed(2)} MB</small>
         </div>
-    `).join('');
+        `;
+    }).join('');
 
     // Show MusicXML notice if available
     const musicxmlNotice = document.getElementById('musicxmlNotice');
@@ -84,11 +87,11 @@ async function openWorkDetail(workId) {
 
     // Auto-load if only one file
     if (work.files.length === 1) {
-        loadPDF(work.files[0].id, work.files[0].rotation || 0, fileList.firstElementChild);
+        loadFile(work.files[0].id, work.files[0].rotation || 0, work.files[0].filename, fileList.firstElementChild);
     }
 }
 
-function loadPDF(fileId, rotation, element) {
+function loadFile(fileId, rotation, filename, element) {
     currentFileId = fileId;
     currentRotation = rotation;
 
@@ -96,22 +99,58 @@ function loadPDF(fileId, rotation, element) {
     document.querySelectorAll('.file-item').forEach(i => i.classList.remove('active'));
     element.classList.add('active');
 
-    // Show rotation controls
-    const rotationControls = document.getElementById('rotationControls');
-    rotationControls.style.display = 'flex';
-
-    // Update rotation button states
-    document.querySelectorAll('.rotation-btn').forEach(btn => {
-        btn.classList.toggle('active', parseInt(btn.dataset.rotation) === rotation);
-    });
-
-    // Load iframe - backend already applies rotation
+    // Check if file is an image
+    const isImage = /\.(jpg|jpeg|png|gif)$/i.test(filename);
+    
     const pdfFrame = document.getElementById('pdfFrame');
     const placeholder = document.getElementById('viewerPlaceholder');
+    const rotationControls = document.getElementById('rotationControls');
 
-    pdfFrame.src = `/pdf/${fileId}#toolbar=0&navpanes=0&scrollbar=0`;
-    pdfFrame.style.display = 'block';
-    placeholder.style.display = 'none';
+    if (isImage) {
+        // For images: load without PDF viewer parameters
+        rotationControls.style.display = 'none';
+        // No #toolbar parameters for images - just the file endpoint
+        pdfFrame.src = `/pdf/${fileId}`;
+        pdfFrame.style.display = 'block';
+        placeholder.style.display = 'none';
+        
+        // Remove any PDF.js styling that might interfere
+        pdfFrame.onload = function() {
+            try {
+                // Ensure iframe shows image naturally
+                const doc = pdfFrame.contentDocument || pdfFrame.contentWindow.document;
+                if (doc && doc.body) {
+                    doc.body.style.margin = '0';
+                    doc.body.style.display = 'flex';
+                    doc.body.style.justifyContent = 'center';
+                    doc.body.style.alignItems = 'center';
+                    doc.body.style.backgroundColor = '#2a2a2a';
+                }
+            } catch(e) {
+                // Cross-origin restriction, ignore
+            }
+        };
+    } else {
+        // For PDFs: show rotation controls
+        rotationControls.style.display = 'flex';
+
+        // Update rotation button states
+        document.querySelectorAll('.rotation-btn').forEach(btn => {
+            btn.classList.toggle('active', parseInt(btn.dataset.rotation) === rotation);
+        });
+
+        // Load PDF with viewer parameters
+        pdfFrame.src = `/pdf/${fileId}#toolbar=0&navpanes=0&scrollbar=0`;
+        pdfFrame.style.display = 'block';
+        placeholder.style.display = 'none';
+    }
+}
+
+function loadPDF(fileId, rotation, element) {
+    // Backward compatibility - redirect to loadFile
+    const fileItem = element;
+    const filename = fileItem.querySelector('p').textContent;
+    loadFile(fileId, rotation, filename, element);
 }
 
 function rotatePDF(degrees) {
