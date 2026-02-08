@@ -1,0 +1,141 @@
+================================================================================
+DATENBANK FEHLT - LÖSUNG FÜR WINDOWS
+================================================================================
+
+PROBLEM:
+--------
+Die Datenbank "archive.db" existiert nicht oder ist leer.
+Fehlermeldung: "no such table: files"
+
+
+LÖSUNG - OPTION 1: DATENBANK VON NICOLAS ERHALTEN (Empfohlen)
+--------------------------------------------------------------
+
+Die Datenbank enthält alle Informationen über 2.323 Werke und muss von Nicolas
+bereitgestellt werden.
+
+SCHRITT 1: Datenbank-Datei anfordern
+   - Bitte Nicolas um die Datei "archive.db"
+   - Per E-Mail, USB-Stick, oder Cloud-Link (z.B. Dropbox/Google Drive)
+   - Dateigröße: ca. 850 KB
+
+SCHRITT 2: Datei an richtigen Ort kopieren
+   - Heruntergeladene Datei "archive.db" kopieren
+   - Einfügen in: C:\Users\vogt-\Documents\Git\emanuelvogt\data\
+   - Ziel-Pfad: C:\Users\vogt-\Documents\Git\emanuelvogt\data\archive.db
+
+SCHRITT 3: Prüfen ob Datei vorhanden
+   PowerShell öffnen:
+   
+   cd C:\Users\vogt-\Documents\Git\emanuelvogt
+   dir data\archive.db
+   
+   Du solltest sehen:
+   archive.db         848 KB
+
+SCHRITT 4: Viewer starten
+   
+   .\run_viewer.bat
+   
+   Browser → http://localhost:8000
+
+
+LÖSUNG - OPTION 2: DATENBANK NEU GENERIEREN (Fortgeschritten)
+--------------------------------------------------------------
+
+Die Datenbank kann aus den Archiv-Dateien neu generiert werden.
+
+VORAUSSETZUNG:
+- Der komplette "archive/files/" Ordner muss vorhanden sein
+- Ordnerpfad: C:\Users\vogt-\Documents\Git\emanuelvogt\archive\files\
+
+SCHRITT 1: Archive-Ordner prüfen
+   
+   dir archive\files
+   
+   Du solltest sehen:
+   - Psalmen\
+   - Werke - außer Psalmen\
+   - Viele Unterordner mit PDF-Dateien
+
+SCHRITT 2: Datenbank initialisieren
+   
+   python scripts\07_init_database.py
+   
+   Dies dauert 2-5 Minuten und erstellt:
+   - archive.db (Datenbank)
+   - file_inventory.csv (Datei-Liste)
+
+SCHRITT 3: Prüfen ob erfolgreich
+   
+   dir data\archive.db
+   
+   Falls Datei existiert → Erfolgreich!
+
+SCHRITT 4: Viewer starten
+   
+   .\run_viewer.bat
+
+
+FEHLERBEHEBUNG:
+---------------
+
+FEHLER: "archive.db not found" nach Option 1
+LÖSUNG: Datei wurde an falschem Ort abgelegt!
+        Prüfe Pfad genau: C:\Users\vogt-\Documents\Git\emanuelvogt\data\archive.db
+        NICHT: \data\data\archive.db
+        NICHT: \archive.db (im Root)
+
+FEHLER: "FileNotFoundError: archive/files not found" bei Option 2
+LÖSUNG: Archive-Ordner fehlt!
+        Der komplette "archive/files/" Ordner mit allen PDFs muss vorhanden sein.
+        → Bitte Nicolas um den kompletten Archive-Ordner
+        → Kopiere nach: C:\Users\vogt-\Documents\Git\emanuelvogt\archive\
+
+FEHLER: "no such table: files" nach Initialisierung
+LÖSUNG: Initialisierung fehlgeschlagen!
+        1. Alte Datenbank löschen:
+           del data\archive.db
+        2. Nochmal initialisieren:
+           python scripts\07_init_database.py
+        3. Output prüfen auf Fehlermeldungen
+
+FEHLER: Viewer zeigt keine Werke (leere Liste)
+LÖSUNG: Datenbank ist leer oder defekt!
+        1. Datei-Größe prüfen:
+           dir data\archive.db
+           → Sollte ca. 800 KB sein, nicht 0 KB!
+        2. Falls 0 KB: Datenbank neu kopieren/generieren
+
+
+EMPFOHLENER WEG:
+----------------
+1. ✅ Datenbank "archive.db" von Nicolas per E-Mail/Cloud erhalten
+2. ✅ Datei nach C:\Users\vogt-\Documents\Git\emanuelvogt\data\ kopieren
+3. ✅ Viewer starten: .\run_viewer.bat
+4. ✅ Browser: http://localhost:8000
+
+→ Schnellste und einfachste Lösung!
+
+
+ALTERNATIVE (wenn Archive-Ordner vorhanden):
+--------------------------------------------
+1. Prüfe ob "archive/files/" mit PDFs existiert
+2. Führe aus: python scripts\07_init_database.py
+3. Warte 2-5 Minuten
+4. Viewer starten
+
+
+KONTAKT:
+--------
+Bei Problemen bitte melden mit:
+- Screenshot der Fehlermeldung
+- Output von: dir data\archive.db
+- Output von: dir archive\files
+
+E-Mail: nicolas.scharioth@...
+
+
+================================================================================
+WICHTIG: Ohne Datenbank funktioniert der Viewer NICHT!
+================================================================================

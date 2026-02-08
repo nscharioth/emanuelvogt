@@ -1,0 +1,161 @@
+================================================================================
+ARCHIVE VIEWER STARTEN - WINDOWS ANLEITUNG
+================================================================================
+
+VORAUSSETZUNGEN:
+----------------
+- Python 3.10 oder höher installiert
+- Git Repository geklont nach: C:\Users\vogt-\Documents\Git\emanuelvogt
+
+
+SCHRITT-FÜR-SCHRITT ANLEITUNG:
+-------------------------------
+
+SCHRITT 1: PowerShell öffnen
+   - Windows-Taste drücken
+   - "PowerShell" eingeben
+   - "Windows PowerShell" öffnen (als Administrator empfohlen)
+
+
+SCHRITT 2: Zum Projekt-Verzeichnis wechseln
+   
+   cd C:\Users\vogt-\Documents\Git\emanuelvogt
+
+
+SCHRITT 3: Python-Pakete installieren (nur beim ersten Mal!)
+   
+   pip install -r requirements.txt
+
+   HINWEIS: Dies muss nur einmal ausgeführt werden!
+   Bei Fehlern versuche stattdessen:
+   
+   python -m pip install -r requirements.txt
+
+
+SCHRITT 4: Archive Viewer starten
+
+   OPTION A (Einfacher - Doppelklick):
+   - Im Windows Explorer zu C:\Users\vogt-\Documents\Git\emanuelvogt navigieren
+   - Doppelklick auf: run_viewer.bat
+   - Ein schwarzes Fenster öffnet sich (nicht schließen!)
+
+   OPTION B (PowerShell):
+   
+   .\run_viewer.bat
+
+   OPTION C (Manuell):
+   
+   python -m uvicorn app.backend:app --host 0.0.0.0 --port 8000
+
+
+SCHRITT 5: Browser öffnen
+   - Chrome, Firefox oder Edge öffnen
+   - Folgende Adresse eingeben:
+
+     http://localhost:8000
+
+   ODER:
+
+     http://127.0.0.1:8000
+
+
+SCHRITT 6: Archive durchsuchen
+   ✅ Du solltest jetzt die Werke-Liste sehen
+   ✅ Suchfunktion testen
+   ✅ Filter ausprobieren
+   ✅ Auf ein Werk klicken → PDF sollte angezeigt werden
+
+
+SCHRITT 7: Server stoppen (wenn fertig)
+   - Zurück zum PowerShell-Fenster (schwarzes Fenster)
+   - Drücke: Strg+C
+   - Server wird gestoppt
+
+
+FEHLERBEHEBUNG:
+---------------
+
+FEHLER: "ModuleNotFoundError: No module named 'fastapi'"
+LÖSUNG: Python-Pakete nicht installiert! 
+        Führe SCHRITT 3 aus: pip install -r requirements.txt
+
+FEHLER: "Address already in use" oder "Port 8000 bereits belegt"
+LÖSUNG: Server läuft bereits! 
+        Option A: Browser auf http://localhost:8000 öffnen
+        Option B: Anderen Server stoppen (Strg+C im PowerShell-Fenster)
+
+FEHLER: "python: command not found" oder "'python' is not recognized"
+LÖSUNG: Python nicht installiert oder nicht im PATH!
+        1. Download: https://www.python.org/downloads/
+        2. Installation: ✅ "Add Python to PATH" aktivieren!
+        3. PC neu starten
+        4. PowerShell neu öffnen und erneut versuchen
+
+FEHLER: Browser zeigt "Diese Seite kann nicht angezeigt werden"
+LÖSUNG: Server läuft nicht oder falscher Port!
+        1. Prüfe im PowerShell-Fenster ob steht:
+           "Uvicorn running on http://0.0.0.0:8000"
+        2. Falls nicht: Server neu starten (SCHRITT 4)
+        3. Im Browser probieren:
+           - http://localhost:8000
+           - http://127.0.0.1:8000
+
+FEHLER: PDFs werden nicht angezeigt
+LÖSUNG: Archive-Ordner fehlt oder falscher Pfad!
+        Prüfe ob Ordner existiert:
+        dir archive\files
+        
+        Falls nicht vorhanden: Archive-Ordner muss ins Projekt kopiert werden!
+
+FEHLER: Umlaute (ä,ö,ü) werden als � angezeigt
+LÖSUNG: Encoding-Problem!
+        Führe Diagnose-Script aus: diagnose_windows.bat
+        Siehe: WINDOWS_DIAGNOSE_ANLEITUNG.txt
+
+
+NÜTZLICHE BEFEHLE:
+------------------
+
+Server Status prüfen:
+   netstat -ano | findstr :8000
+
+Alle Python-Prozesse beenden:
+   taskkill /F /IM python.exe
+
+Python-Version prüfen:
+   python --version
+
+Installierte Pakete anzeigen:
+   pip list
+
+
+SCHNELLSTART (für erfahrene Benutzer):
+--------------------------------------
+1. cd C:\Users\vogt-\Documents\Git\emanuelvogt
+2. .\run_viewer.bat
+3. Browser → http://localhost:8000
+
+
+AUTOMATISCHER START BEI WINDOWS-START (Optional):
+-------------------------------------------------
+1. Windows-Taste + R drücken
+2. Eingeben: shell:startup
+3. Rechtsklick → Neu → Verknüpfung
+4. Ziel: C:\Users\vogt-\Documents\Git\emanuelvogt\run_viewer.bat
+5. Name: "Archive Viewer"
+6. Fertig stellen
+   → Server startet automatisch beim PC-Start
+
+
+KONTAKT & SUPPORT:
+------------------
+Bei Problemen bitte Screenshots senden von:
+- PowerShell-Fenster mit Fehlermeldung
+- Browser mit Fehlermeldung
+
+E-Mail: nicolas.scharioth@...
+
+
+================================================================================
+VERSION: 1.0 (Februar 2026)
+================================================================================

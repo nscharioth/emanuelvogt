@@ -1,0 +1,78 @@
+================================================================================
+WINDOWS ENCODING DIAGNOSE - SCHRITT-FÜR-SCHRITT ANLEITUNG
+================================================================================
+
+PROBLEM:
+--------
+Umlaute (ä, ö, ü, ß) werden im Archive Viewer nicht korrekt angezeigt.
+
+
+LÖSUNG - DIAGNOSE DURCHFÜHREN:
+-------------------------------
+
+SCHRITT 1: PowerShell öffnen
+   - Windows-Taste drücken
+   - "PowerShell" eingeben
+   - "Windows PowerShell" als Administrator öffnen (Rechtsklick → "Als Administrator ausführen")
+
+
+SCHRITT 2: Zum Projekt-Verzeichnis wechseln
+   Folgenden Befehl eingeben (WICHTIG: Genau so kopieren!):
+
+   cd C:\Users\vogt-\Documents\Git\emanuelvogt
+
+
+SCHRITT 3: Prüfen ob im richtigen Verzeichnis
+   Folgenden Befehl eingeben:
+
+   dir
+
+   Du solltest folgende Ordner/Dateien sehen:
+   - app/
+   - archive/
+   - data/
+   - scripts/
+   - run_viewer.bat
+   - diagnose_windows.bat
+
+
+SCHRITT 4: Diagnose-Script ausführen
+   OPTION A (Einfacher):
+   
+   diagnose_windows.bat
+
+   OPTION B (Falls Batch nicht funktioniert):
+   
+   python scripts\diagnose_encoding_windows.py
+
+
+SCHRITT 5: Output kopieren und senden
+   - Das Script zeigt viele Informationen an
+   - KOMPLETTEN Output markieren (Strg+A)
+   - Kopieren (Strg+C)
+   - In E-Mail einfügen und an Nicolas senden
+
+
+FEHLERBEHEBUNG:
+---------------
+
+FEHLER: "python: can't open file..."
+LÖSUNG: Du bist nicht im richtigen Verzeichnis! 
+        Wiederhole SCHRITT 2 und prüfe mit "dir"
+
+FEHLER: "Database not found"
+LÖSUNG: Prüfe ob Datei existiert mit:
+        dir data\archive.db
+
+FEHLER: "'python' is not recognized"
+LÖSUNG: Python ist nicht installiert oder nicht im PATH.
+        Download: https://www.python.org/downloads/
+        Bei Installation: ✅ "Add Python to PATH" aktivieren!
+
+
+KONTAKT:
+--------
+Bei Problemen Screenshots senden an: nicolas.scharioth@...
+
+
+================================================================================

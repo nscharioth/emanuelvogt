@@ -66,9 +66,21 @@
                                 Noten anzeigen & abspielen
                             </a>
                         </div>
-                        <iframe id="pdfFrame" src="" frameborder="0"></iframe>
-                        <div id="viewerPlaceholder" class="placeholder">
-                            <p>Wählen Sie eine Datei zur Ansicht aus</p>
+                        <div class="pdf-viewer-area">
+                            <div id="pdfRotationWrapper" class="pdf-rotation-wrapper">
+                                <iframe id="pdfFrame" src="" frameborder="0"></iframe>
+                            </div>
+                            <div id="viewerPlaceholder" class="placeholder">
+                                <p>Wählen Sie eine Datei zur Ansicht aus</p>
+                            </div>
+                        </div>
+                        <div id="rotationControls" style="display: none; padding: 10px; background: rgba(0,0,0,0.8); border-top: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; gap: 10px; flex-shrink: 0;">
+                            <span style="font-size: 0.9rem; font-weight: 600; color: #ccc;">PDF Rotation:</span>
+                            <button onclick="rotatePDF(0)" class="rotation-btn" data-rotation="0">0°</button>
+                            <button onclick="rotatePDF(90)" class="rotation-btn" data-rotation="90">90°</button>
+                            <button onclick="rotatePDF(180)" class="rotation-btn" data-rotation="180">180°</button>
+                            <button onclick="rotatePDF(270)" class="rotation-btn" data-rotation="270">270°</button>
+                            <button onclick="saveRotation()" class="save-rotation-btn" style="margin-left: auto; padding: 8px 16px; background: #4a90e2; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.85rem; font-weight: 600;">💾 Speichern</button>
                         </div>
                     </div>
                 </div>

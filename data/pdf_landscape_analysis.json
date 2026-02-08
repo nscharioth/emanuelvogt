@@ -1,0 +1,273 @@
+{
+  "total_files": 2655,
+  "analyzed": 2654,
+  "errors": 1,
+  "likely_rotated": [
+    {
+      "file_id": 179,
+      "work_number": "1118",
+      "title": "Der Punkt hinter der Note",
+      "filepath": "files/Werke/Werke 1101 - 1120/1118 - Der Punkt hinter der Note.pdf",
+      "dimensions": "600x431",
+      "aspect_ratio": "1.39",
+      "pdf_rotation": 0,
+      "orientation": "landscape"
+    },
+    {
+      "file_id": 262,
+      "work_number": "1168",
+      "title": "Selig sind die Toten",
+      "filepath": "files/Werke/Werke 1161 - 1180/1168 - Selig sind die Toten.pdf",
+      "dimensions": "611x484",
+      "aspect_ratio": "1.26",
+      "pdf_rotation": 0,
+      "orientation": "landscape"
+    },
+    {
+      "file_id": 268,
+      "work_number": "1165",
+      "title": "Das alte Jahr geht nun zur Ruh",
+      "filepath": "files/Werke/Werke 1161 - 1180/1165 - Das alte Jahr geht nun zur Ruh.pdf",
+      "dimensions": "572x482",
+      "aspect_ratio": "1.19",
+      "pdf_rotation": 0,
+      "orientation": "landscape"
+    },
+    {
+      "file_id": 495,
+      "work_number": "1361",
+      "title": "Mondschein, Sopran, Alt, Bass",
+      "filepath": "files/Werke/Werke 1361 - 1380/1361 - Mondschein, Sopran, Alt, Bass.pdf",
+      "dimensions": "604x307",
+      "aspect_ratio": "1.97",
+      "pdf_rotation": 0,
+      "orientation": "landscape"
+    },
+    {
+      "file_id": 817,
+      "work_number": "1619",
+      "title": "Vor ihren Kindern...",
+      "filepath": "files/Werke/Werke 1601 - 1620/1619 - Vor ihren Kindern....pdf",
+      "dimensions": "590x421",
+      "aspect_ratio": "1.40",
+      "pdf_rotation": 0,
+      "orientation": "landscape"
+    },
+    {
+      "file_id": 818,
+      "work_number": "1620",
+      "title": "Wäre der Herr...",
+      "filepath": "files/Werke/Werke 1601 - 1620/1620 - Wäre der Herr....pdf",
+      "dimensions": "601x422",
+      "aspect_ratio": "1.42",
+      "pdf_rotation": 0,
+      "orientation": "landscape"
+    },
+    {
+      "file_id": 850,
+      "work_number": "1626",
+      "title": "Herr mein Gott..., Betgemeinde heilge dich",
+      "filepath": "files/Werke/Werke 1621 - 1640/1626, 1627 - Herr mein Gott..., Betgemeinde heilge dich.pdf",
+      "dimensions": "598x428",
+      "aspect_ratio": "1.40",
+      "pdf_rotation": 0,
+      "orientation": "landscape"
+    },
+    {
+      "file_id": 851,
+      "work_number": "1627",
+      "title": "Herr mein Gott..., Betgemeinde heilge dich",
+      "filepath": "files/Werke/Werke 1621 - 1640/1626, 1627 - Herr mein Gott..., Betgemeinde heilge dich.pdf",
+      "dimensions": "598x428",
+      "aspect_ratio": "1.40",
+      "pdf_rotation": 0,
+      "orientation": "landscape"
+    },
+    {
+      "file_id": 854,
+      "work_number": "1621",
+      "title": "Ein reines Herz",
+      "filepath": "files/Werke/Werke 1621 - 1640/1621 - Ein reines Herz.pdf",
+      "dimensions": "602x422",
+      "aspect_ratio": "1.43",
+      "pdf_rotation": 0,
+      "orientation": "landscape"
+    },
+    {
+      "file_id": 856,
+      "work_number": "1625",
+      "title": "Nun jauchzet dem Herrn",
+      "filepath": "files/Werke/Werke 1621 - 1640/1625 - Nun jauchzet dem Herrn - Seite 2.pdf",
+      "dimensions": "598x422",
+      "aspect_ratio": "1.42",
+      "pdf_rotation": 0,
+      "orientation": "landscape"
+    },
+    {
+      "file_id": 865,
+      "work_number": "1625",
+      "title": "Nun jauchzet dem Herrn",
+      "filepath": "files/Werke/Werke 1621 - 1640/1624, 1625 - Nun lob, mein Seel..., Nun jauchzet dem Herrn.pdf",
+      "dimensions": "602x425",
+      "aspect_ratio": "1.42",
+      "pdf_rotation": 0,
+      "orientation": "landscape"
+    },
+    {
+      "file_id": 857,
+      "work_number": "1622",
+      "title": "Straf mich nicht, So Lob und Ehr",
+      "filepath": "files/Werke/Werke 1621 - 1640/1622, 1623 - Straf mich nicht, So Lob und Ehr.pdf",
+      "dimensions": "600x422",
+      "aspect_ratio": "1.42",
+      "pdf_rotation": 0,
+      "orientation": "landscape"
+    },
+    {
+      "file_id": 858,
+      "work_number": "1623",
+      "title": "Straf mich nicht, So Lob und Ehr",
+      "filepath": "files/Werke/Werke 1621 - 1640/1622, 1623 - Straf mich nicht, So Lob und Ehr.pdf",
+      "dimensions": "600x422",
+      "aspect_ratio": "1.42",
+      "pdf_rotation": 0,
+      "orientation": "landscape"
+    },
+    {
+      "file_id": 864,
+      "work_number": "1624",
+      "title": "Nun lob, mein Seel..., Nun jauchzet dem Herrn",
+      "filepath": "files/Werke/Werke 1621 - 1640/1624, 1625 - Nun lob, mein Seel..., Nun jauchzet dem Herrn.pdf",
+      "dimensions": "602x425",
+      "aspect_ratio": "1.42",
+      "pdf_rotation": 0,
+      "orientation": "landscape"
+    },
+    {
+      "file_id": 1158,
+      "work_number": "1890",
+      "title": "Hochgelobt sei Gott...",
+      "filepath": "files/Werke/Werke 1881 - 1900/1890 - Hochgelobt sei Gott....pdf",
+      "dimensions": "594x485",
+      "aspect_ratio": "1.23",
+      "pdf_rotation": 0,
+      "orientation": "landscape"
+    },
+    {
+      "file_id": 1172,
+      "work_number": "1889",
+      "title": "Schaffe in mir...",
+      "filepath": "files/Werke/Werke 1881 - 1900/1889 - Schaffe in mir....pdf",
+      "dimensions": "610x486",
+      "aspect_ratio": "1.26",
+      "pdf_rotation": 0,
+      "orientation": "landscape"
+    },
+    {
+      "file_id": 2067,
+      "work_number": "635a",
+      "title": "Präludium und Fugata in D-Dur",
+      "filepath": "files/Werke/Werke 621 bis 640/635a - Präludium und Fugata in D-Dur.pdf",
+      "dimensions": "842x595",
+      "aspect_ratio": "1.41",
+      "pdf_rotation": 0,
+      "orientation": "landscape"
+    },
+    {
+      "file_id": 2111,
+      "work_number": "641",
+      "title": "Präludium, Aria und Fughetta in e-moll",
+      "filepath": "files/Werke/Werke 641 bis  660/641 - Fughetta.pdf",
+      "dimensions": "846x598",
+      "aspect_ratio": "1.41",
+      "pdf_rotation": 0,
+      "orientation": "landscape"
+    },
+    {
+      "file_id": 2090,
+      "work_number": "652",
+      "title": "Präludium post festum",
+      "filepath": "files/Werke/Werke 641 bis  660/652 - Präludium post festum.pdf",
+      "dimensions": "842x595",
+      "aspect_ratio": "1.41",
+      "pdf_rotation": 0,
+      "orientation": "landscape"
+    },
+    {
+      "file_id": 2103,
+      "work_number": "648",
+      "title": "Präludium und Fugato in D-Dur",
+      "filepath": "files/Werke/Werke 641 bis  660/648 - Präludium und Fugato in D-Dur.pdf",
+      "dimensions": "842x595",
+      "aspect_ratio": "1.41",
+      "pdf_rotation": 0,
+      "orientation": "landscape"
+    },
+    {
+      "file_id": 2169,
+      "work_number": "729",
+      "title": "Weihnachtsfanfare",
+      "filepath": "files/Werke/Werke 704 bis 720/729 - Weihnachtsfanfare.pdf",
+      "dimensions": "849x582",
+      "aspect_ratio": "1.46",
+      "pdf_rotation": 0,
+      "orientation": "landscape"
+    },
+    {
+      "file_id": 2201,
+      "work_number": "729",
+      "title": "Weihnachtsfanfare",
+      "filepath": "files/Werke/Werke 721 bis 740/729 - Weihnachtsfanfare.pdf",
+      "dimensions": "849x582",
+      "aspect_ratio": "1.46",
+      "pdf_rotation": 0,
+      "orientation": "landscape"
+    },
+    {
+      "file_id": 2415,
+      "work_number": "891",
+      "title": "Präludium D-Dur 2",
+      "filepath": "files/Werke/Werke 881 bis 900/891 - Präludium D-Dur 2.pdf",
+      "dimensions": "839x593",
+      "aspect_ratio": "1.41",
+      "pdf_rotation": 0,
+      "orientation": "landscape"
+    },
+    {
+      "file_id": 2446,
+      "work_number": "937",
+      "title": "Der Hund",
+      "filepath": "files/Werke/Werke 921 - 940/937 - Der Hund.pdf",
+      "dimensions": "853x612",
+      "aspect_ratio": "1.39",
+      "pdf_rotation": 0,
+      "orientation": "landscape"
+    },
+    {
+      "file_id": 2463,
+      "work_number": "942",
+      "title": "Ausklang",
+      "filepath": "files/Werke/Werke 941 bis 960/942 - Ausklang.pdf",
+      "dimensions": "853x612",
+      "aspect_ratio": "1.39",
+      "pdf_rotation": 0,
+      "orientation": "landscape"
+    },
+    {
+      "file_id": 252,
+      "work_number": "1550",
+      "title": "Werk 1550",
+      "filepath": "files/Werke/Werke 1141 - 1160/Image_001.pdf",
+      "dimensions": "572x483",
+      "aspect_ratio": "1.18",
+      "pdf_rotation": 0,
+      "orientation": "landscape"
+    }
+  ],
+  "orientation_stats": {
+    "portrait": 2622,
+    "square": 6,
+    "landscape": 26
+  },
+  "error_files": []
+}

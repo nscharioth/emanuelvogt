@@ -9,9 +9,20 @@ import sqlite3
 import sys
 import locale
 from pathlib import Path
+import os
 
-BASE_DIR = Path(__file__).parent.parent
-DB_PATH = BASE_DIR / "data/archive.db"
+# Determine base directory - works from any location
+SCRIPT_DIR = Path(__file__).resolve().parent
+BASE_DIR = SCRIPT_DIR.parent
+DB_PATH = BASE_DIR / "data" / "archive.db"
+
+# Verify database exists
+if not DB_PATH.exists():
+    print(f"ERROR: Database not found at: {DB_PATH}")
+    print(f"Current working directory: {os.getcwd()}")
+    print(f"Script directory: {SCRIPT_DIR}")
+    print(f"Base directory: {BASE_DIR}")
+    sys.exit(1)
 
 def print_system_info():
     """Print system encoding information."""

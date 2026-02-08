@@ -1,4 +1,6 @@
 let allWorks = [];
+let currentFileId = null;
+let currentRotation = 0;
 const searchInput = document.getElementById('searchInput');
 const genreFilter = document.getElementById('genreFilter');
 const instrumentationFilter = document.getElementById('instrumentationFilter');
@@ -57,7 +59,7 @@ async function openWorkDetail(workId) {
 
     const fileList = document.getElementById('fileList');
     fileList.innerHTML = work.files.map(file => `
-        <div class="file-item" onclick="loadPDF(${file.id}, this)">
+        <div class="file-item" onclick="loadPDF(${file.id}, ${file.rotation || 0}, this)">
             <p>${file.filename}</p>
             <small>${(file.size / 1024 / 1024).toFixed(2)} MB</small>
         </div>
@@ -82,16 +84,28 @@ async function openWorkDetail(workId) {
 
     // Auto-load if only one file
     if (work.files.length === 1) {
-        loadPDF(work.files[0].id, fileList.firstElementChild);
+        loadPDF(work.files[0].id, work.files[0].rotation || 0, fileList.firstElementChild);
     }
 }
 
-function loadPDF(fileId, element) {
+function loadPDF(fileId, rotation, element) {
+    currentFileId = fileId;
+    currentRotation = rotation;
+
     // UI Update
     document.querySelectorAll('.file-item').forEach(i => i.classList.remove('active'));
     element.classList.add('active');
 
-    // Load iframe
+    // Show rotation controls
+    const rotationControls = document.getElementById('rotationControls');
+    rotationControls.style.display = 'flex';
+
+    // Update rotation button states
+    document.querySelectorAll('.rotation-btn').forEach(btn => {
+        btn.classList.toggle('active', parseInt(btn.dataset.rotation) === rotation);
+    });
+
+    // Load iframe - backend already applies rotation
     const pdfFrame = document.getElementById('pdfFrame');
     const placeholder = document.getElementById('viewerPlaceholder');
 
@@ -100,9 +114,65 @@ function loadPDF(fileId, element) {
     placeholder.style.display = 'none';
 }
 
+function rotatePDF(degrees) {
+    if (!currentFileId) return;
+    
+    currentRotation = degrees;
+    
+    // Update button states
+    document.querySelectorAll('.rotation-btn').forEach(btn => {
+        btn.classList.toggle('active', parseInt(btn.dataset.rotation) === degrees);
+    });
+
+    // Apply CSS rotation immediately (temporary until saved)
+    const wrapper = document.getElementById('pdfRotationWrapper');
+    wrapper.style.transform = `rotate(${degrees}deg)`;
+}
+
+async function saveRotation() {
+    if (!currentFileId) return;
+
+    try {
+        const res = await fetch(`/api/pdf-rotation/${currentFileId}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ rotation: currentRotation })
+        });
+
+        if (res.ok) {
+            // Remove CSS rotation and reload PDF from backend (with rotation baked in)
+            const wrapper = document.getElementById('pdfRotationWrapper');
+            wrapper.style.transform = '';
+            
+            const pdfFrame = document.getElementById('pdfFrame');
+            // Force reload with timestamp to bypass cache
+            pdfFrame.src = `/pdf/${currentFileId}?t=${Date.now()}#toolbar=0&navpanes=0&scrollbar=0`;
+            
+            // Visual feedback
+            const saveBtn = document.querySelector('.save-rotation-btn');
+            const originalText = saveBtn.textContent;
+            saveBtn.textContent = '✓ Gespeichert';
+            saveBtn.style.background = '#22c55e';
+            
+            setTimeout(() => {
+                saveBtn.textContent = originalText;
+                saveBtn.style.background = '#4a90e2';
+            }, 2000);
+        } else {
+            alert('Fehler beim Speichern der Rotation');
+        }
+    } catch (err) {
+        console.error('Save rotation error:', err);
+        alert('Fehler beim Speichern der Rotation');
+    }
+}
+
 function closeViewer() {
     viewerModal.style.display = 'none';
     document.getElementById('pdfFrame').src = '';
+    document.getElementById('rotationControls').style.display = 'none';
+    currentFileId = null;
+    currentRotation = 0;
 }
 
 // Event Listeners

@@ -5,6 +5,8 @@ from pathlib import Path
 import sqlite3
 import os
 import re
+from PyPDF2 import PdfReader, PdfWriter
+import io
 
 app = FastAPI()
 
@@ -96,8 +98,14 @@ async def get_work_detail(work_id: int):
     if not work_row:
         raise HTTPException(status_code=404, detail="Work not found")
     
-    # Get Files
-    c.execute("SELECT id, filename, filepath, file_type, size_bytes FROM files WHERE work_id = ?", (work_id,))
+    # Get Files with rotation info
+    c.execute("""
+        SELECT f.id, f.filename, f.filepath, f.file_type, f.size_bytes, 
+               COALESCE(r.rotation, 0) as rotation
+        FROM files f
+        LEFT JOIN pdf_rotations r ON f.id = r.file_id
+        WHERE f.work_id = ?
+    """, (work_id,))
     file_rows = c.fetchall()
     
     files = []
@@ -107,7 +115,8 @@ async def get_work_detail(work_id: int):
             "filename": f[1],
             "filepath": f[2],
             "type": f[3],
-            "size": f[4]
+            "size": f[4],
+            "rotation": f[5] if len(f) > 5 else 0
         })
         
     conn.close()
@@ -126,8 +135,16 @@ async def get_pdf(file_id: int):
     conn = sqlite3.connect(DB_PATH)
     conn.text_factory = lambda x: x.decode('utf-8', errors='replace')
     c = conn.cursor()
+    
+    # Get file path
     c.execute("SELECT filepath FROM files WHERE id = ?", (file_id,))
     row = c.fetchone()
+    
+    # Get saved rotation
+    c.execute("SELECT rotation FROM pdf_rotations WHERE file_id = ?", (file_id,))
+    rotation_row = c.fetchone()
+    rotation = rotation_row[0] if rotation_row else 0
+    
     conn.close()
     
     if not row:
@@ -135,10 +152,30 @@ async def get_pdf(file_id: int):
     
     file_path = ARCHIVE_DIR / row[0]
     if not file_path.exists():
-        # Fallback for folder location
         raise HTTPException(status_code=404, detail=f"File not found on disk: {row[0]}")
+    
+    # If no rotation, serve file directly
+    if rotation == 0:
+        return FileResponse(file_path, media_type="application/pdf")
+    
+    # Apply rotation using PyPDF2
+    try:
+        reader = PdfReader(str(file_path))
+        writer = PdfWriter()
         
-    return FileResponse(file_path, media_type="application/pdf")
+        for page in reader.pages:
+            page.rotate(rotation)
+            writer.add_page(page)
+        
+        # Write to memory buffer
+        buffer = io.BytesIO()
+        writer.write(buffer)
+        buffer.seek(0)
+        
+        return Response(content=buffer.getvalue(), media_type="application/pdf")
+    except Exception as e:
+        # Fallback to original file if rotation fails
+        return FileResponse(file_path, media_type="application/pdf")
 
 @app.get("/api/genres")
 async def get_genres():
@@ -216,6 +253,44 @@ async def get_musicxml_file(filename: str):
         content = f.read()
     
     return Response(content=content, media_type="application/vnd.recordare.musicxml+xml")
+
+@app.get("/api/pdf-rotation/{file_id}")
+async def get_pdf_rotation(file_id: int):
+    """Get the saved rotation for a PDF file."""
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute("SELECT rotation FROM pdf_rotations WHERE file_id = ?", (file_id,))
+    result = c.fetchone()
+    conn.close()
+    
+    if result:
+        return {"file_id": file_id, "rotation": result[0]}
+    else:
+        return {"file_id": file_id, "rotation": 0}
+
+@app.post("/api/pdf-rotation/{file_id}")
+async def set_pdf_rotation(file_id: int, request: Request):
+    """Save the rotation for a PDF file."""
+    data = await request.json()
+    rotation = data.get("rotation", 0)
+    
+    # Validate rotation (must be 0, 90, 180, or 270)
+    if rotation not in [0, 90, 180, 270]:
+        raise HTTPException(status_code=400, detail="Rotation must be 0, 90, 180, or 270")
+    
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    
+    # Insert or update
+    c.execute("""
+        INSERT OR REPLACE INTO pdf_rotations (file_id, rotation, updated_at)
+        VALUES (?, ?, CURRENT_TIMESTAMP)
+    """, (file_id, rotation))
+    
+    conn.commit()
+    conn.close()
+    
+    return {"file_id": file_id, "rotation": rotation, "saved": True}
 
 if __name__ == "__main__":
     import uvicorn

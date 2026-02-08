@@ -79,6 +79,34 @@ body {
     transition: all 0.3s ease;
 }
 
+/* Rotation Controls */
+.rotation-btn {
+    padding: 6px 12px;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 6px;
+    color: #333;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.rotation-btn:hover {
+    background: rgba(74, 144, 226, 0.2);
+    border-color: #4a90e2;
+}
+
+.rotation-btn.active {
+    background: #4a90e2;
+    color: white;
+    border-color: #4a90e2;
+}
+
+.save-rotation-btn:hover {
+    background: #357abd;
+}
+
 #searchInput:focus {
     outline: none;
     border-color: var(--accent-color);
@@ -255,9 +283,32 @@ body {
     flex-grow: 1;
     position: relative;
     background: #252a33;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.pdf-viewer-area {
+    flex-grow: 1;
+    position: relative;
+    overflow: hidden;
+    min-height: 0;
+}
+
+.pdf-rotation-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s ease;
 }
 
 #pdfFrame {
+    border: none;
     width: 100%;
     height: 100%;
 }

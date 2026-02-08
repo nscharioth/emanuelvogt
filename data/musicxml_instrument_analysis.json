@@ -1,0 +1,76 @@
+{
+  "total_files": 4,
+  "total_instruments": 6,
+  "instrument_names": {
+    "Klavier": 1,
+    "Orgel": 1,
+    "Sopranblockflöte": 1,
+    "Altblockflöte": 1,
+    "S.": 1
+  },
+  "normalized_names": {
+    "klavier": 1,
+    "orgel": 1,
+    "Unknown": 1,
+    "sopranblockflöte": 1,
+    "altblockflöte": 1,
+    "sopran": 1
+  },
+  "midi_programs": {
+    "2": 1,
+    "20": 2,
+    "75": 3
+  },
+  "work_instruments": {
+    "12d - Gänseblümchen": [
+      {
+        "part_id": "P1",
+        "part_name": "Klavier",
+        "instrument_name": "Midi_2",
+        "midi_program": 2,
+        "midi_channel": 1
+      }
+    ],
+    "1872 - Begleitsatz zu So nimm denn meine Hände": [
+      {
+        "part_id": "P1",
+        "part_name": "Orgel",
+        "instrument_name": "Midi_20",
+        "midi_program": 20,
+        "midi_channel": 1
+      },
+      {
+        "part_id": "P2",
+        "part_name": null,
+        "instrument_name": "Midi_20",
+        "midi_program": 20,
+        "midi_channel": 2
+      }
+    ],
+    "461 - Pfingsttrio": [
+      {
+        "part_id": "P1",
+        "part_name": "Sopranblockflöte",
+        "instrument_name": "Midi_75",
+        "midi_program": 75,
+        "midi_channel": 1
+      },
+      {
+        "part_id": "P2",
+        "part_name": "Altblockflöte",
+        "instrument_name": "Midi_75",
+        "midi_program": 75,
+        "midi_channel": 2
+      }
+    ],
+    "9 - Weihnachtslied für Johanna": [
+      {
+        "part_id": "P1",
+        "part_name": "S.",
+        "instrument_name": "Midi_75",
+        "midi_program": 75,
+        "midi_channel": 1
+      }
+    ]
+  }
+}
