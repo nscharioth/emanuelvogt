@@ -4,6 +4,7 @@
 *.xlsx
 /archive/files/
 /archive/notes/
+/archive/flat/
 
 
 # Python virtual environment
