@@ -1,10 +1,10 @@
 # Archive files (too large for git)
-*.pdf
-*.jpg
-*.png
 *.docx
 *.doc
 *.xlsx
+/archive/files/
+/archive/notes/
+
 
 # Python virtual environment
 venv/
