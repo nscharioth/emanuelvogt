@@ -1,0 +1,854 @@
+<?php
+/**
+ * Template Name: MusicXML Player
+ */
+get_header(); ?>
+<div class="app-container" style="padding-top: 2rem;">
+    <script src="https://cdn.jsdelivr.net/npm/opensheetmusicdisplay@1.8.5/build/opensheetmusicdisplay.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tone@14.8.49/build/Tone.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e8e8e8;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: #fff;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #a8a8a8;
+            font-size: 1.1rem;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .back-link:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .file-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .file-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .file-card:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .file-card.active {
+            background: rgba(74, 144, 226, 0.2);
+            border-color: #4a90e2;
+        }
+
+        .work-number {
+            display: inline-block;
+            background: #4a90e2;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .file-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 5px;
+        }
+
+        .file-name {
+            font-size: 0.85rem;
+            color: #a8a8a8;
+        }
+
+        .player-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            display: none;
+        }
+
+        .player-container.active {
+            display: block;
+        }
+
+        .player-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .player-info h2 {
+            font-family: 'Playfair Display', serif;
+            color: #1a1a2e;
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+        }
+
+        .player-info p {
+            color: #666;
+            font-size: 1rem;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 8px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .btn-primary {
+            background: #4a90e2;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #357abd;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .tempo-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tempo-control label {
+            color: #333;
+            font-weight: 600;
+        }
+
+        .tempo-control input {
+            width: 100px;
+        }
+
+        .tempo-value {
+            color: #4a90e2;
+            font-weight: 600;
+            min-width: 70px;
+        }
+
+        #sheetMusicContainer {
+            overflow-x: auto;
+            overflow-y: auto;
+            max-height: 70vh;
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        .status {
+            padding: 10px 20px;
+            background: rgba(74, 144, 226, 0.1);
+            border-left: 4px solid #4a90e2;
+            border-radius: 4px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .file-list {
+                grid-template-columns: 1fr;
+            }
+
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+    <div class="container">
+        <a href="/" class="back-link">← Zurück zum Archiv</a>
+        
+        <header>
+            <h1>MusicXML Player</h1>
+            <p class="subtitle">Interaktive Notenansicht mit Abspielfunktion</p>
+        </header>
+
+        <div class="file-list" id="fileList">
+            <div class="loading">Lade MusicXML-Dateien...</div>
+        </div>
+
+        <div class="player-container" id="playerContainer">
+            <div class="player-header">
+                <div class="player-info">
+                    <h2 id="playerTitle">Titel</h2>
+                    <p id="playerSubtitle">Werk Nr. X</p>
+                </div>
+            </div>
+
+            <div class="status" id="statusMessage" style="display: none;">
+                Lade Noten...
+            </div>
+
+            <div class="controls">
+                <button class="btn btn-primary" id="playBtn" disabled>
+                    ▶ Abspielen
+                </button>
+                <button class="btn btn-secondary" id="stopBtn" disabled>
+                    ⏹ Stoppen
+                </button>
+                <div class="tempo-control">
+                    <label for="tempoSlider">Tempo:</label>
+                    <input type="range" id="tempoSlider" min="40" max="200" value="120" step="5">
+                    <span class="tempo-value" id="tempoValue">120 BPM</span>
+                </div>
+            </div>
+
+            <div id="sheetMusicContainer"></div>
+        </div>
+    </div>
+
+    <script>
+        // Suppress Chrome extension errors
+        window.addEventListener('error', function(e) {
+            if (e.message && (e.message.includes('chrome-extension') || e.message.includes('runtime.lastError'))) {
+                e.preventDefault();
+                return true;
+            }
+        }, true);
+        
+        let osmd = null;
+        let currentFile = null;
+        let isPlaying = false;
+        let playbackTimer = null;
+        let synth = null;
+        let currentNoteIndex = 0;
+        let allNotes = [];
+
+        const fileList = document.getElementById('fileList');
+        const playerContainer = document.getElementById('playerContainer');
+        const sheetMusicContainer = document.getElementById('sheetMusicContainer');
+        const playBtn = document.getElementById('playBtn');
+        const stopBtn = document.getElementById('stopBtn');
+        const tempoSlider = document.getElementById('tempoSlider');
+        const tempoValue = document.getElementById('tempoValue');
+        const statusMessage = document.getElementById('statusMessage');
+
+        // Initialize
+        async function init() {
+            await loadFileList();
+            
+            // Check if a specific work was requested via URL parameter
+            const urlParams = new URLSearchParams(window.location.search);
+            const workNumber = urlParams.get('work');
+            
+            if (workNumber) {
+                // Auto-load the requested work
+                setTimeout(() => {
+                    const cards = document.querySelectorAll('.file-card');
+                    cards.forEach(card => {
+                        const cardWorkNum = card.getAttribute('data-work-number');
+                        if (cardWorkNum === workNumber) {
+                            card.click();
+                            card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                        }
+                    });
+                }, 500);
+            }
+        }
+
+        async function loadFileList() {
+            try {
+                const response = await fetch('/wp-json/evogt/v1/musicxml/list');
+                const files = await response.json();
+                
+                if (files.length === 0) {
+                    fileList.innerHTML = '<div class="loading">Keine MusicXML-Dateien gefunden</div>';
+                    return;
+                }
+
+                fileList.innerHTML = files.map(file => `
+                    <div class="file-card" data-work-number="${file.work_number || ''}" onclick="loadMusicXML('${file.filename}', '${file.work_number || ''}', '${file.work_title || file.filename}')">
+                        ${file.work_number ? `<span class="work-number">Werk ${file.work_number}</span>` : ''}
+                        <div class="file-title">${file.work_title || file.filename}</div>
+                        <div class="file-name">${file.filename}</div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Error loading file list:', error);
+                fileList.innerHTML = '<div class="loading">Fehler beim Laden der Dateien</div>';
+            }
+        }
+
+        async function loadMusicXML(filename, workNumber, title) {
+            currentFile = filename;
+            
+            // Reset notes array when loading new file
+            allNotes = [];
+            currentNoteIndex = 0;
+            
+            // Stop any playing music
+            if (isPlaying) {
+                stopMusic();
+            }
+            
+            // Update UI
+            document.querySelectorAll('.file-card').forEach(card => card.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            
+            document.getElementById('playerTitle').textContent = title;
+            document.getElementById('playerSubtitle').textContent = workNumber ? `Werk Nr. ${workNumber}` : filename;
+            
+            playerContainer.classList.add('active');
+            statusMessage.style.display = 'block';
+            statusMessage.textContent = 'Lade Noten...';
+            
+            playBtn.disabled = true;
+            stopBtn.disabled = true;
+            sheetMusicContainer.innerHTML = '';
+
+            try {
+                // Initialize OSMD if needed
+                if (!osmd) {
+                    osmd = new opensheetmusicdisplay.OpenSheetMusicDisplay(sheetMusicContainer, {
+                        autoResize: true,
+                        backend: "svg",
+                        drawTitle: false,
+                        drawSubtitle: false,
+                        drawComposer: false,
+                        drawLyricist: false,
+                        cursorsOptions: [
+                            { type: 0, color: "#4a90e2", alpha: 0.3, follow: true }
+                        ]
+                    });
+                }
+
+                // Load MusicXML directly from WP uploads
+                const response = await fetch(`/wp-content/uploads/archive/musicxml/${encodeURIComponent(filename)}`);
+                const xmlText = await response.text();
+                
+                await osmd.load(xmlText);
+                await osmd.render();
+                
+                // Extract notes for playback
+                allNotes = extractNotesFromScore();
+                
+                statusMessage.style.display = 'block';
+                statusMessage.innerHTML = `<strong>✓ Noten geladen!</strong> ${allNotes.length} spielbare Noten gefunden. Klicken Sie auf "Abspielen".`;
+                statusMessage.style.background = 'rgba(40, 167, 69, 0.1)';
+                statusMessage.style.borderLeftColor = '#28a745';
+                
+                setTimeout(() => {
+                    statusMessage.style.display = 'none';
+                }, 3000);
+                
+                playBtn.disabled = false;
+                stopBtn.disabled = false;
+
+                console.log('MusicXML loaded successfully');
+            } catch (error) {
+                console.error('Error loading MusicXML:', error);
+                statusMessage.textContent = `Fehler beim Laden: ${error.message}`;
+                statusMessage.style.background = 'rgba(220, 53, 69, 0.1)';
+                statusMessage.style.borderLeftColor = '#dc3545';
+            }
+        }
+
+        // Playback implementation with Tone.js
+        let currentTime = 0;
+        let startTime = 0;
+        let pauseTime = 0;
+        let beatCount = 0;
+        let totalBeats = 0;
+
+        function initSynth() {
+            if (!synth) {
+                console.log('🎹 Creating synth...');
+                
+                // Get work_id to determine instrument type
+                const urlParams = new URLSearchParams(window.location.search);
+                const workId = urlParams.get('work_id');
+                
+                let synthSettings;
+                let instrumentName = 'Piano';
+                
+                // Determine instrument based on work_id
+                if (workId) {
+                    if (workId.includes('1872')) {
+                        // Orgel - sustained sound
+                        instrumentName = 'Organ';
+                        synthSettings = {
+                            oscillator: { type: 'square8' },
+                            envelope: {
+                                attack: 0.1,
+                                decay: 0.0,
+                                sustain: 1.0,
+                                release: 1.5
+                            },
+                            volume: -3
+                        };
+                    } else if (workId.includes('461') || workId.includes('463')) {
+                        // Flöte - breathy
+                        instrumentName = 'Flute';
+                        synthSettings = {
+                            oscillator: { type: 'sine' },
+                            envelope: {
+                                attack: 0.2,
+                                decay: 0.2,
+                                sustain: 0.6,
+                                release: 0.5
+                            },
+                            volume: -5
+                        };
+                    } else {
+                        // Klavier - percussive with long release
+                        instrumentName = 'Piano';
+                        synthSettings = {
+                            oscillator: { type: 'triangle8' },
+                            envelope: {
+                                attack: 0.001,
+                                decay: 0.6,
+                                sustain: 0.05,
+                                release: 2.0
+                            },
+                            volume: 0
+                        };
+                    }
+                } else {
+                    // Default: Piano
+                    synthSettings = {
+                        oscillator: { type: 'triangle8' },
+                        envelope: {
+                            attack: 0.001,
+                            decay: 0.6,
+                            sustain: 0.05,
+                            release: 2.0
+                        },
+                        volume: 0
+                    };
+                }
+                
+                synth = new Tone.PolySynth(Tone.Synth, synthSettings).toDestination();
+                console.log(`✅ Created ${instrumentName} synth with settings:`, synthSettings);
+                
+                Tone.Transport.bpm.value = 120;
+            }
+            return synth;
+        }
+
+        function extractNotesFromScore() {
+            if (!osmd || !osmd.sheet) return [];
+            
+            const notes = [];
+            const sheet = osmd.sheet;
+            
+            try {
+                console.log('Starting note extraction...');
+                console.log('Sheet object:', sheet);
+                
+                // Try different approaches to extract notes
+                
+                // Approach 1: Via GraphicalMusicSheet
+                if (osmd.graphic && osmd.graphic.MusicPages) {
+                    console.log('Using graphic pages approach');
+                    
+                    for (const page of osmd.graphic.MusicPages) {
+                        for (const system of page.MusicSystems) {
+                            for (const staff of system.StaffLines) {
+                                for (const measure of staff.Measures) {
+                                    for (const staffEntry of measure.staffEntries) {
+                                        if (staffEntry.graphicalVoiceEntries) {
+                                            for (const voiceEntry of staffEntry.graphicalVoiceEntries) {
+                                                if (voiceEntry.notes) {
+                                                    for (const graphicalNote of voiceEntry.notes) {
+                                                        const sourceNote = graphicalNote.sourceNote;
+                                                        
+                                                        if (sourceNote && !sourceNote.isRest() && sourceNote.Pitch) {
+                                                            // Get absolute timestamp from measure start
+                                                            const measureStartTime = measure.parentSourceMeasure ? 
+                                                                measure.parentSourceMeasure.AbsoluteTimestamp.RealValue : 0;
+                                                            const relativeTime = staffEntry.relInMeasureTimestamp ? 
+                                                                staffEntry.relInMeasureTimestamp.RealValue : 0;
+                                                            const absoluteTime = measureStartTime + relativeTime;
+                                                            
+                                                            const pitch = sourceNote.Pitch;
+                                                            let midiNote = null;
+                                                            let noteName = 'Unknown';
+                                                            
+                                                            // Try method 1: getHalfTone() if available
+                                                            if (typeof pitch.getHalfTone === 'function') {
+                                                                midiNote = pitch.getHalfTone();
+                                                            }
+                                                            // Try method 2: Use properties if available
+                                                            else if (pitch.FundamentalNote !== undefined && pitch.Octave !== undefined) {
+                                                                const fundamentalNote = pitch.FundamentalNote; // 0-6
+                                                                const octave = pitch.Octave;
+                                                                const accidental = pitch.Accidental || 0;
+                                                                
+                                                                // Convert to chromatic note within octave (0-11)
+                                                                const noteInOctave = [0, 2, 4, 5, 7, 9, 11][fundamentalNote] + accidental;
+                                                                midiNote = (octave + 1) * 12 + noteInOctave;
+                                                                noteName = `${['C','D','E','F','G','A','B'][fundamentalNote]}${octave}${accidental === 1 ? '#' : accidental === -1 ? 'b' : ''}`;
+                                                            }
+                                                            
+                                                            // Only add note if we successfully got a MIDI number
+                                                            if (midiNote !== null && !isNaN(midiNote) && midiNote >= 21 && midiNote <= 108) {
+                                                                const duration = sourceNote.Length.RealValue;
+                                                                
+                                                                notes.push({
+                                                                    midi: midiNote,
+                                                                    time: absoluteTime,
+                                                                    duration: duration,
+                                                                    frequency: Tone.Frequency(midiNote, "midi").toFrequency(),
+                                                                    noteName: Tone.Frequency(midiNote, "midi").toNote()
+                                                                });
+                                                            } else {
+                                                                // Debug: log problematic pitch
+                                                                console.warn('Could not extract MIDI note from pitch:', {
+                                                                    fundamentalNote: pitch.FundamentalNote,
+                                                                    octave: pitch.Octave,
+                                                                    accidental: pitch.Accidental,
+                                                                    calculatedMidi: midiNote,
+                                                                    hasMethods: Object.getOwnPropertyNames(Object.getPrototypeOf(pitch))
+                                                                });
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                // Approach 2: Direct from sheet (fallback)
+                if (notes.length === 0 && sheet.Instruments) {
+                    console.log('Using instruments approach');
+                    
+                    for (const instrument of sheet.Instruments) {
+                        for (const voice of instrument.Voices) {
+                            for (const staffEntry of voice.VoiceEntries) {
+                                if (staffEntry.Notes) {
+                                    for (const note of staffEntry.Notes) {
+                                        if (!note.isRest() && note.Pitch) {
+                                            const midiNote = note.Pitch.getHalfTone() + 60;
+                                            const duration = note.Length.RealValue * 2;
+                                            const time = staffEntry.Timestamp.RealValue * 2;
+                                            
+                                            notes.push({
+                                                midi: midiNote,
+                                                time: time,
+                                                duration: duration,
+                                                frequency: Tone.Frequency(midiNote, "midi").toFrequency()
+                                            });
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                // Sort notes by time
+                notes.sort((a, b) => a.time - b.time);
+                console.log(`Extracted ${notes.length} notes from score`);
+                
+                if (notes.length > 0) {
+                    console.log('First 5 notes:', notes.slice(0, 5).map(n => 
+                        `${n.noteName || 'unknown'} (MIDI ${n.midi}, ${n.frequency.toFixed(1)}Hz) at t=${n.time.toFixed(2)}s for ${n.duration.toFixed(2)}s`
+                    ));
+                }
+                
+                return notes;
+                
+            } catch (error) {
+                console.error('Error extracting notes:', error);
+                console.error('Error stack:', error.stack);
+                return [];
+            }
+        }
+
+        function playMusic() {
+            if (isPlaying) {
+                pauseMusic();
+                return;
+            }
+            
+            if (!osmd || !osmd.graphic) {
+                console.warn('OSMD not ready');
+                return;
+            }
+            
+            isPlaying = true;
+            playBtn.textContent = '⏸ Pause';
+            playBtn.disabled = false;
+            stopBtn.disabled = false;
+
+            const tempo = parseInt(tempoSlider.value);
+
+            try {
+                synth = initSynth();
+                
+                // Extract notes if not already done
+                if (allNotes.length === 0) {
+                    allNotes = extractNotesFromScore();
+                    if (allNotes.length === 0) {
+                        throw new Error('Keine Noten gefunden in der MusicXML-Datei');
+                    }
+                }
+                
+                // Set tempo
+                Tone.Transport.bpm.value = tempo;
+                
+                // Start Tone.js context
+                Tone.start().then(() => {
+                    console.log('Tone.js started, scheduling notes...');
+                    
+                    // Get the time range of notes
+                    const firstNoteTime = allNotes[0].time;
+                    const lastNote = allNotes[allNotes.length - 1];
+                    const totalDurationBeats = lastNote.time + lastNote.duration - firstNoteTime;
+                    
+                    // Convert beat duration to seconds based on tempo
+                    // RealValue is in quarter notes, so we need to convert properly
+                    const quarterNotesPerSecond = tempo / 60;
+                    const secondsPerQuarterNote = 60 / tempo;
+                    
+                    console.log(`Playing ${allNotes.length} notes over ${totalDurationBeats.toFixed(2)} quarter notes (${(totalDurationBeats * secondsPerQuarterNote).toFixed(2)}s at ${tempo} BPM)`);
+                    
+                    // Schedule all notes sequentially
+                    const now = Tone.now();
+                    let scheduledCount = 0;
+                    
+                    allNotes.forEach((note, idx) => {
+                        // Calculate when this note should play (in seconds from now)
+                        const relativeTimeBeats = note.time - firstNoteTime;
+                        const scheduleTime = now + (relativeTimeBeats * secondsPerQuarterNote);
+                        
+                        // Calculate how long the note should sound
+                        const noteDurationSeconds = note.duration * secondsPerQuarterNote;
+                        
+                        // Schedule the note
+                        try {
+                            synth.triggerAttackRelease(
+                                note.frequency,
+                                noteDurationSeconds,
+                                scheduleTime,
+                                0.5 // velocity
+                            );
+                            scheduledCount++;
+                            
+                            if (idx < 10) {
+                                console.log(`Note ${idx}: ${note.noteName} @ ${scheduleTime.toFixed(2)}s (rel: ${relativeTimeBeats.toFixed(2)} beats) for ${noteDurationSeconds.toFixed(2)}s`);
+                            }
+                        } catch (error) {
+                            console.error(`Error scheduling note ${idx}:`, error);
+                        }
+                    });
+                    
+                    console.log(`Successfully scheduled ${scheduledCount}/${allNotes.length} notes`);
+                    
+                    const totalDuration = totalDurationBeats * secondsPerQuarterNote * 1000; // in ms
+                    
+                    startTime = Date.now();
+                    
+                    // Animation loop for visual feedback
+                    function animate() {
+                        if (!isPlaying) return;
+                        
+                        const elapsed = Date.now() - startTime;
+                        
+                        if (elapsed >= totalDuration + 1000) { // Add 1s buffer
+                            console.log('Playback complete');
+                            stopMusic();
+                            return;
+                        }
+                        
+                        playbackTimer = requestAnimationFrame(animate);
+                    }
+                    
+                    animate();
+                    
+                    // Show info message
+                    statusMessage.style.display = 'block';
+                    statusMessage.innerHTML = `<strong>▶ Wiedergabe läuft...</strong> ${allNotes.length} Noten werden abgespielt (Tempo: ${tempo} BPM).`;
+                    statusMessage.style.background = 'rgba(74, 144, 226, 0.1)';
+                    statusMessage.style.borderLeftColor = '#4a90e2';
+                });
+                
+            } catch (error) {
+                console.error('Playback error:', error);
+                statusMessage.style.display = 'block';
+                statusMessage.textContent = 'Fehler bei der Wiedergabe: ' + error.message;
+                statusMessage.style.background = 'rgba(220, 53, 69, 0.1)';
+                statusMessage.style.borderLeftColor = '#dc3545';
+                isPlaying = false;
+                playBtn.textContent = '▶ Abspielen';
+            }
+        }
+
+        function pauseMusic() {
+            if (!isPlaying) return;
+            
+            isPlaying = false;
+            playBtn.textContent = '▶ Fortsetzen';
+            
+            // Stop all currently playing notes
+            if (synth) {
+                synth.releaseAll();
+            }
+            
+            // Pause the transport
+            Tone.Transport.pause();
+            
+            if (playbackTimer) {
+                cancelAnimationFrame(playbackTimer);
+                playbackTimer = null;
+            }
+            
+            statusMessage.style.display = 'block';
+            statusMessage.innerHTML = '<strong>⏸ Pausiert</strong>';
+            statusMessage.style.background = 'rgba(255, 193, 7, 0.1)';
+            statusMessage.style.borderLeftColor = '#ffc107';
+        }
+
+        function stopMusic() {
+            isPlaying = false;
+            playBtn.textContent = '▶ Abspielen';
+            currentNoteIndex = 0;
+            
+            // Stop all sounds immediately
+            if (synth) {
+                synth.releaseAll();
+                synth.dispose();
+                synth = null;
+            }
+            
+            // Stop and clear the transport
+            Tone.Transport.stop();
+            Tone.Transport.cancel();
+            
+            if (playbackTimer) {
+                cancelAnimationFrame(playbackTimer);
+                playbackTimer = null;
+            }
+            
+            statusMessage.style.display = 'block';
+            statusMessage.innerHTML = '<strong>⏹ Gestoppt</strong>';
+            statusMessage.style.background = 'rgba(108, 117, 125, 0.1)';
+            statusMessage.style.borderLeftColor = '#6c757d';
+            
+            setTimeout(() => {
+                if (!isPlaying) {
+                    statusMessage.style.display = 'none';
+                }
+            }, 2000);
+        }
+
+        // Event Listeners
+        playBtn.addEventListener('click', () => {
+            if (isPlaying) {
+                pauseMusic();
+            } else {
+                playMusic();
+            }
+        });
+
+        stopBtn.addEventListener('click', stopMusic);
+
+        tempoSlider.addEventListener('input', (e) => {
+            tempoValue.textContent = `${e.target.value} BPM`;
+        });
+
+        // Initialize on load
+        init();
+    </script>
+</div>
+<?php get_footer(); ?>
