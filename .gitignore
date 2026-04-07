@@ -5,6 +5,12 @@
 *.docx
 *.doc
 *.xlsx
+/archive/files/
+/archive/notes/
+/archive/flat/
+/archive/
+
+
 
 # Python virtual environment
 venv/
