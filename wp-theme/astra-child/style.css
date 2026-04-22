@@ -6,20 +6,21 @@ Template: astra
 :root {
     --bg-color: #0d0f12;
     --card-bg: rgba(255, 255, 255, 0.03);
-    --accent-color: #d4af37; /* Brass/Gold */
+    --accent-color: #d4af37;
+    /* Brass/Gold */
     --text-primary: #f8fafc;
     --text-secondary: #94a3b8;
     --glass-border: rgba(255, 255, 255, 0.08);
     --serif-font: 'Playfair Display', serif;
     --sans-font: 'Outfit', sans-serif;
-    --shadow: 0 10px 30px rgba(0,0,0,0.5);
+    --shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 }
 
 /* Override Astra's default backgrounds */
 body,
-body.home, 
-body.home .site-content, 
-body.home .site, 
+body.home,
+body.home .site-content,
+body.home .site,
 body.home #page {
     background-color: var(--bg-color) !important;
     color: var(--text-primary) !important;
@@ -27,11 +28,11 @@ body.home #page {
 
 /* ASTRA HEADER OVERRIDES */
 /* 1. Force the blue top menu to match our dark theme */
-header#masthead, 
+header#masthead,
 .ast-primary-header-bar,
 .site-header {
     background-color: var(--bg-color) !important;
-    border-bottom: 1px solid rgba(255,255,255,0.05) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
 }
 
 /* 2. Hide the original Astra Logo and Social Icons */
@@ -41,46 +42,69 @@ header#masthead,
 }
 
 /* 3. Hide Astra's Default Logo & Site Title, as we inject our own raw HTML */
-.site-logo-img, .site-title, .ast-site-title-wrap {
+.site-logo-img,
+.site-title,
+.ast-site-title-wrap {
     display: none !important;
 }
 
 /* 4. Make menu links permanent gold as requested */
-.ast-builder-menu .menu-item > a {
+.ast-builder-menu .menu-item>a {
     color: var(--accent-color) !important;
     font-weight: 600 !important;
 }
-.ast-builder-menu .menu-item > a:hover {
+
+.ast-builder-menu .menu-item>a:hover {
     color: #ffffff !important;
 }
 
 /* 5. Astra Scroll To Top Button */
-#ast-scroll-top, .ast-scroll-top, 
-#ast-scroll-top:hover, .ast-scroll-top:hover,
+#ast-scroll-top,
+.ast-scroll-top,
+#ast-scroll-top:hover,
+.ast-scroll-top:hover,
 [data-section="section-scroll-to-top"] {
     background-color: var(--accent-color) !important;
     border: none !important;
     color: #000000 !important;
 }
-#ast-scroll-top .ast-icon, .ast-scroll-top .ast-icon {
+
+#ast-scroll-top .ast-icon,
+.ast-scroll-top .ast-icon {
     color: #000000 !important;
     fill: #000000 !important;
 }
-#ast-scroll-top .ast-icon svg, .ast-scroll-top .ast-icon svg {
+
+#ast-scroll-top .ast-icon svg,
+.ast-scroll-top .ast-icon svg {
     color: #000000 !important;
     fill: #000000 !important;
 }
 
 /* 6. Einzelseiten (Impressum, etc.) Titel in Gold */
-.entry-title, h1.entry-title {
+.entry-title,
+h1.entry-title {
     color: var(--accent-color) !important;
     font-family: var(--serif-font) !important;
     font-weight: 700 !important;
 }
 
 /* 7. Footer GANZ ausblenden */
-.site-footer, .ast-site-footer, .ast-builder-footer-grid-columns, footer {
+.site-footer,
+.ast-site-footer,
+.ast-builder-footer-grid-columns,
+footer {
     display: none !important;
+}
+
+/* 8. Content Headings in White */
+.entry-content h1,
+.entry-content h2,
+.entry-content h3,
+.entry-content h4,
+.entry-content h5,
+.entry-content h6 {
+    color: var(--text-primary) !important;
 }
 
 /* Base resets are usually handled by Astra, but let's constrain the app container */
@@ -160,7 +184,8 @@ header#masthead,
 
 /* Dropdowns (Selects) - Safe native styling for Chrome Mac */
 .genre-select {
-    padding: 1rem 3rem 1rem 1rem !important; /* Extra padding on right for the custom arrow */
+    padding: 1rem 3rem 1rem 1rem !important;
+    /* Extra padding on right for the custom arrow */
     background-color: var(--card-bg) !important;
     border: 1px solid var(--glass-border) !important;
     border-radius: 8px !important;
@@ -206,8 +231,8 @@ header#masthead,
 /* Rotation Controls */
 .rotation-btn {
     padding: 6px 12px;
-    background: rgba(255,255,255,0.1);
-    border: 1px solid rgba(255,255,255,0.2);
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 6px;
     color: #fff;
     cursor: pointer;
@@ -257,7 +282,7 @@ header#masthead,
 .work-card:hover {
     transform: translateY(-8px);
     border-color: var(--accent-color);
-    background: rgba(255,255,255,0.06);
+    background: rgba(255, 255, 255, 0.06);
     box-shadow: var(--shadow);
 }
 
@@ -287,7 +312,8 @@ header#masthead,
     font-size: 1.4rem;
     line-height: 1.3;
     margin-top: 1rem;
-    color: #ffffff !important; /* Force white to override Astra's default heading colors */
+    color: #ffffff !important;
+    /* Force white to override Astra's default heading colors */
 }
 
 /* Modal */
@@ -298,7 +324,7 @@ header#masthead,
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0,0,0,0.95);
+    background: rgba(0, 0, 0, 0.95);
     z-index: 99999;
     backdrop-filter: blur(5px);
 }
@@ -331,7 +357,7 @@ header#masthead,
 .modal-info h2 {
     font-family: var(--serif-font);
     font-size: 1.8rem;
-    margin:0;
+    margin: 0;
     color: white;
 }
 
@@ -357,13 +383,13 @@ header#masthead,
     display: flex;
     flex-direction: column;
     gap: 0.8rem;
-    background: rgba(0,0,0,0.2);
+    background: rgba(0, 0, 0, 0.2);
     overflow-y: auto;
 }
 
 .file-item {
     padding: 1rem;
-    background: rgba(255,255,255,0.05);
+    background: rgba(255, 255, 255, 0.05);
     border: 1px solid transparent;
     border-radius: 8px;
     cursor: pointer;
@@ -371,11 +397,16 @@ header#masthead,
     color: white;
 }
 
-.file-item p {margin:0;}
-.file-item small {color:#aaa;}
+.file-item p {
+    margin: 0;
+}
+
+.file-item small {
+    color: #aaa;
+}
 
 .file-item:hover {
-    background: rgba(255,255,255,0.1);
+    background: rgba(255, 255, 255, 0.1);
 }
 
 .file-item.active {
@@ -428,11 +459,25 @@ header#masthead,
 
 /* Animations */
 @keyframes fadeInDown {
-    from { opacity: 0; transform: translateY(-20px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 @keyframes gridFadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
