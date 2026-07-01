@@ -26,6 +26,18 @@ body.home #page {
     color: var(--text-primary) !important;
 }
 
+/* Global link color override */
+a,
+a:link,
+a:visited {
+    color: var(--accent-color) !important;
+}
+
+a:hover,
+a:focus {
+    color: #f0cc60 !important;
+}
+
 /* ASTRA HEADER OVERRIDES */
 /* 1. Force the blue top menu to match our dark theme */
 header#masthead,
