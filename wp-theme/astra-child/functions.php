@@ -35,7 +35,7 @@ add_action('astra_site_identity', function() {
     echo '<div class="evogt-custom-brand-wrap" style="display: flex; align-items: center; gap: 1rem; margin-right: 2rem;">
             <a href="/" style="display:flex; flex-direction:column; text-decoration:none !important;">
                 <span id="evogt-site-title" style="color: #d4af37 !important; font-family: Outfit, sans-serif !important; font-weight: 700 !important; font-size: 2.2rem !important; line-height: 1.1 !important; text-transform: uppercase !important; letter-spacing: 0.5px;">EMANUEL VOGT</span>
-                <span id="evogt-site-subtitle" style="font-size: 0.95rem; font-family: Outfit, sans-serif !important; color: #a8a8a8 !important; text-transform: none; letter-spacing: 0.5px; margin-top: 4px;">Digitales Werkverzeichnis (1925-2007)</span>
+                <span id="evogt-site-subtitle" style="font-size: 0.95rem; font-family: Outfit, sans-serif !important; color: #a8a8a8 !important; text-transform: none; letter-spacing: 0.5px; margin-top: 4px;">Digitales Werkverzeichnis</span>
             </a>
             <img src="https://emanuel-vogt.info/wp-content/uploads/2026/07/emanuel-vogt-portrait-copyright-johannes-vogt-krause.jpg" alt="Emanuel Vogt" style="height: 68px; width: auto; border-radius: 50%; object-fit: cover; flex-shrink: 0;">
           </div>';
