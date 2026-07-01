@@ -32,11 +32,12 @@ add_action( 'wp_enqueue_scripts', 'astra_child_enqueue_styles' );
 // Forcefully inject our custom title block directly into Astra's Header everywhere
 // We use astra_site_identity to let it sit natively inside the flex layout
 add_action('astra_site_identity', function() {
-    echo '<div class="evogt-custom-brand-wrap" style="display: flex; margin-right: 2rem;">
+    echo '<div class="evogt-custom-brand-wrap" style="display: flex; align-items: center; gap: 1rem; margin-right: 2rem;">
             <a href="/" style="display:flex; flex-direction:column; text-decoration:none !important;">
                 <span id="evogt-site-title" style="color: #d4af37 !important; font-family: Outfit, sans-serif !important; font-weight: 700 !important; font-size: 2.2rem !important; line-height: 1.1 !important; text-transform: uppercase !important; letter-spacing: 0.5px;">EMANUEL VOGT</span>
                 <span id="evogt-site-subtitle" style="font-size: 0.95rem; font-family: Outfit, sans-serif !important; color: #a8a8a8 !important; text-transform: none; letter-spacing: 0.5px; margin-top: 4px;">Digitales Werkverzeichnis (1925-2007)</span>
             </a>
+            <img src="https://emanuel-vogt.info/wp-content/uploads/2026/07/emanuel-vogt-portrait-copyright-johannes-vogt-krause.jpg" alt="Emanuel Vogt" style="height: 68px; width: auto; border-radius: 50%; object-fit: cover; flex-shrink: 0;">
           </div>';
 }, 1);
 
@@ -60,12 +61,6 @@ add_action('rest_api_init', function () {
         'permission_callback' => '__return_true'
     ));
     
-    register_rest_route('evogt/v1', '/musicxml/list', array(
-        'methods' => 'GET',
-        'callback' => 'evogt_api_get_musicxml_list',
-        'permission_callback' => '__return_true'
-    ));
-
     register_rest_route('evogt/v1', '/instrumentations', array(
         'methods' => 'GET',
         'callback' => 'evogt_api_get_instrumentations',
@@ -107,26 +102,9 @@ function evogt_api_get_works($request) {
     if (!$db) return new WP_REST_Response('Database not found', 500);
 
     $q = sanitize_text_field($request->get_param('q'));
-    $genre = sanitize_text_field($request->get_param('genre') ?? 'All');
-    $instrumentation = sanitize_text_field($request->get_param('instrumentation') ?? 'All');
 
-    $query = "SELECT id, work_number, title, genre, instrumentation FROM works WHERE 1=1";
-    $params = [];
-
-    if ($genre !== 'All') {
-        $query .= " AND genre = ?";
-        $params[] = $genre;
-    }
-    if ($instrumentation !== 'All') {
-        $query .= " AND (instrumentation LIKE ? OR instrumentation LIKE ? OR instrumentation LIKE ? OR instrumentation = ?)";
-        $params[] = $instrumentation . ',%';
-        $params[] = '%, ' . $instrumentation . ',%';
-        $params[] = '%, ' . $instrumentation;
-        $params[] = $instrumentation;
-    }
-
-    $stmt = $db->prepare($query);
-    $stmt->execute($params);
+    $stmt = $db->prepare("SELECT id, work_number, title, genre, instrumentation FROM works");
+    $stmt->execute();
     $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     $results = [];
@@ -136,7 +114,12 @@ function evogt_api_get_works($request) {
         if ($search_term) {
             $t = mb_strtolower($r['title'] ?? '', 'UTF-8');
             $w = mb_strtolower($r['work_number'] ?? '', 'UTF-8');
-            if (strpos($t, $search_term) === false && $w !== $search_term) {
+            $g = mb_strtolower($r['genre'] ?? '', 'UTF-8');
+            $i = mb_strtolower($r['instrumentation'] ?? '', 'UTF-8');
+            if (strpos($t, $search_term) === false
+                && strpos($w, $search_term) === false
+                && strpos($g, $search_term) === false
+                && strpos($i, $search_term) === false) {
                 continue;
             }
         }
@@ -147,44 +130,13 @@ function evogt_api_get_works($request) {
     return new WP_REST_Response($results, 200);
 }
 
-function evogt_api_get_musicxml_list($request) {
-    $upload_dir = wp_upload_dir();
-    $musicxml_dir = $upload_dir['basedir'] . '/archive/musicxml/';
-    
-    if (!is_dir($musicxml_dir)) {
-        return rest_ensure_response(array());
-    }
-    
-    $files = array();
-    $dir_contents = scandir($musicxml_dir);
-    if ($dir_contents !== false) {
-        foreach ($dir_contents as $file) {
-            // Only process .xml or .musicxml files
-            if (preg_match('/\.(xml|musicxml)$/i', $file)) {
-                // Parse work ID (e.g. "461-sonata...xml" -> 461)
-                preg_match('/^(\d+)/', $file, $matches);
-                $work_id = isset($matches[1]) ? intval($matches[1]) : null;
-                
-                $files[] = array(
-                    'filename' => $file,
-                    'work_number' => $work_id,
-                    'work_title' => $file, // Simplified
-                    'url' => content_url() . '/uploads/archive/musicxml/' . rawurlencode($file)
-                );
-            }
-        }
-    }
-    
-    return rest_ensure_response($files);
-}
-
 function evogt_api_get_work($request) {
     $db = evogt_get_db();
     if (!$db) return new WP_REST_Response('Database not found', 500);
 
     $id = intval($request->get_param('id'));
 
-    $stmt = $db->prepare("SELECT id, work_number, title, genre, instrumentation, has_musicxml FROM works WHERE id = ?");
+    $stmt = $db->prepare("SELECT id, work_number, title, genre, instrumentation FROM works WHERE id = ?");
     $stmt->execute([$id]);
     $work = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -216,7 +168,6 @@ function evogt_api_get_work($request) {
         );
     }
 
-    $work['has_musicxml'] = !empty($work['has_musicxml']) ? true : false;
     $work['files'] = $files;
 
     return new WP_REST_Response($work, 200);

@@ -2,8 +2,6 @@ let allWorks = [];
 let currentFileId = null;
 let currentRotation = 0;
 const searchInput = document.getElementById('searchInput');
-const genreFilter = document.getElementById('genreFilter');
-const instrumentationFilter = document.getElementById('instrumentationFilter');
 const resultsGrid = document.getElementById('resultsGrid');
 const viewerModal = document.getElementById('viewerModal');
 const statsCounter = document.getElementById('statsCounter');
@@ -14,29 +12,13 @@ const API_BASE = window.evogtSettings ? window.evogtSettings.apiUrl : '/api';
 
 // Initial Load
 async function init() {
-    await fetchGenres();
-    await fetchInstrumentations();
     await performSearch();
-}
-
-async function fetchGenres() {
-    const res = await fetch(`${API_BASE}/genres`);
-    const genres = await res.json();
-    genreFilter.innerHTML = genres.map(g => `<option value="${g}">${g === 'All' ? 'Alle Gattungen' : g}</option>`).join('');
-}
-
-async function fetchInstrumentations() {
-    const res = await fetch(`${API_BASE}/instrumentations`);
-    const instrumentations = await res.json();
-    instrumentationFilter.innerHTML = instrumentations.map(i => `<option value="${i}">${i === 'All' ? 'Alle Besetzungen' : i}</option>`).join('');
 }
 
 async function performSearch() {
     const query = searchInput.value;
-    const genre = genreFilter.value;
-    const instrumentation = instrumentationFilter.value;
 
-    const res = await fetch(`${API_BASE}/works?q=${encodeURIComponent(query)}&genre=${encodeURIComponent(genre)}&instrumentation=${encodeURIComponent(instrumentation)}`);
+    const res = await fetch(`${API_BASE}/works?q=${encodeURIComponent(query)}`);
     const works = await res.json();
     renderWorks(works);
     statsCounter.innerText = `${works.length} Werke gefunden`;
@@ -72,15 +54,6 @@ async function openWorkDetail(workId) {
         </div>
         `;
     }).join('');
-
-    const musicxmlNotice = document.getElementById('musicxmlNotice');
-    if (work.has_musicxml) {
-        musicxmlNotice.style.display = 'block';
-        const musicxmlLink = document.getElementById('musicxmlLink');
-        musicxmlLink.href = `/musicxml-player?work=${encodeURIComponent(work.work_number)}`;
-    } else {
-        musicxmlNotice.style.display = 'none';
-    }
 
     document.getElementById('pdfFrame').src = '';
     document.getElementById('pdfFrame').style.display = 'none';
@@ -197,9 +170,6 @@ if (searchInput) {
         debounceTimer = setTimeout(performSearch, 300);
     });
 }
-
-if (genreFilter) genreFilter.addEventListener('change', performSearch);
-if (instrumentationFilter) instrumentationFilter.addEventListener('change', performSearch);
 
 window.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') closeViewer();

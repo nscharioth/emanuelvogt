@@ -8,21 +8,11 @@ get_header(); ?>
 <div class="app-container">
     <!-- Header Section -->
     <header class="main-header" style="position: relative;">
-        <!-- Top right global MusicXML Player button -->
-        <a href="/musicxml-player" style="position: absolute; right: 0; top: 0; display: inline-block; padding: 10px 20px; background: rgba(212, 175, 55, 0.2); color: #d4af37; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 0.95rem; border: 1px solid rgba(212, 175, 55, 0.4); transition: all 0.3s;" onmouseover="this.style.background='rgba(212, 175, 55, 0.3)'" onmouseout="this.style.background='rgba(212, 175, 55, 0.2)'">
-            🎵 MusicXML Player
-        </a>
         <div class="search-controls" style="margin-top: 3.5rem;">
             <div class="search-box">
-                <input type="text" id="searchInput" placeholder="Suche nach Titel oder Werknummer..." autocomplete="off">
+                <input type="text" id="searchInput" placeholder="Suche nach Titel, Werknummer, Gattung oder Besetzung..." autocomplete="off">
                 <span class="search-icon">🔍</span>
             </div>
-            <select id="genreFilter" class="genre-select">
-                <option value="All">Alle Gattungen</option>
-            </select>
-            <select id="instrumentationFilter" class="genre-select">
-                <option value="All">Alle Besetzungen</option>
-            </select>
         </div>
         
         <div class="stats" id="statsCounter">
@@ -50,13 +40,6 @@ get_header(); ?>
                     <!-- File buttons -->
                 </div>
                 <div class="pdf-frame">
-                    <div id="musicxmlNotice" style="display: none; padding: 15px; background: rgba(74, 144, 226, 0.1); border-left: 4px solid #4a90e2; margin-bottom: 15px; border-radius: 4px;">
-                        <strong>🎵 MusicXML verfügbar!</strong>
-                        <p style="margin: 5px 0 0 0; font-size: 0.9rem;">Dieses Werk ist als interaktive Notenansicht verfügbar.</p>
-                        <a id="musicxmlLink" href="/musicxml-player" target="_blank" style="display: inline-block; margin-top: 8px; padding: 8px 16px; background: #4a90e2; color: white; text-decoration: none; border-radius: 6px; font-size: 0.9rem;">
-                            Noten anzeigen & abspielen
-                        </a>
-                    </div>
                     <div class="pdf-viewer-area">
                         <div id="pdfRotationWrapper" class="pdf-rotation-wrapper">
                             <iframe id="pdfFrame" src="" frameborder="0"></iframe>
