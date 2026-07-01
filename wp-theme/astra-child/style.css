@@ -370,6 +370,46 @@ footer {
     gap: 1.5rem;
 }
 
+.empty-state,
+.loading-state {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 3rem 1.5rem;
+    background: var(--card-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+}
+
+.empty-state p,
+.loading-state {
+    color: var(--text-secondary);
+    font-size: 1rem;
+}
+
+.load-all-btn {
+    margin-top: 1rem;
+    padding: 0.9rem 1.4rem;
+    border: 1px solid var(--accent-color);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--accent-color);
+    font-family: var(--sans-font);
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.load-all-btn:hover,
+.load-all-btn:focus {
+    background: var(--accent-color);
+    color: var(--bg-color);
+}
+
+.load-all-btn:active {
+    transform: scale(0.98);
+}
+
 .work-card {
     background: var(--card-bg);
     border: 1px solid var(--glass-border);

@@ -5,6 +5,7 @@ const searchInput = document.getElementById('searchInput');
 const resultsGrid = document.getElementById('resultsGrid');
 const viewerModal = document.getElementById('viewerModal');
 const statsCounter = document.getElementById('statsCounter');
+const searchIcon = document.querySelector('.search-icon');
 
 const API_BASE = window.evogtSettings ? window.evogtSettings.apiUrl : '/api';
 // We don't always need pdfBaseUrl immediately since the API returns absolute URLs for files, 
@@ -12,11 +13,32 @@ const API_BASE = window.evogtSettings ? window.evogtSettings.apiUrl : '/api';
 
 // Initial Load
 async function init() {
-    await performSearch();
+    renderEmptyState();
 }
 
-async function performSearch() {
-    const query = searchInput.value;
+function renderEmptyState(message = 'Suche starten oder das gesamte Archiv bei Bedarf laden.') {
+    resultsGrid.innerHTML = `
+        <div class="empty-state">
+            <p>${message}</p>
+            <button type="button" class="load-all-btn" id="loadAllWorksBtn">Alle Werke laden</button>
+        </div>
+    `;
+    statsCounter.innerText = 'Archiv bereit';
+
+    const loadAllButton = document.getElementById('loadAllWorksBtn');
+    if (loadAllButton) {
+        loadAllButton.addEventListener('click', () => performSearch({ forceFullLoad: true }));
+    }
+}
+
+async function performSearch(options = {}) {
+    const query = searchInput.value.trim();
+    const forceFullLoad = options.forceFullLoad === true;
+
+    if (!query && !forceFullLoad) {
+        renderEmptyState();
+        return;
+    }
 
     // Show loading indicator while fetching
     resultsGrid.innerHTML = '<div class="loading-state"><div class="loading-spinner"></div><br>Lade Archiv…</div>';
@@ -24,10 +46,15 @@ async function performSearch() {
     const res = await fetch(`${API_BASE}/works?q=${encodeURIComponent(query)}`);
     const works = await res.json();
     renderWorks(works);
-    statsCounter.innerText = `${works.length} Werke gefunden`;
+    statsCounter.innerText = query ? `${works.length} Werke gefunden` : `${works.length} Werke geladen`;
 }
 
 function renderWorks(works) {
+    if (!works.length) {
+        renderEmptyState('Keine Werke gefunden. Bitte Suche anpassen.');
+        return;
+    }
+
     resultsGrid.innerHTML = works.map((work, index) => `
         <div class="work-card" onclick="openWorkDetail(${work.id})" style="animation: gridFadeIn 0.5s ease-out ${index * 0.01}s both">
             <div class="card-header">
@@ -177,6 +204,19 @@ if (searchInput) {
     searchInput.addEventListener('input', () => {
         clearTimeout(debounceTimer);
         debounceTimer = setTimeout(performSearch, 300);
+    });
+
+    searchInput.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+            clearTimeout(debounceTimer);
+            performSearch();
+        }
+    });
+}
+
+if (searchIcon) {
+    searchIcon.addEventListener('click', () => {
+        performSearch({ forceFullLoad: !searchInput.value.trim() });
     });
 }
 

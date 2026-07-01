@@ -31,34 +31,72 @@ function astra_child_enqueue_styles() {
 add_action( 'wp_enqueue_scripts', 'astra_child_enqueue_styles' );
 
 // -------------------------------------------------------
-// Navigation: canonical menu + three layers of defence
-// so the correct links always appear in the mobile menu.
+// Navigation: keep desktop and mobile on the same WP menu.
 // -------------------------------------------------------
 
 /**
- * Return the ID of our "EV Hauptnavigation" WP menu,
- * creating it on first run if it does not yet exist.
+ * Resolve the menu assigned to the desktop header first,
+ * so the mobile drawer can reuse the same menu source.
  */
 function evogt_get_canonical_menu_id() {
+    $locations = get_nav_menu_locations();
+    $preferred_locations = [ 'primary', 'ast_hf_menu_1', 'ast_hf_menu_2' ];
+
+    foreach ( $preferred_locations as $location ) {
+        if ( ! empty( $locations[ $location ] ) ) {
+            return (int) $locations[ $location ];
+        }
+    }
+
+    foreach ( $locations as $location => $menu_id ) {
+        if ( empty( $menu_id ) ) continue;
+        if ( strpos( $location, 'ast_hf_menu' ) !== false ) {
+            return (int) $menu_id;
+        }
+    }
+
     $menu = wp_get_nav_menu_object( 'EV Hauptnavigation' );
-    if ( $menu ) return (int) $menu->term_id;
-
-    $id = wp_create_nav_menu( 'EV Hauptnavigation' );
-    if ( is_wp_error( $id ) ) return null;
-
-    wp_update_nav_menu_item( $id, 0, [
-        'menu-item-title'  => 'Digitales Werkverzeichnis',
-        'menu-item-url'    => home_url( '/' ),
-        'menu-item-status' => 'publish',
-        'menu-item-type'   => 'custom',
-    ] );
-
-    return (int) $id;
+    return $menu ? (int) $menu->term_id : null;
 }
 
-// Layer 1 — intercept wp_nav_menu() ARGS before rendering.
-// Astra's Header Builder registers locations as ast_hf_menu_1, ast_hf_menu_2, etc.
-// Redirect every one of them to our correct menu.
+function evogt_get_mobile_menu_items() {
+    $current_page_id = get_queried_object_id();
+    $items = [
+        [ 'title' => 'Über Emanuel Vogt', 'slug' => 'ueber-emanuel-vogt' ],
+        [ 'title' => 'Über das Werkverzeichnis', 'slug' => 'ueber-das-werkverzeichnis' ],
+        [ 'title' => 'Datenschutzerklärung', 'slug' => 'datenschutzerklaerung' ],
+        [ 'title' => 'Impressum', 'slug' => 'impressum' ],
+    ];
+
+    foreach ( $items as &$item ) {
+        $page = get_page_by_path( $item['slug'] );
+        $item['page_id'] = $page ? (int) $page->ID : 0;
+        $item['url'] = $page ? get_permalink( $page ) : home_url( '/' . $item['slug'] . '/' );
+        $item['active'] = $item['page_id'] && $item['page_id'] === $current_page_id;
+    }
+
+    return $items;
+}
+
+function evogt_render_forced_mobile_menu( $ul_attributes = '' ) {
+    $items = evogt_get_mobile_menu_items();
+    $html = '<ul ' . trim( $ul_attributes ) . '>';
+
+    foreach ( $items as $item ) {
+        $classes = 'menu-item menu-item-type-post_type menu-item-object-page';
+        if ( ! empty( $item['active'] ) ) {
+            $classes .= ' current-menu-item';
+        }
+
+        $rel = $item['title'] === 'Datenschutzerklärung' ? ' rel="privacy-policy"' : '';
+        $html .= '<li class="' . esc_attr( $classes ) . '"><a href="' . esc_url( $item['url'] ) . '" class="menu-link"' . $rel . '>' . esc_html( $item['title'] ) . '</a></li>';
+    }
+
+    $html .= '</ul>';
+    return $html;
+}
+
+// Mirror the desktop menu assignment into Astra's mobile header locations.
 add_filter( 'wp_nav_menu_args', function( $args ) {
     if ( empty( $args['theme_location'] ) ) return $args;
     if ( strpos( $args['theme_location'], 'ast_hf_menu' ) === false ) return $args;
@@ -68,64 +106,40 @@ add_filter( 'wp_nav_menu_args', function( $args ) {
     return $args;
 } );
 
-// Layer 2 — intercept rendered HTML OUTPUT.
-// Catches any menu that slipped past Layer 1 (e.g. Builder widget
-// that passes a menu object directly instead of a theme_location).
-add_filter( 'wp_nav_menu', function( $html, $args ) {
-    if ( is_admin() ) return $html;
-    $wrong = [ 'Dienstleistungen', 'Rezensionen', 'Warum wir' ];
-    $found = false;
-    foreach ( $wrong as $w ) {
-        if ( strpos( $html, $w ) !== false ) { $found = true; break; }
-    }
-    if ( ! $found ) return $html;
-
-    $active = is_front_page() ? ' current-menu-item' : '';
-    return '<nav class="evogt-nav"><ul class="menu ast-menu-list">' .
-        '<li class="menu-item' . $active . '"><a href="' . esc_url( home_url( '/' ) ) . '">Digitales Werkverzeichnis</a></li>' .
-        '</ul></nav>';
-}, 10, 2 );
-
-// Desktop primary menu: prepend home link if absent
+// Keep the home link consistent in the desktop header menu.
 add_filter( 'wp_nav_menu_items', function( $items, $args ) {
-    if ( empty( $args->theme_location ) || $args->theme_location !== 'primary' ) return $items;
+    $theme_location = $args->theme_location ?? '';
+    if ( $theme_location !== 'primary' && $theme_location !== 'ast_hf_menu_1' ) {
+        return $items;
+    }
     if ( strpos( $items, esc_url( home_url( '/' ) ) ) !== false ) return $items;
 
     $active = is_front_page() ? ' current-menu-item' : '';
     return '<li class="menu-item' . $active . '"><a href="' . esc_url( home_url( '/' ) ) . '">Digitales Werkverzeichnis</a></li>' . $items;
 }, 10, 2 );
 
-// Layer 3 — JS MutationObserver safety net (all pages, no PHP dependency).
-// Fires on DOM-ready AND watches for Astra dynamically rendering the popup.
-add_action( 'wp_footer', function () {
-    $home_url = json_encode( home_url( '/' ) );
-    ?>
-<script>
-(function () {
-    var HOME  = <?php echo $home_url; ?>;
-    var ITEM  = '<li class="menu-item"><a href="' + HOME + '">Digitales Werkverzeichnis</a></li>';
-    var WRONG = ['Dienstleistungen', 'Rezensionen', 'Warum wir'];
-    var SELS  = ['.ast-mobile-popup-inner', '#ast-mobile-popup', '.ast-fly-menu-wrap', '.ast-popup-full-overlay .ast-builder-menu'];
+add_filter( 'wp_nav_menu', function( $html, $args ) {
+    if ( is_admin() ) return $html;
 
-    function fix() {
-        SELS.forEach(function (s) {
-            document.querySelectorAll(s).forEach(function (el) {
-                var ul = el.querySelector('ul');
-                if (!ul) return;
-                if (!WRONG.some(function (w) { return ul.textContent.indexOf(w) !== -1; })) return;
-                ul.innerHTML = ITEM;
-            });
-        });
+    $is_mobile_menu = strpos( $html, 'id="ast-hf-mobile-menu"' ) !== false
+        || strpos( $html, 'ast-mobile-site-navigation' ) !== false
+        || strpos( $html, 'Website-Navigation: Hauptmenü (2)' ) !== false;
+
+    if ( ! $is_mobile_menu ) {
+        return $html;
     }
 
-    document.addEventListener('DOMContentLoaded', function () {
-        fix();
-        new MutationObserver(fix).observe(document.body, { childList: true, subtree: true });
-    });
-})();
-</script>
-    <?php
-}, 20 );
+    if ( preg_match( '/<ul([^>]*)>.*<\/ul>/si', $html, $matches ) ) {
+        return preg_replace(
+            '/<ul([^>]*)>.*<\/ul>/si',
+            evogt_render_forced_mobile_menu( trim( $matches[1] ) ),
+            $html,
+            1
+        );
+    }
+
+    return $html;
+}, 20, 2 );
 
 // Forcefully inject our custom title block directly into Astra's Header everywhere
 // We use astra_site_identity to let it sit natively inside the flex layout
