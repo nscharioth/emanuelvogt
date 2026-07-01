@@ -40,11 +40,15 @@ a:focus {
 
 /* ASTRA HEADER OVERRIDES */
 /* 1. Force the blue top menu to match our dark theme */
+/* position:relative + high z-index keep the header above any animated content
+   that would otherwise create a stacking context on top of the hamburger */
 header#masthead,
 .ast-primary-header-bar,
 .site-header {
     background-color: var(--bg-color) !important;
     border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+    position: relative !important;
+    z-index: 9999 !important;
 }
 
 /* 2. Hide the original Astra Logo and Social Icons */
@@ -60,13 +64,55 @@ header#masthead,
     display: none !important;
 }
 
-/* 4. Make menu links permanent gold as requested */
-.ast-builder-menu .menu-item>a {
+/* 4. Make menu links permanent gold — desktop AND mobile */
+.ast-builder-menu .menu-item > a,
+.ast-mobile-popup-inner .menu-item > a,
+.ast-fly-menu-wrap .menu-item > a,
+.main-navigation .menu-item > a {
     color: var(--accent-color) !important;
     font-weight: 600 !important;
 }
 
-.ast-builder-menu .menu-item>a:hover {
+.ast-builder-menu .menu-item > a:hover,
+.ast-mobile-popup-inner .menu-item > a:hover,
+.ast-fly-menu-wrap .menu-item > a:hover,
+.main-navigation .menu-item > a:hover {
+    color: #ffffff !important;
+}
+
+/* 4b. Astra Mobile Popup / Off-canvas drawer — dark theme */
+.ast-mobile-popup-drawer,
+.ast-mobile-popup-inner,
+.ast-fly-menu-wrap,
+.ast-popup-full-overlay,
+.ast-mobile-header .ast-primary-header-bar {
+    background-color: var(--bg-color) !important;
+    color: var(--text-primary) !important;
+}
+
+/* Hamburger icon lines — keep them visible */
+.ast-mobile-menu-trigger .ast-mobile-menu-trigger-bars span,
+.main-header-menu-toggle .ast-mobile-menu-trigger-bars span,
+.ast-button-wrap .ast-mobile-menu-trigger-bars span {
+    background-color: var(--text-primary) !important;
+}
+
+/* Close button inside mobile drawer */
+.ast-mobile-popup-close,
+.ast-mobile-popup-close span {
+    color: var(--text-primary) !important;
+    fill: var(--text-primary) !important;
+}
+
+/* Separator lines between mobile menu items */
+.ast-mobile-popup-inner .menu-item,
+.ast-fly-menu-wrap .menu-item {
+    border-bottom: 1px solid var(--glass-border) !important;
+}
+
+/* Active/current page highlight */
+.ast-mobile-popup-inner .current-menu-item > a,
+.ast-fly-menu-wrap .current-menu-item > a {
     color: #ffffff !important;
 }
 
@@ -136,7 +182,9 @@ footer {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
-    animation: fadeInDown 0.8s ease-out;
+    /* No opacity animation here — animating opacity creates a CSS stacking
+       context that covers the Astra header and makes the hamburger untappable
+       on first load. Card-level animations in JS are unaffected. */
 }
 
 .brand h1 {
@@ -269,6 +317,52 @@ footer {
 }
 
 
+/* Loading state */
+.loading-state {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--text-secondary);
+    font-size: 1rem;
+}
+
+.loading-spinner {
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    border: 3px solid var(--glass-border);
+    border-top-color: var(--accent-color);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-bottom: 1rem;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Mobile PDF open bar */
+.pdf-open-bar {
+    display: none; /* shown only on mobile via media query below */
+    padding: 10px 12px;
+    background: rgba(0, 0, 0, 0.5);
+    border-top: 1px solid var(--glass-border);
+    flex-shrink: 0;
+}
+
+.pdf-open-btn-mobile {
+    display: block;
+    text-align: center;
+    padding: 10px 16px;
+    background: var(--accent-color);
+    color: #000 !important;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    text-decoration: none !important;
+    letter-spacing: 0.3px;
+}
+
 /* Grid */
 .content-grid {
     display: grid;
@@ -289,6 +383,8 @@ footer {
     flex-direction: column;
     justify-content: space-between;
     height: 180px;
+    /* Eliminate 300ms tap delay on mobile */
+    touch-action: manipulation;
 }
 
 .work-card:hover {
@@ -296,6 +392,12 @@ footer {
     border-color: var(--accent-color);
     background: rgba(255, 255, 255, 0.06);
     box-shadow: var(--shadow);
+}
+
+.work-card:active {
+    transform: scale(0.98);
+    border-color: var(--accent-color);
+    background: rgba(255, 255, 255, 0.06);
 }
 
 .work-card .card-header {
@@ -491,5 +593,183 @@ footer {
     to {
         opacity: 1;
         transform: translateY(0);
+    }
+}
+
+/* ============================================
+   MOBILE RESPONSIVE STYLES
+   ============================================ */
+
+@media (max-width: 768px) {
+
+    /* --- Astra Header --- */
+    .evogt-custom-brand-wrap {
+        gap: 0.5rem !important;
+        margin-right: 0.5rem !important;
+    }
+
+    #evogt-site-title {
+        font-size: 1.4rem !important;
+    }
+
+    #evogt-site-subtitle {
+        font-size: 0.75rem !important;
+    }
+
+    .evogt-custom-brand-wrap img {
+        height: 44px !important;
+    }
+
+    /* --- App Container --- */
+    .app-container {
+        padding: 1rem;
+    }
+
+    .main-header {
+        margin-bottom: 1.5rem;
+    }
+
+    /* --- Search Controls --- */
+    .search-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .search-box {
+        min-width: 0;
+        width: 100%;
+    }
+
+    .genre-select {
+        min-width: 0 !important;
+        width: 100% !important;
+    }
+
+    /* --- Work Card Grid --- */
+    .content-grid {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
+
+    .work-card {
+        height: auto;
+        min-height: 110px;
+    }
+
+    /* Disable hover lift effect (no hover on touch) */
+    .work-card:hover {
+        transform: none;
+    }
+
+    /* --- Modal: full-screen on mobile --- */
+    .modal-content {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        border-radius: 0;
+    }
+
+    .modal-header {
+        padding: 0.75rem 1rem;
+    }
+
+    .modal-info h2 {
+        font-size: 1.2rem;
+    }
+
+    .close-btn {
+        font-size: 2rem;
+        padding: 0.25rem 0.5rem;
+    }
+
+    /* --- Viewer: stack sidebar above PDF --- */
+    .viewer-body {
+        flex-direction: column;
+    }
+
+    .file-sidebar {
+        width: 100%;
+        max-height: 130px;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        overflow-y: hidden;
+        border-right: none;
+        border-bottom: 1px solid var(--glass-border);
+        padding: 0.75rem;
+        gap: 0.5rem;
+        /* Smooth momentum scroll on iOS */
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .file-item {
+        flex-shrink: 0;
+        min-width: 130px;
+        max-width: 200px;
+    }
+
+    .file-item p {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /* --- Rotation Controls on mobile --- */
+    #rotationControls {
+        flex-wrap: wrap !important;
+        padding: 8px !important;
+        gap: 6px !important;
+    }
+
+    /* --- PDF open button --- */
+    .pdf-open-bar {
+        display: block;
+    }
+
+    /* Ensure Astra mobile popup/hamburger is always tappable */
+    .ast-mobile-menu-trigger,
+    .ast-mobile-popup-trigger,
+    [data-section="section-hb-mobile-trigger"] {
+        touch-action: manipulation !important;
+        position: relative !important;
+        z-index: 10000 !important;
+    }
+}
+
+@media (max-width: 480px) {
+
+    #evogt-site-title {
+        font-size: 1.1rem !important;
+    }
+
+    /* Keep subtitle visible but small — do NOT hide it */
+    #evogt-site-subtitle {
+        font-size: 0.65rem !important;
+        margin-top: 2px !important;
+    }
+
+    .evogt-custom-brand-wrap img {
+        height: 36px !important;
+    }
+
+    .app-container {
+        padding: 0.75rem;
+    }
+
+    #searchInput {
+        font-size: 1rem;
+        padding: 1rem 1rem 1rem 3rem;
+    }
+
+    .modal-header {
+        padding: 0.5rem 0.75rem;
+    }
+
+    .modal-info h2 {
+        font-size: 1rem;
+    }
+
+    .file-sidebar {
+        max-height: 110px;
     }
 }

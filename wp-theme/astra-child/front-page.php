@@ -7,7 +7,8 @@ get_header(); ?>
 
 <div class="app-container">
     <!-- Header Section -->
-    <header class="main-header" style="position: relative;">
+    <!-- No position:relative — prevents animation stacking context from covering the Astra header -->
+    <header class="main-header">
         <div class="search-controls" style="margin-top: 3.5rem;">
             <div class="search-box">
                 <input type="text" id="searchInput" placeholder="Suche nach Titel, Werknummer, Gattung oder Besetzung..." autocomplete="off">
@@ -40,6 +41,10 @@ get_header(); ?>
                     <!-- File buttons -->
                 </div>
                 <div class="pdf-frame">
+                    <!-- Mobile: prominent open-in-new-tab button (hidden on desktop via CSS) -->
+                    <div class="pdf-open-bar">
+                        <a id="pdfOpenLink" href="#" target="_blank" rel="noopener" class="pdf-open-btn-mobile">📄 PDF in neuem Tab öffnen</a>
+                    </div>
                     <div class="pdf-viewer-area">
                         <div id="pdfRotationWrapper" class="pdf-rotation-wrapper">
                             <iframe id="pdfFrame" src="" frameborder="0"></iframe>

@@ -18,6 +18,9 @@ async function init() {
 async function performSearch() {
     const query = searchInput.value;
 
+    // Show loading indicator while fetching
+    resultsGrid.innerHTML = '<div class="loading-state"><div class="loading-spinner"></div><br>Lade Archiv…</div>';
+
     const res = await fetch(`${API_BASE}/works?q=${encodeURIComponent(query)}`);
     const works = await res.json();
     renderWorks(works);
@@ -76,6 +79,7 @@ function loadFile(fileId, rotation, filename, fileUrl, element) {
     element.classList.add('active');
 
     const isImage = /\.(jpg|jpeg|png|gif)$/i.test(filename);
+    const isMobile = window.innerWidth < 768 || navigator.maxTouchPoints > 0;
     
     const pdfFrame = document.getElementById('pdfFrame');
     const placeholder = document.getElementById('viewerPlaceholder');
@@ -97,11 +101,16 @@ function loadFile(fileId, rotation, filename, fileUrl, element) {
             btn.classList.toggle('active', parseInt(btn.dataset.rotation) === rotation);
         });
 
-        // Use direct static fileUrl (bypassing backend rotation engine)
-        // Add PDF.js hashtag parameters.
-        pdfFrame.src = `${fileUrl}#toolbar=0&navpanes=0&scrollbar=0`;
+        // On mobile: allow native PDF controls (don't suppress toolbar).
+        // On desktop: hide chrome toolbar for cleaner embed.
+        const pdfSrc = isMobile ? fileUrl : `${fileUrl}#toolbar=0&navpanes=0&scrollbar=0`;
+        pdfFrame.src = pdfSrc;
         pdfFrame.style.display = 'block';
         placeholder.style.display = 'none';
+
+        // Update the mobile "open in new tab" link
+        const pdfOpenLink = document.getElementById('pdfOpenLink');
+        if (pdfOpenLink) pdfOpenLink.href = fileUrl;
 
         // Apply visual rotation based on DB initial value!
         rotatePDF(rotation);
@@ -175,5 +184,16 @@ window.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') closeViewer();
 });
 
-// Start
-init();
+// Close modal when tapping the dark backdrop on mobile
+if (viewerModal) {
+    viewerModal.addEventListener('click', (e) => {
+        if (e.target === viewerModal) closeViewer();
+    });
+}
+
+// Start — script is in footer so DOM is ready, but guard readyState for safety
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+} else {
+    init();
+}

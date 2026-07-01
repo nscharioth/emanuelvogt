@@ -16,18 +16,116 @@ function astra_child_enqueue_styles() {
     wp_enqueue_style( 'evogt-fonts', 'https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap', array(), null );
     
     // Child theme style
-    wp_enqueue_style( 'evogt-app', get_stylesheet_directory_uri() . '/style.css', array('astra-parent-style'), '1.0.3' );
+        wp_enqueue_style( 'evogt-app', get_stylesheet_directory_uri() . '/style.css', array('astra-parent-style'), '1.4.0' );
     
     // Only load the archive application logic on the front page
     if ( is_front_page() || is_page_template('front-page.php') ) {
-        wp_enqueue_script( 'evogt-app-js', get_stylesheet_directory_uri() . '/assets/js/app.js', array(), '1.0.3', true );
+        wp_enqueue_script( 'evogt-app-js', get_stylesheet_directory_uri() . '/assets/js/app.js', array(), '1.4.0', true );
         wp_localize_script( 'evogt-app-js', 'evogtSettings', array(
-            'apiUrl' => rest_url( 'evogt/v1' ),
-            'pdfBaseUrl' => EVOGT_PDF_URL
+            'apiUrl'     => rest_url( 'evogt/v1' ),
+            'pdfBaseUrl' => EVOGT_PDF_URL,
+            'nonce'      => wp_create_nonce( 'wp_rest' )
         ) );
     }
 }
 add_action( 'wp_enqueue_scripts', 'astra_child_enqueue_styles' );
+
+// -------------------------------------------------------
+// Navigation: canonical menu + three layers of defence
+// so the correct links always appear in the mobile menu.
+// -------------------------------------------------------
+
+/**
+ * Return the ID of our "EV Hauptnavigation" WP menu,
+ * creating it on first run if it does not yet exist.
+ */
+function evogt_get_canonical_menu_id() {
+    $menu = wp_get_nav_menu_object( 'EV Hauptnavigation' );
+    if ( $menu ) return (int) $menu->term_id;
+
+    $id = wp_create_nav_menu( 'EV Hauptnavigation' );
+    if ( is_wp_error( $id ) ) return null;
+
+    wp_update_nav_menu_item( $id, 0, [
+        'menu-item-title'  => 'Digitales Werkverzeichnis',
+        'menu-item-url'    => home_url( '/' ),
+        'menu-item-status' => 'publish',
+        'menu-item-type'   => 'custom',
+    ] );
+
+    return (int) $id;
+}
+
+// Layer 1 — intercept wp_nav_menu() ARGS before rendering.
+// Astra's Header Builder registers locations as ast_hf_menu_1, ast_hf_menu_2, etc.
+// Redirect every one of them to our correct menu.
+add_filter( 'wp_nav_menu_args', function( $args ) {
+    if ( empty( $args['theme_location'] ) ) return $args;
+    if ( strpos( $args['theme_location'], 'ast_hf_menu' ) === false ) return $args;
+
+    $id = evogt_get_canonical_menu_id();
+    if ( $id ) $args['menu'] = $id;
+    return $args;
+} );
+
+// Layer 2 — intercept rendered HTML OUTPUT.
+// Catches any menu that slipped past Layer 1 (e.g. Builder widget
+// that passes a menu object directly instead of a theme_location).
+add_filter( 'wp_nav_menu', function( $html, $args ) {
+    if ( is_admin() ) return $html;
+    $wrong = [ 'Dienstleistungen', 'Rezensionen', 'Warum wir' ];
+    $found = false;
+    foreach ( $wrong as $w ) {
+        if ( strpos( $html, $w ) !== false ) { $found = true; break; }
+    }
+    if ( ! $found ) return $html;
+
+    $active = is_front_page() ? ' current-menu-item' : '';
+    return '<nav class="evogt-nav"><ul class="menu ast-menu-list">' .
+        '<li class="menu-item' . $active . '"><a href="' . esc_url( home_url( '/' ) ) . '">Digitales Werkverzeichnis</a></li>' .
+        '</ul></nav>';
+}, 10, 2 );
+
+// Desktop primary menu: prepend home link if absent
+add_filter( 'wp_nav_menu_items', function( $items, $args ) {
+    if ( empty( $args->theme_location ) || $args->theme_location !== 'primary' ) return $items;
+    if ( strpos( $items, esc_url( home_url( '/' ) ) ) !== false ) return $items;
+
+    $active = is_front_page() ? ' current-menu-item' : '';
+    return '<li class="menu-item' . $active . '"><a href="' . esc_url( home_url( '/' ) ) . '">Digitales Werkverzeichnis</a></li>' . $items;
+}, 10, 2 );
+
+// Layer 3 — JS MutationObserver safety net (all pages, no PHP dependency).
+// Fires on DOM-ready AND watches for Astra dynamically rendering the popup.
+add_action( 'wp_footer', function () {
+    $home_url = json_encode( home_url( '/' ) );
+    ?>
+<script>
+(function () {
+    var HOME  = <?php echo $home_url; ?>;
+    var ITEM  = '<li class="menu-item"><a href="' + HOME + '">Digitales Werkverzeichnis</a></li>';
+    var WRONG = ['Dienstleistungen', 'Rezensionen', 'Warum wir'];
+    var SELS  = ['.ast-mobile-popup-inner', '#ast-mobile-popup', '.ast-fly-menu-wrap', '.ast-popup-full-overlay .ast-builder-menu'];
+
+    function fix() {
+        SELS.forEach(function (s) {
+            document.querySelectorAll(s).forEach(function (el) {
+                var ul = el.querySelector('ul');
+                if (!ul) return;
+                if (!WRONG.some(function (w) { return ul.textContent.indexOf(w) !== -1; })) return;
+                ul.innerHTML = ITEM;
+            });
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        fix();
+        new MutationObserver(fix).observe(document.body, { childList: true, subtree: true });
+    });
+})();
+</script>
+    <?php
+}, 20 );
 
 // Forcefully inject our custom title block directly into Astra's Header everywhere
 // We use astra_site_identity to let it sit natively inside the flex layout
@@ -101,33 +199,32 @@ function evogt_api_get_works($request) {
     $db = evogt_get_db();
     if (!$db) return new WP_REST_Response('Database not found', 500);
 
-    $q = sanitize_text_field($request->get_param('q'));
+    $q = sanitize_text_field( trim( $request->get_param('q') ?? '' ) );
 
-    $stmt = $db->prepare("SELECT id, work_number, title, genre, instrumentation FROM works");
-    $stmt->execute();
-    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-    $results = [];
-    $search_term = $q ? mb_strtolower($q, 'UTF-8') : null;
-
-    foreach ($rows as $r) {
-        if ($search_term) {
-            $t = mb_strtolower($r['title'] ?? '', 'UTF-8');
-            $w = mb_strtolower($r['work_number'] ?? '', 'UTF-8');
-            $g = mb_strtolower($r['genre'] ?? '', 'UTF-8');
-            $i = mb_strtolower($r['instrumentation'] ?? '', 'UTF-8');
-            if (strpos($t, $search_term) === false
-                && strpos($w, $search_term) === false
-                && strpos($g, $search_term) === false
-                && strpos($i, $search_term) === false) {
-                continue;
-            }
+    if ( $q === '' ) {
+        // No search query — serve from transient cache (5-min TTL)
+        $rows = get_transient( 'evogt_all_works' );
+        if ( $rows === false ) {
+            $stmt = $db->query("SELECT id, work_number, title, genre, instrumentation FROM works ORDER BY work_number");
+            $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            usort($rows, 'natural_sort_logic');
+            set_transient( 'evogt_all_works', $rows, 5 * MINUTE_IN_SECONDS );
         }
-        $results[] = $r;
+    } else {
+        // Search: let SQLite do the filtering with LIKE
+        $like = '%' . $q . '%';
+        $stmt = $db->prepare(
+            "SELECT id, work_number, title, genre, instrumentation FROM works
+             WHERE title LIKE ? OR work_number LIKE ? OR genre LIKE ? OR instrumentation LIKE ?"
+        );
+        $stmt->execute([$like, $like, $like, $like]);
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        usort($rows, 'natural_sort_logic');
     }
 
-    usort($results, 'natural_sort_logic');
-    return new WP_REST_Response($results, 200);
+    $response = new WP_REST_Response($rows, 200);
+    $response->header('Cache-Control', 'public, max-age=60');
+    return $response;
 }
 
 function evogt_api_get_work($request) {
@@ -247,3 +344,6 @@ function evogt_api_set_pdf_rotation($request) {
 
     return new WP_REST_Response(['file_id' => $file_id, 'rotation' => $rotation, 'saved' => true], 200);
 }
+
+// Clear the works transient whenever it might be stale (e.g. admin saves a post)
+add_action( 'save_post', function() { delete_transient( 'evogt_all_works' ); } );

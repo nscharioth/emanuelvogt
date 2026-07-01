@@ -1,0 +1,346 @@
+/*
+Theme Name: Astra Child für Emanuel Vogt Archive
+Template: astra
+*/
+
+:root {
+    --bg-color: #0d0f12;
+    --card-bg: rgba(255, 255, 255, 0.03);
+    --accent-color: #d4af37; /* Brass/Gold */
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --serif-font: 'Playfair Display', serif;
+    --sans-font: 'Outfit', sans-serif;
+    --shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+/* Override Astra's default white backgrounds on the archive page */
+body.home, 
+body.home .site-content, 
+body.home .site, 
+body.home #page {
+    background-color: var(--bg-color) !important;
+    color: var(--text-primary) !important;
+}
+
+/* Base resets are usually handled by Astra, but let's constrain the app container */
+.app-container {
+    padding: 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    font-family: var(--sans-font);
+    min-height: 100vh;
+}
+
+/* Header */
+.main-header {
+    margin-bottom: 3rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    animation: fadeInDown 0.8s ease-out;
+}
+
+.brand h1 {
+    font-family: var(--serif-font);
+    font-size: 3.5rem;
+    color: var(--accent-color);
+    letter-spacing: -1px;
+}
+
+.brand .subtitle {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-top: -0.5rem;
+}
+
+/* Controls */
+.search-controls {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.search-box {
+    position: relative;
+    flex-grow: 1;
+}
+
+#searchInput {
+    width: 100%;
+    padding: 1.2rem 1.5rem 1.2rem 3.5rem;
+    background: var(--card-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    color: white;
+    font-size: 1.1rem;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+#searchInput:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.1);
+}
+
+.search-icon {
+    position: absolute;
+    left: 1.2rem;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0.5;
+}
+
+.genre-select {
+    padding: 1.2rem;
+    background: var(--card-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    color: white;
+    cursor: pointer;
+    min-width: 200px;
+}
+
+.stats {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+/* Rotation Controls */
+.rotation-btn {
+    padding: 6px 12px;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 6px;
+    color: #fff;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.rotation-btn:hover {
+    background: rgba(74, 144, 226, 0.2);
+    border-color: #4a90e2;
+}
+
+.rotation-btn.active {
+    background: #4a90e2;
+    color: white;
+    border-color: #4a90e2;
+}
+
+.save-rotation-btn:hover {
+    background: #357abd;
+}
+
+
+/* Grid */
+.content-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.work-card {
+    background: var(--card-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    padding: 1.5rem;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 180px;
+}
+
+.work-card:hover {
+    transform: translateY(-8px);
+    border-color: var(--accent-color);
+    background: rgba(255,255,255,0.06);
+    box-shadow: var(--shadow);
+}
+
+.work-card .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.card-number {
+    font-weight: 600;
+    color: var(--accent-color);
+    font-size: 0.9rem;
+    background: rgba(212, 175, 55, 0.1);
+    padding: 0.2rem 0.6rem;
+    border-radius: 6px;
+}
+
+.card-genre {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+}
+
+.card-title {
+    font-family: var(--serif-font);
+    font-size: 1.4rem;
+    line-height: 1.3;
+    margin-top: 1rem;
+}
+
+/* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.95);
+    z-index: 99999;
+    backdrop-filter: blur(5px);
+}
+
+.modal-content {
+    width: 95%;
+    height: 95%;
+    margin: 1.5rem auto;
+    background: #1a1e26;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+.modal-header {
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid var(--glass-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-info .work-num {
+    color: var(--accent-color);
+    font-weight: 600;
+}
+
+.modal-info h2 {
+    font-family: var(--serif-font);
+    font-size: 1.8rem;
+    margin:0;
+    color: white;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 2.5rem;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.viewer-body {
+    flex-grow: 1;
+    display: flex;
+    overflow: hidden;
+}
+
+.file-sidebar {
+    width: 300px;
+    padding: 1.5rem;
+    border-right: 1px solid var(--glass-border);
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    background: rgba(0,0,0,0.2);
+    overflow-y: auto;
+}
+
+.file-item {
+    padding: 1rem;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid transparent;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: white;
+}
+
+.file-item p {margin:0;}
+.file-item small {color:#aaa;}
+
+.file-item:hover {
+    background: rgba(255,255,255,0.1);
+}
+
+.file-item.active {
+    border-color: var(--accent-color);
+    background: rgba(212, 175, 55, 0.1);
+}
+
+.pdf-frame {
+    flex-grow: 1;
+    position: relative;
+    background: #252a33;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.pdf-viewer-area {
+    flex-grow: 1;
+    position: relative;
+    overflow: hidden;
+    min-height: 0;
+}
+
+.pdf-rotation-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s ease;
+}
+
+#pdfFrame {
+    border: none;
+    width: 100%;
+    height: 100%;
+}
+
+.placeholder {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: var(--text-secondary);
+}
+
+/* Animations */
+@keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes gridFadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
