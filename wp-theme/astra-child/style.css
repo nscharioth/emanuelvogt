@@ -168,6 +168,7 @@ footer {
 /* Base resets are usually handled by Astra, but let's constrain the app container */
 .app-container {
     padding: 2rem;
+    width: 100%;
     max-width: 1400px;
     margin: 0 auto;
     background-color: var(--bg-color);
@@ -208,12 +209,14 @@ footer {
     flex-wrap: wrap;
     gap: 1rem;
     align-items: center;
+    width: 100%;
 }
 
 .search-box {
     position: relative;
-    flex-grow: 1;
-    min-width: 300px;
+    flex: 1 1 0;
+    min-width: 0;
+    width: 100%;
 }
 
 #searchInput {
@@ -387,6 +390,8 @@ footer {
 }
 
 .load-all-btn {
+    display: block;
+    width: 100%;
     margin-top: 1rem;
     padding: 0.9rem 1.4rem;
     border: 1px solid var(--accent-color);
@@ -657,7 +662,7 @@ footer {
     }
 
     .evogt-custom-brand-wrap img {
-        height: 44px !important;
+        height: 54px !important;
     }
 
     /* --- App Container --- */
@@ -789,7 +794,7 @@ footer {
     }
 
     .evogt-custom-brand-wrap img {
-        height: 36px !important;
+        height: 44px !important;
     }
 
     .app-container {

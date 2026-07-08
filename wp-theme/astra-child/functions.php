@@ -16,11 +16,11 @@ function astra_child_enqueue_styles() {
     wp_enqueue_style( 'evogt-fonts', 'https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap', array(), null );
     
     // Child theme style
-        wp_enqueue_style( 'evogt-app', get_stylesheet_directory_uri() . '/style.css', array('astra-parent-style'), '1.4.0' );
+        wp_enqueue_style( 'evogt-app', get_stylesheet_directory_uri() . '/style.css', array('astra-parent-style'), '1.5.0' );
     
     // Only load the archive application logic on the front page
     if ( is_front_page() || is_page_template('front-page.php') ) {
-        wp_enqueue_script( 'evogt-app-js', get_stylesheet_directory_uri() . '/assets/js/app.js', array(), '1.4.0', true );
+        wp_enqueue_script( 'evogt-app-js', get_stylesheet_directory_uri() . '/assets/js/app.js', array(), '1.5.0', true );
         wp_localize_script( 'evogt-app-js', 'evogtSettings', array(
             'apiUrl'     => rest_url( 'evogt/v1' ),
             'pdfBaseUrl' => EVOGT_PDF_URL,
@@ -63,7 +63,9 @@ function evogt_get_mobile_menu_items() {
     $current_page_id = get_queried_object_id();
     $items = [
         [ 'title' => 'Über Emanuel Vogt', 'slug' => 'ueber-emanuel-vogt' ],
+        [ 'title' => 'Das Projekt „EVV – Emanuel-Vogt-Verzeichnis“', 'slug' => 'das-projekt' ],
         [ 'title' => 'Über das Werkverzeichnis', 'slug' => 'ueber-das-werkverzeichnis' ],
+        [ 'title' => 'Kontakt', 'slug' => 'kontakt' ],
         [ 'title' => 'Datenschutzerklärung', 'slug' => 'datenschutzerklaerung' ],
         [ 'title' => 'Impressum', 'slug' => 'impressum' ],
     ];
@@ -149,7 +151,7 @@ add_action('astra_site_identity', function() {
                 <span id="evogt-site-title" style="color: #d4af37 !important; font-family: Outfit, sans-serif !important; font-weight: 700 !important; font-size: 2.2rem !important; line-height: 1.1 !important; text-transform: uppercase !important; letter-spacing: 0.5px;">EMANUEL VOGT</span>
                 <span id="evogt-site-subtitle" style="font-size: 0.95rem; font-family: Outfit, sans-serif !important; color: #a8a8a8 !important; text-transform: none; letter-spacing: 0.5px; margin-top: 4px;">Digitales Werkverzeichnis</span>
             </a>
-            <img src="https://emanuel-vogt.info/wp-content/uploads/2026/07/emanuel-vogt-portrait-copyright-johannes-vogt-krause.jpg" alt="Emanuel Vogt" style="height: 68px; width: auto; border-radius: 50%; object-fit: cover; flex-shrink: 0;">
+            <img src="https://emanuel-vogt.info/wp-content/uploads/2026/07/emanuel-vogt-portrait-copyright-johannes-vogt-krause.jpg" alt="Emanuel Vogt" style="height: 85px; width: auto; border-radius: 50%; object-fit: cover; flex-shrink: 0;">
           </div>';
 }, 1);
 
