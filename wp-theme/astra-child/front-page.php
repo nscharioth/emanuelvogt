@@ -52,6 +52,10 @@ get_header(); ?>
                         <div id="viewerPlaceholder" class="placeholder">
                             <p>Wählen Sie eine Datei zur Ansicht aus</p>
                         </div>
+                        <div id="audioPlayer" class="audio-player" style="display: none;">
+                            <p class="audio-player-title" id="audioTitle"></p>
+                            <audio id="audioElement" controls preload="none"></audio>
+                        </div>
                     </div>
                     <?php if (current_user_can('edit_posts')) : ?>
                     <div id="rotationControls" style="display: none; padding: 10px; background: rgba(0,0,0,0.8); border-top: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; gap: 10px; flex-shrink: 0;">

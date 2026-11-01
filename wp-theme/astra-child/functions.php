@@ -16,11 +16,11 @@ function astra_child_enqueue_styles() {
     wp_enqueue_style( 'evogt-fonts', 'https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap', array(), null );
     
     // Child theme style
-        wp_enqueue_style( 'evogt-app', get_stylesheet_directory_uri() . '/style.css', array('astra-parent-style'), '1.5.0' );
+        wp_enqueue_style( 'evogt-app', get_stylesheet_directory_uri() . '/style.css', array('astra-parent-style'), '1.6.0' );
     
     // Only load the archive application logic on the front page
     if ( is_front_page() || is_page_template('front-page.php') ) {
-        wp_enqueue_script( 'evogt-app-js', get_stylesheet_directory_uri() . '/assets/js/app.js', array(), '1.5.0', true );
+        wp_enqueue_script( 'evogt-app-js', get_stylesheet_directory_uri() . '/assets/js/app.js', array(), '1.6.0', true );
         wp_localize_script( 'evogt-app-js', 'evogtSettings', array(
             'apiUrl'     => rest_url( 'evogt/v1' ),
             'pdfBaseUrl' => EVOGT_PDF_URL,
@@ -196,6 +196,13 @@ add_action('rest_api_init', function () {
             return current_user_can('edit_posts');
         }
     ));
+
+    // Recordings uploaded via the WP media library (linked by caption)
+    register_rest_route('evogt/v1', '/recordings', array(
+        'methods' => 'GET',
+        'callback' => 'evogt_api_get_recordings',
+        'permission_callback' => '__return_true'
+    ));
 });
 
 function evogt_get_db() {
@@ -283,7 +290,113 @@ function evogt_api_get_work($request) {
 
     $work['files'] = $files;
 
+    // Transcriptions and recordings from the media library, linked via caption = original filename
+    $media_map = evogt_get_media_map();
+    $work['transcriptions'] = [];
+    $work['audio'] = [];
+    foreach ($file_rows as $f) {
+        $key = strtolower(trim($f['filename']));
+        if (empty($media_map[$key])) continue;
+        $work['transcriptions'] = array_merge($work['transcriptions'], $media_map[$key]['transcriptions']);
+        $work['audio'] = array_merge($work['audio'], $media_map[$key]['audio']);
+    }
+
     return new WP_REST_Response($work, 200);
+}
+
+/**
+ * Media library attachments (PDF / audio) whose caption ("Kurzbeschreibung")
+ * names an original archive file, e.g. "60-windsbacher-turm-intrade.pdf".
+ * Returns caption => ['transcriptions' => [...], 'audio' => [...]], newest first.
+ */
+function evogt_get_media_map() {
+    $map = get_transient( 'evogt_media_map' );
+    if ( $map !== false ) return $map;
+
+    global $wpdb;
+    $rows = $wpdb->get_results(
+        "SELECT ID, post_title, post_excerpt, post_mime_type, post_date
+         FROM {$wpdb->posts}
+         WHERE post_type = 'attachment'
+           AND (post_mime_type = 'application/pdf' OR post_mime_type LIKE 'audio/%')
+           AND post_excerpt <> ''
+         ORDER BY post_date DESC",
+        ARRAY_A
+    );
+
+    $map = [];
+    foreach ($rows as $row) {
+        $key = strtolower(trim($row['post_excerpt']));
+        if (!isset($map[$key])) {
+            $map[$key] = ['transcriptions' => [], 'audio' => []];
+        }
+
+        $item = array(
+            'attachment_id' => (int) $row['ID'],
+            'title' => $row['post_title'],
+            'url' => wp_get_attachment_url($row['ID']),
+            'date' => $row['post_date']
+        );
+        $meta = wp_get_attachment_metadata($row['ID']);
+
+        if (strpos($row['post_mime_type'], 'audio/') === 0) {
+            $item['length_formatted'] = $meta['length_formatted'] ?? '';
+            $map[$key]['audio'][] = $item;
+        } else {
+            $item['size'] = $meta['filesize'] ?? 0;
+            $map[$key]['transcriptions'][] = $item;
+        }
+    }
+
+    set_transient( 'evogt_media_map', $map, 12 * HOUR_IN_SECONDS );
+    return $map;
+}
+
+function evogt_api_get_recordings() {
+    $db = evogt_get_db();
+    if (!$db) return new WP_REST_Response('Database not found', 500);
+
+    $media_map = array_filter(evogt_get_media_map(), function ($m) { return !empty($m['audio']); });
+    if (!$media_map) return new WP_REST_Response([], 200);
+
+    $captions = array_keys($media_map);
+    $placeholders = implode(',', array_fill(0, count($captions), '?'));
+    $stmt = $db->prepare("
+        SELECT w.id, w.work_number, w.title, w.genre, f.filename
+        FROM files f
+        JOIN works w ON w.id = f.work_id
+        WHERE LOWER(f.filename) IN ($placeholders)
+    ");
+    $stmt->execute($captions);
+
+    $works_by_caption = [];
+    foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        $works_by_caption[strtolower($row['filename'])] = $row;
+    }
+
+    $recordings = [];
+    foreach ($media_map as $caption => $media) {
+        if (empty($works_by_caption[$caption])) {
+            error_log('evogt: media caption matches no archive file: ' . $caption);
+            continue;
+        }
+        $work = $works_by_caption[$caption];
+        foreach ($media['audio'] as $audio) {
+            $recordings[] = array(
+                'work_id' => (int) $work['id'],
+                'work_number' => $work['work_number'],
+                'title' => $work['title'],
+                'genre' => $work['genre'],
+                'audio_url' => $audio['url'],
+                'length_formatted' => $audio['length_formatted'],
+                'date' => $audio['date']
+            );
+        }
+    }
+
+    usort($recordings, function ($a, $b) { return strcmp($b['date'], $a['date']); });
+
+    return new WP_REST_Response($recordings, 200);
 }
 
 function evogt_api_get_genres() {
@@ -363,3 +476,8 @@ function evogt_api_set_pdf_rotation($request) {
 
 // Clear the works transient whenever it might be stale (e.g. admin saves a post)
 add_action( 'save_post', function() { delete_transient( 'evogt_all_works' ); } );
+
+// Rebuild the media map whenever an attachment is uploaded, edited (caption) or deleted
+foreach ( [ 'add_attachment', 'edit_attachment', 'attachment_updated', 'delete_attachment', 'deleted_post' ] as $evogt_hook ) {
+    add_action( $evogt_hook, function() { delete_transient( 'evogt_media_map' ); } );
+}

@@ -8,6 +8,8 @@ Template: astra
     --card-bg: rgba(255, 255, 255, 0.03);
     --accent-color: #d4af37;
     /* Brass/Gold */
+    --transcription-color: #3fb8a5;
+    /* Teal: Neusatz / transcribed scores */
     --text-primary: #f8fafc;
     --text-secondary: #94a3b8;
     --glass-border: rgba(255, 255, 255, 0.08);
@@ -475,6 +477,51 @@ footer {
     /* Force white to override Astra's default heading colors */
 }
 
+/* Recordings section below the empty state */
+.recordings-section {
+    grid-column: 1 / -1;
+    margin-top: 2rem;
+}
+
+.recordings-heading {
+    font-family: var(--serif-font);
+    font-size: 1.6rem;
+    margin: 0 0 1rem;
+    color: var(--text-primary) !important;
+}
+
+.recordings-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.recording-card {
+    height: auto;
+    min-height: 180px;
+}
+
+.recording-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-top: 1rem;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.recording-play {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.2rem;
+    height: 2.2rem;
+    border-radius: 50%;
+    background: var(--accent-color);
+    color: var(--bg-color);
+    font-size: 0.85rem;
+}
+
 /* Modal */
 .modal {
     display: none;
@@ -571,6 +618,58 @@ footer {
 .file-item.active {
     border-color: var(--accent-color);
     background: rgba(212, 175, 55, 0.1);
+}
+
+/* Neusatz (transcribed PDF from the media library) */
+.file-item--transcription {
+    border-left: 3px solid var(--transcription-color);
+}
+
+.file-item--transcription p {
+    color: var(--transcription-color);
+    font-weight: 600;
+}
+
+.file-item--transcription.active {
+    border-color: var(--transcription-color);
+    background: rgba(63, 184, 165, 0.12);
+}
+
+/* Recording (audio from the media library) */
+.file-item--audio {
+    border-left: 3px solid var(--accent-color);
+}
+
+.file-item--audio p {
+    color: var(--accent-color);
+    font-weight: 600;
+}
+
+.audio-player {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: calc(100% - 2rem);
+    max-width: 600px;
+    padding: 1.5rem;
+    flex-direction: column;
+    gap: 1rem;
+    background: rgba(0, 0, 0, 0.35);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+}
+
+.audio-player-title {
+    margin: 0;
+    font-family: var(--serif-font);
+    font-size: 1.2rem;
+    color: var(--text-primary);
+    text-align: center;
+}
+
+.audio-player audio {
+    width: 100%;
 }
 
 .pdf-frame {
@@ -699,6 +798,19 @@ footer {
     .work-card {
         height: auto;
         min-height: 110px;
+    }
+
+    .recordings-section {
+        margin-top: 1.5rem;
+    }
+
+    .recordings-grid {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
+
+    .audio-player {
+        padding: 1rem;
     }
 
     /* Disable hover lift effect (no hover on touch) */
