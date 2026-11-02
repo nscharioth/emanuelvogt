@@ -16,11 +16,11 @@ function astra_child_enqueue_styles() {
     wp_enqueue_style( 'evogt-fonts', 'https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap', array(), null );
     
     // Child theme style
-        wp_enqueue_style( 'evogt-app', get_stylesheet_directory_uri() . '/style.css', array('astra-parent-style'), '1.6.0' );
+        wp_enqueue_style( 'evogt-app', get_stylesheet_directory_uri() . '/style.css', array('astra-parent-style'), '1.6.1' );
     
     // Only load the archive application logic on the front page
     if ( is_front_page() || is_page_template('front-page.php') ) {
-        wp_enqueue_script( 'evogt-app-js', get_stylesheet_directory_uri() . '/assets/js/app.js', array(), '1.6.0', true );
+        wp_enqueue_script( 'evogt-app-js', get_stylesheet_directory_uri() . '/assets/js/app.js', array(), '1.6.1', true );
         wp_localize_script( 'evogt-app-js', 'evogtSettings', array(
             'apiUrl'     => rest_url( 'evogt/v1' ),
             'pdfBaseUrl' => EVOGT_PDF_URL,

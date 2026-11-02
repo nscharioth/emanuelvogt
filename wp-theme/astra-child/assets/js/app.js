@@ -40,7 +40,7 @@ let recordingsCache = null;
 async function renderRecordings() {
     if (recordingsCache === null) {
         try {
-            const res = await fetch(`${API_BASE}/recordings`);
+            const res = await fetch(`${API_BASE}/recordings`, { cache: 'no-cache' });
             recordingsCache = res.ok ? await res.json() : [];
         } catch (err) {
             console.error('Recordings load error:', err);
@@ -114,7 +114,7 @@ function renderWorks(works) {
 }
 
 async function openWorkDetail(workId, options = {}) {
-    const res = await fetch(`${API_BASE}/work/${workId}`);
+    const res = await fetch(`${API_BASE}/work/${workId}`, { cache: 'no-cache' });
     const work = await res.json();
     const transcriptions = work.transcriptions || [];
     const audio = work.audio || [];
