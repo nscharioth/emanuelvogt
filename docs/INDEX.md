@@ -50,6 +50,10 @@ Dieses Verzeichnis enthält alle technischen Reports und Dokumentation zum Proje
 - **PHASE10_PDF_ROTATION.md** - Persistentes PDF-Rotationssystem
 - **Status**: ✅ Abgeschlossen - Backend PyPDF2 + Frontend CSS Hybrid
 
+#### Phase 12: WordPress-Plugin Werkverzeichnis
+- **PHASE12_WP_PLUGIN_WERKVERZEICHNIS.md** - Admin-Bereich für Werke (Titel, Neusatz-PDF, Aufnahme, Kommentar), Installation und Datenbank-Sync
+- **WP_IMPLEMENTATION_PLAN.md** - Ursprünglicher WordPress-Migrationsplan (Child-Theme)
+
 ## Technologie-Stack
 
 - **Backend**: Python, FastAPI, SQLite, PyPDF2

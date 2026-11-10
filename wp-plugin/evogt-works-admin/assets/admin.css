@@ -1,0 +1,33 @@
+/* EmanuelVogt Werkverzeichnis – admin styles */
+.evogt-wrap .evogt-muted { color: #646970; }
+.evogt-wrap .evogt-yes { color: #00a32a; }
+.evogt-wrap .evogt-row-id { color: #646970; font-size: 12px; margin-top: 2px; }
+
+/* List table */
+.evogt-wrap .wp-list-table .column-work_number { width: 70px; }
+.evogt-wrap .wp-list-table .column-genre,
+.evogt-wrap .wp-list-table .column-instrumentation { width: 12%; }
+.evogt-wrap .wp-list-table .column-originals,
+.evogt-wrap .wp-list-table .column-transcription,
+.evogt-wrap .wp-list-table .column-audio,
+.evogt-wrap .wp-list-table .column-comment { width: 80px; text-align: center; }
+
+/* Edit form */
+.evogt-inline-label { margin: 0 6px 0 16px; }
+.evogt-file-list { margin: 0; }
+.evogt-file-list li { margin: 0 0 6px; }
+.evogt-file-list .dashicons { color: #646970; vertical-align: text-bottom; }
+.evogt-media-field { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
+.evogt-media-field .evogt-media-preview { flex: 1 1 100%; margin: 0 0 4px; }
+.evogt-media-field .evogt-media-preview .dashicons { vertical-align: text-bottom; }
+.evogt-media-field .evogt-media-remove { color: #b32d2e; text-decoration: none; }
+.evogt-media-field .evogt-media-remove:hover { text-decoration: underline; }
+.evogt-media-field .evogt-media-remove[hidden] { display: none; }
+
+/* Tools page */
+.evogt-status-table { max-width: 900px; margin-bottom: 16px; }
+.evogt-status-table th { width: 300px; }
+.evogt-tool-actions { display: flex; flex-wrap: wrap; gap: 24px; margin-bottom: 24px; }
+.evogt-tool-actions form { max-width: 420px; }
+.evogt-log { margin: 12px 0 24px; max-width: 900px; }
+.evogt-log pre { background: #fff; border: 1px solid #c3c4c7; padding: 12px; max-height: 320px; overflow: auto; white-space: pre-wrap; }

@@ -21,6 +21,11 @@ Represents a musical composition.
 | `instrumentation` | TEXT | e.g., "SATB", "Orgel". |
 | `notes` | TEXT | Any additional metadata. |
 | `created_at` | DATETIME | Record creation timestamp. |
+| `has_musicxml` | INTEGER | 1 if a MusicXML file exists for the work. |
+| `comment` | TEXT | Free-text note edited in the WP plugin, shown in the work dialog (Phase 12). |
+| `transcription_attachment_id` | INTEGER | WP media-library ID of the transcribed PDF ("Neusatz"); site-specific (Phase 12). |
+| `audio_attachment_id` | INTEGER | WP media-library ID of the recording ("Aufnahme"); site-specific (Phase 12). |
+| `updated_at` | TEXT | Set by the plugin on every change (UTC). No default: SQLite forbids non-constant defaults in ALTER TABLE (Phase 12). |
 
 ### `files`
 Represents a digital file in the archive.

@@ -11,6 +11,13 @@ const API_BASE = window.evogtSettings ? window.evogtSettings.apiUrl : '/api';
 // We don't always need pdfBaseUrl immediately since the API returns absolute URLs for files, 
 // but we keep it just in case.
 
+// Always ask for fresh data: the hosting caches API URLs for weeks, so every
+// request gets a unique query parameter and bypasses browser and proxy caches.
+function apiFetch(path) {
+    const sep = path.includes('?') ? '&' : '?';
+    return fetch(`${API_BASE}${path}${sep}_=${Date.now()}`, { cache: 'no-store' });
+}
+
 // Initial Load
 async function init() {
     renderEmptyState();
@@ -40,7 +47,7 @@ let recordingsCache = null;
 async function renderRecordings() {
     if (recordingsCache === null) {
         try {
-            const res = await fetch(`${API_BASE}/recordings`, { cache: 'no-cache' });
+            const res = await apiFetch('/recordings');
             recordingsCache = res.ok ? await res.json() : [];
         } catch (err) {
             console.error('Recordings load error:', err);
@@ -90,7 +97,7 @@ async function performSearch(options = {}) {
     // Show loading indicator while fetching
     resultsGrid.innerHTML = '<div class="loading-state"><div class="loading-spinner"></div><br>Lade Archiv…</div>';
 
-    const res = await fetch(`${API_BASE}/works?q=${encodeURIComponent(query)}`);
+    const res = await apiFetch(`/works?q=${encodeURIComponent(query)}`);
     const works = await res.json();
     renderWorks(works);
     statsCounter.innerText = query ? `${works.length} Werke gefunden` : `${works.length} Werke geladen`;
@@ -114,13 +121,20 @@ function renderWorks(works) {
 }
 
 async function openWorkDetail(workId, options = {}) {
-    const res = await fetch(`${API_BASE}/work/${workId}`, { cache: 'no-cache' });
+    const res = await apiFetch(`/work/${workId}`);
     const work = await res.json();
     const transcriptions = work.transcriptions || [];
     const audio = work.audio || [];
 
     document.getElementById('modalWorkNum').innerText = work.work_number;
     document.getElementById('modalTitle').innerText = work.title;
+
+    // Comment box: HTML comes already sanitised (wp_kses_post + wpautop) from the API
+    const commentBox = document.getElementById('workComment');
+    if (commentBox) {
+        commentBox.innerHTML = work.comment || '';
+        commentBox.hidden = !work.comment;
+    }
 
     const fileList = document.getElementById('fileList');
     const originalItems = work.files.map(file => `

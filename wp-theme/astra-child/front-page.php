@@ -36,6 +36,8 @@ get_header(); ?>
                 </div>
                 <button class="close-btn" onclick="closeViewer()">&times;</button>
             </header>
+            <!-- Kommentar zum Werk (aus dem Werkverzeichnis-Plugin), nur sichtbar wenn vorhanden -->
+            <div id="workComment" class="work-comment" hidden></div>
             <div class="viewer-body">
                 <div class="file-sidebar" id="fileList">
                     <!-- File buttons -->
