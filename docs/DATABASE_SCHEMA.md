@@ -26,6 +26,8 @@ Represents a musical composition.
 | `transcription_attachment_id` | INTEGER | WP media-library ID of the transcribed PDF ("Neusatz"); site-specific (Phase 12). |
 | `audio_attachment_id` | INTEGER | WP media-library ID of the recording ("Aufnahme"); site-specific (Phase 12). |
 | `updated_at` | TEXT | Set by the plugin on every change (UTC). No default: SQLite forbids non-constant defaults in ALTER TABLE (Phase 12). |
+| `transcription2_attachment_id` | INTEGER | Second transcribed PDF, same rules as the first (plugin schema 2). |
+| `audio2_attachment_id` | INTEGER | Second recording, same rules as the first (plugin schema 2). |
 
 ### `files`
 Represents a digital file in the archive.
@@ -41,7 +43,7 @@ Represents a digital file in the archive.
 | `width` | INTEGER | Width in pixels/points. |
 | `height` | INTEGER | Height in pixels/points. |
 | `dpi` | INTEGER | Estimated DPI. |
-| `is_public` | BOOLEAN | Visibility toggle (default True). |
+| `is_public` | BOOLEAN | Visibility toggle (default True). Set to 0 by the plugin's "ausblenden" tick box: the scan is left out of the website's work dialog, but the file stays reachable by direct URL. |
 
 ### `collections` (Optional for later)
 Groupings like "Christmas Oratorio" or "Juvenilia".

@@ -50,6 +50,7 @@ class EVOGT_Works_List_Table extends WP_List_Table {
             'aufnahme'     => 'Mit Aufnahme',
             'kommentar'    => 'Mit Kommentar',
             'ohne_dateien' => 'Ohne Dateien',
+            'ausgeblendet' => 'Mit ausgeblendeten Originalen',
         );
 
         $out = array();
@@ -69,7 +70,7 @@ class EVOGT_Works_List_Table extends WP_List_Table {
 
     public function current_filter() {
         $filter = isset( $_REQUEST['filter'] ) ? sanitize_key( $_REQUEST['filter'] ) : 'all';
-        return in_array( $filter, array( 'all', 'neusatz', 'aufnahme', 'kommentar', 'ohne_dateien' ), true ) ? $filter : 'all';
+        return in_array( $filter, array( 'all', 'neusatz', 'aufnahme', 'kommentar', 'ohne_dateien', 'ausgeblendet' ), true ) ? $filter : 'all';
     }
 
     public function current_search() {
@@ -126,15 +127,17 @@ class EVOGT_Works_List_Table extends WP_List_Table {
 
     public function column_originals( $item ) {
         $n = (int) $item['file_count'];
-        return $n ? number_format_i18n( $n ) : '<span class="evogt-muted">0</span>';
+        if ( ! $n ) return '<span class="evogt-muted">0</span>';
+        $hidden = (int) $item['hidden_count'];
+        return number_format_i18n( $n ) . ( $hidden ? ' <span class="evogt-muted" title="ausgeblendet">(' . $hidden . ' aus)</span>' : '' );
     }
 
     public function column_transcription( $item ) {
-        return $this->check( ! empty( $item['transcription_attachment_id'] ) );
+        return $this->count_mark( array( $item['transcription_attachment_id'], $item['transcription2_attachment_id'] ) );
     }
 
     public function column_audio( $item ) {
-        return $this->check( ! empty( $item['audio_attachment_id'] ) );
+        return $this->count_mark( array( $item['audio_attachment_id'], $item['audio2_attachment_id'] ) );
     }
 
     public function column_comment( $item ) {
@@ -143,6 +146,13 @@ class EVOGT_Works_List_Table extends WP_List_Table {
 
     public function column_default( $item, $column_name ) {
         return isset( $item[ $column_name ] ) ? esc_html( $item[ $column_name ] ) : '';
+    }
+
+    /** Tick for one linked file, "2" for two. */
+    private function count_mark( array $ids ) {
+        $n = count( array_filter( $ids ) );
+        if ( $n < 2 ) return $this->check( $n === 1 );
+        return '<span class="dashicons dashicons-yes evogt-yes" aria-label="ja"></span><span class="evogt-count">2</span>';
     }
 
     private function check( $yes ) {

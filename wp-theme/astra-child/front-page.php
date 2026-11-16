@@ -59,6 +59,7 @@ get_header(); ?>
                             <audio id="audioElement" controls preload="none"></audio>
                         </div>
                     </div>
+                    <p id="capellaNote" class="capella-note" hidden>Notensatz mit Capella 10 erstellt.</p>
                     <?php if (current_user_can('edit_posts')) : ?>
                     <div id="rotationControls" style="display: none; padding: 10px; background: rgba(0,0,0,0.8); border-top: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; gap: 10px; flex-shrink: 0;">
                         <span style="font-size: 0.9rem; font-weight: 600; color: #ccc;">PDF Rotation (Admin):</span>

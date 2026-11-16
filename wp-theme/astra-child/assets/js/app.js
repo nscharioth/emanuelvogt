@@ -63,7 +63,7 @@ async function renderRecordings() {
         <h2 class="recordings-heading">Aufnahmen</h2>
         <div class="recordings-grid">
             ${recordingsCache.map(rec => `
-                <div class="work-card recording-card" onclick="openWorkDetail(${rec.work_id}, { autoplayAudio: true })">
+                <div class="work-card recording-card" onclick="openWorkDetail(${rec.work_id}, { autoplayAudio: true, audioUrl: '${jsArg(rec.audio_url)}' })">
                     <div class="card-header">
                         <span class="card-number">${rec.work_number}</span>
                         <span class="card-genre">${rec.genre || ''}</span>
@@ -144,21 +144,22 @@ async function openWorkDetail(workId, options = {}) {
         </div>
     `);
     // Transcriptions and audio come from the WP media library (attachment IDs, no rotation)
-    const transcriptionItems = transcriptions.map(t => `
+    const transcriptionItems = transcriptions.map((t, i) => `
         <div class="file-item file-item--transcription" onclick="loadFile(0, 0, '${jsArg(t.title)}', '${jsArg(t.url)}', this, 'transcription')">
-            <p>Neusatz (PDF)</p>
+            <p>Neusatz (PDF)${transcriptions.length > 1 ? ` ${i + 1}` : ''}</p>
             <small>${t.title}</small>
         </div>
     `);
-    const audioItems = audio.map(a => `
-        <div class="file-item file-item--audio" onclick="loadFile(0, 0, '${jsArg(a.title)}', '${jsArg(a.url)}', this, 'audio')">
-            <p>♪ Aufnahme anhören</p>
+    const audioItems = audio.map((a, i) => `
+        <div class="file-item file-item--audio" data-audio-url="${jsArg(a.url)}" onclick="loadFile(0, 0, '${jsArg(a.title)}', '${jsArg(a.url)}', this, 'audio')">
+            <p>♪ Aufnahme${audio.length > 1 ? ` ${i + 1}` : ''} anhören</p>
             <small>${a.length_formatted || a.title}</small>
         </div>
     `);
     fileList.innerHTML = [...originalItems, ...transcriptionItems, ...audioItems].join('');
 
     stopAudio();
+    setCapellaNote(false);
     document.getElementById('pdfFrame').src = '';
     document.getElementById('pdfFrame').style.display = 'none';
     document.getElementById('viewerPlaceholder').style.display = 'block';
@@ -166,10 +167,29 @@ async function openWorkDetail(workId, options = {}) {
     viewerModal.style.display = 'block';
 
     if (options.autoplayAudio && audio.length) {
-        loadFile(0, 0, audio[0].title, audio[0].url, fileList.querySelector('.file-item--audio'), 'audio');
+        // A recording tile names its MP3; fall back to the first one
+        const index = Math.max(0, audio.findIndex(a => a.url === options.audioUrl));
+        const items = fileList.querySelectorAll('.file-item--audio');
+        loadFile(0, 0, audio[index].title, audio[index].url, items[index] || items[0], 'audio');
     } else if (work.files.length === 1) {
         loadFile(work.files[0].id, work.files[0].rotation || 0, work.files[0].filename, work.files[0].url, fileList.firstElementChild);
     }
+}
+
+// Small note under a displayed transcription. Created on demand, because the
+// hosting may still serve an older cached front-page template without it.
+function setCapellaNote(visible) {
+    let note = document.getElementById('capellaNote');
+    if (!note && visible) {
+        const area = document.querySelector('.pdf-viewer-area');
+        if (!area) return;
+        note = document.createElement('p');
+        note.id = 'capellaNote';
+        note.className = 'capella-note';
+        note.textContent = 'Notensatz mit Capella 10 erstellt.';
+        area.insertAdjacentElement('afterend', note);
+    }
+    if (note) note.hidden = !visible;
 }
 
 function stopAudio() {
@@ -199,6 +219,8 @@ function loadFile(fileId, rotation, filename, fileUrl, element, kind = 'original
 
     // Reset iframe class
     pdfFrame.className = '';
+
+    setCapellaNote(kind === 'transcription');
 
     if (kind !== 'original') {
         if (rotationControls) rotationControls.style.display = 'none';
@@ -311,6 +333,7 @@ function closeViewer() {
     viewerModal.style.display = 'none';
     document.getElementById('pdfFrame').src = '';
     stopAudio();
+    setCapellaNote(false);
     const rotationControls = document.getElementById('rotationControls');
     if (rotationControls) rotationControls.style.display = 'none';
     currentFileId = null;

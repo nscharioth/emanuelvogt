@@ -9,3 +9,4 @@ delete_transient( 'evogt_all_works' );
 delete_transient( 'evogt_recordings' );
 delete_transient( 'evogt_schema_checked' );
 delete_transient( 'evogt_admin_flash' );
+delete_transient( 'evogt_schema_upgrade_failed' );

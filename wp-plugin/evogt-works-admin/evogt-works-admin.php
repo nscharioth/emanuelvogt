@@ -2,7 +2,7 @@
 /**
  * Plugin Name: EmanuelVogt Werkverzeichnis
  * Description: Verwaltung der Werke des Emanuel-Vogt-Archivs (SQLite archive.db): Titel, Neusatz-PDF, Aufnahme, Kommentar. Stellt die REST-API evogt/v1 für das Theme bereit.
- * Version: 1.0.1
+ * Version: 1.1.0
  * Requires PHP: 7.4
  * Author: Emanuel-Vogt-Archiv
  * Text Domain: evogt
@@ -10,7 +10,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-define( 'EVOGT_PLUGIN_VERSION', '1.0.1' );
+define( 'EVOGT_PLUGIN_VERSION', '1.1.0' );
 define( 'EVOGT_PLUGIN_FILE', __FILE__ );
 define( 'EVOGT_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'EVOGT_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
@@ -36,6 +36,7 @@ if ( is_admin() ) {
 }
 
 add_action( 'rest_api_init', 'evogt_register_rest_routes' );
+add_action( 'init', 'evogt_upgrade_schema_on_init', 5 );
 add_action( 'admin_init', 'evogt_maybe_migrate_schema' );
 add_action( 'delete_attachment', 'evogt_detach_attachment' );
 

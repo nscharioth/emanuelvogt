@@ -5,7 +5,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-const EVOGT_SCHEMA_VERSION = 1;
+const EVOGT_SCHEMA_VERSION = 2;
 
 /**
  * Columns added by this plugin => ALTER statement.
@@ -18,6 +18,9 @@ function evogt_schema_columns() {
         'transcription_attachment_id' => 'ALTER TABLE works ADD COLUMN transcription_attachment_id INTEGER',
         'audio_attachment_id'         => 'ALTER TABLE works ADD COLUMN audio_attachment_id INTEGER',
         'updated_at'                  => 'ALTER TABLE works ADD COLUMN updated_at TEXT',
+        // Schema version 2: second transcribed PDF and second recording per work
+        'transcription2_attachment_id' => 'ALTER TABLE works ADD COLUMN transcription2_attachment_id INTEGER',
+        'audio2_attachment_id'         => 'ALTER TABLE works ADD COLUMN audio2_attachment_id INTEGER',
     );
 }
 
@@ -62,6 +65,7 @@ function evogt_schema_migrate( $backup = true ) {
         }
         $db->commit();
         $db->exec( 'CREATE INDEX IF NOT EXISTS idx_works_audio_attachment ON works(audio_attachment_id)' );
+        $db->exec( 'CREATE INDEX IF NOT EXISTS idx_works_audio2_attachment ON works(audio2_attachment_id)' );
     } catch ( PDOException $e ) {
         if ( $db->inTransaction() ) $db->rollBack();
         return new WP_Error( 'alter_failed', 'Schema-Migration fehlgeschlagen: ' . $e->getMessage() );
@@ -82,7 +86,7 @@ function evogt_maybe_migrate_schema() {
     if ( wp_doing_ajax() || ! current_user_can( EVOGT_CAP ) ) return;
     if ( ! file_exists( EVOGT_DB_PATH ) ) return;
 
-    $stamp = filemtime( EVOGT_DB_PATH ) . ':' . filesize( EVOGT_DB_PATH );
+    $stamp = EVOGT_SCHEMA_VERSION . ':' . filemtime( EVOGT_DB_PATH ) . ':' . filesize( EVOGT_DB_PATH );
     if ( get_transient( 'evogt_schema_checked' ) === $stamp ) return;
 
     $result = evogt_schema_migrate();
@@ -105,5 +109,24 @@ function evogt_maybe_migrate_schema() {
 
     // The migration itself changed mtime/size, so stamp the file as it is now.
     clearstatcache( true, EVOGT_DB_PATH );
-    set_transient( 'evogt_schema_checked', filemtime( EVOGT_DB_PATH ) . ':' . filesize( EVOGT_DB_PATH ), HOUR_IN_SECONDS );
+    set_transient( 'evogt_schema_checked', EVOGT_SCHEMA_VERSION . ':' . filemtime( EVOGT_DB_PATH ) . ':' . filesize( EVOGT_DB_PATH ), HOUR_IN_SECONDS );
+}
+
+/**
+ * init: after a plugin update by upload the activation hook does not run.
+ * Migrate on the first request (front end or admin) whenever the stored
+ * schema version is behind, so REST never queries missing columns.
+ * A failed attempt is retried at most every 5 minutes.
+ */
+function evogt_upgrade_schema_on_init() {
+    if ( (int) get_option( 'evogt_schema_version', 0 ) >= EVOGT_SCHEMA_VERSION ) return;
+    if ( ! file_exists( EVOGT_DB_PATH ) || get_transient( 'evogt_schema_upgrade_failed' ) ) return;
+
+    $result = evogt_schema_migrate();
+    if ( is_wp_error( $result ) ) {
+        error_log( 'evogt: schema upgrade failed: ' . $result->get_error_message() );
+        set_transient( 'evogt_schema_upgrade_failed', 1, 5 * MINUTE_IN_SECONDS );
+        return;
+    }
+    delete_transient( 'evogt_schema_checked' );
 }

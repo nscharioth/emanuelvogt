@@ -9,7 +9,7 @@ Mediathek-Trick mit der Kurzbeschreibung.
 | Bereich | Inhalt |
 |---|---|
 | **Werkverzeichnis → Alle Werke** | Liste aller Werke aus `archive.db` mit Suche (Werknummer, Titel, Gattung, Besetzung, Kommentar), Ansichten (Mit Neusatz / Mit Aufnahme / Mit Kommentar / Ohne Dateien), Sortierung nach Nr. (natürlich: 1, 2, 9c, 14, 14a … P-1, P-2) oder Titel, 50 Werke pro Seite. |
-| **Werk bearbeiten** | ID und Werknummer (fest), Titel, Originalscans (nur Ansicht mit Links), **Neusatz (PDF)** und **Aufnahme (MP3)** per Mediathek-Auswahl, **Kommentar** (Freitext, erscheint im Werk-Dialog). |
+| **Werk bearbeiten** | ID und Werknummer (fest), Titel, Originalscans (Ansicht mit Links, je Scan „ausblenden“ für die Website), bis zu zwei **Neusatz-PDFs** (mit Hinweis „Notensatz mit Capella 10 erstellt.“ unter der Anzeige) und bis zu zwei **Aufnahmen (MP3)** per Mediathek-Auswahl, **Kommentar** (Freitext, erscheint im Werk-Dialog). |
 | **Werkverzeichnis → Werkzeuge** | Status der Datenbank, Download der aktuellen `archive.db`, Schema-Migration, erneute Übernahme von Mediathek-Zuordnungen, Liste der Sicherungskopien. |
 | **REST-API `evogt/v1`** | Alle Endpunkte (`works`, `work/{id}`, `genres`, `instrumentations`, `pdf-rotation`, `recordings`) wurden aus dem Child-Theme ins Plugin verschoben. Das Theme enthält nur noch Darstellung. |
 
@@ -18,13 +18,15 @@ Mediathek-Trick mit der Kurzbeschreibung.
 - Alle Werkdaten bleiben in der SQLite-Datei
   `wp-content/uploads/archive/data/archive.db` (wie bisher die PDF-Rotationen).
 - Neue Spalten in `works`: `comment`, `transcription_attachment_id`,
-  `audio_attachment_id`, `updated_at`. Die beiden `*_attachment_id` zeigen auf
+  `transcription2_attachment_id`, `audio_attachment_id`, `audio2_attachment_id`,
+  `updated_at`. Ausgeblendete Originale: `files.is_public = 0`. Die beiden `*_attachment_id` zeigen auf
   Einträge der WordPress-Mediathek der Live-Seite (Anhang-IDs sind also
   seitenspezifisch).
 - Das Plugin legt die Spalten beim Aktivieren automatisch an und erstellt
   vorher eine Kopie `archive.db.bak-<Datum>-schema` im selben Ordner. Wird
   später eine neue `archive.db` hochgeladen, wird sie beim nächsten
-  Admin-Aufruf automatisch nachmigriert.
+  Admin-Aufruf automatisch nachmigriert. Nach einem Plugin-Update per Upload geschieht
+  das beim ersten Seitenaufruf, weil dabei keine Aktivierung läuft.
 - Der Ordner `uploads/archive/data/` erhält eine `.htaccess`, die den
   Direktzugriff auf `.db`-Dateien und Sicherungen sperrt (Apache; bei nginx
   bitte eine entsprechende `location`-Regel ergänzen).
@@ -46,14 +48,14 @@ definiert wie das Plugin:
 4. Plugin aktivieren. Dabei laufen Sicherung, Schema-Migration und die
    einmalige Übernahme der per Kurzbeschreibung verknüpften PDFs/MP3s.
    Ergebnis unter *Werkverzeichnis → Werkzeuge* prüfen.
-5. Startseite neu laden (Assets Version 1.7.1), ein Werk mit Neusatz/Aufnahme
+5. Startseite neu laden (Assets Version 1.7.2), ein Werk mit Neusatz/Aufnahme
    öffnen, im Admin ein Werk bearbeiten.
 
 ZIPs bauen:
 
 ```bash
-cd wp-plugin && zip -r ../evogt-works-admin-1.0.1.zip evogt-works-admin -x '*.DS_Store'
-cd wp-theme  && zip -r ../astra-child-1.7.1.zip astra-child -x '*.DS_Store'
+cd wp-plugin && zip -r ../evogt-works-admin-1.1.0.zip evogt-works-admin -x '*.DS_Store'
+cd wp-theme  && zip -r ../astra-child-1.7.2.zip astra-child -x '*.DS_Store'
 ```
 
 ## Datenbank zurück ins Repository holen

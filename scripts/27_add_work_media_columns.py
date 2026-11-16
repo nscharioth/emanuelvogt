@@ -10,6 +10,8 @@ as the server copy:
   transcription_attachment_id  INTEGER  WP media-library ID of the transcribed PDF ("Neusatz")
   audio_attachment_id          INTEGER  WP media-library ID of the recording ("Aufnahme")
   updated_at                   TEXT     set by the plugin on every change (UTC)
+  transcription2_attachment_id INTEGER  second transcribed PDF (plugin schema version 2)
+  audio2_attachment_id         INTEGER  second recording (plugin schema version 2)
 
 Note: SQLite does not allow non-constant defaults in ALTER TABLE, so
 updated_at has no default. The ALTER statements are identical to the ones
@@ -30,8 +32,13 @@ COLUMNS = {
     "transcription_attachment_id": "ALTER TABLE works ADD COLUMN transcription_attachment_id INTEGER",
     "audio_attachment_id": "ALTER TABLE works ADD COLUMN audio_attachment_id INTEGER",
     "updated_at": "ALTER TABLE works ADD COLUMN updated_at TEXT",
+    "transcription2_attachment_id": "ALTER TABLE works ADD COLUMN transcription2_attachment_id INTEGER",
+    "audio2_attachment_id": "ALTER TABLE works ADD COLUMN audio2_attachment_id INTEGER",
 }
-INDEX_SQL = "CREATE INDEX IF NOT EXISTS idx_works_audio_attachment ON works(audio_attachment_id)"
+INDEX_SQL = [
+    "CREATE INDEX IF NOT EXISTS idx_works_audio_attachment ON works(audio_attachment_id)",
+    "CREATE INDEX IF NOT EXISTS idx_works_audio2_attachment ON works(audio2_attachment_id)",
+]
 
 
 def add_columns(db_path: Path) -> int:
@@ -60,7 +67,8 @@ def add_columns(db_path: Path) -> int:
             cursor.execute(sql)
             print(f"➕ Added column: {name}")
 
-    cursor.execute(INDEX_SQL)
+    for sql in INDEX_SQL:
+        cursor.execute(sql)
     conn.commit()
 
     print("\nSchema of 'works':")

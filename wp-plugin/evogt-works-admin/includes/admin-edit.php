@@ -21,7 +21,7 @@ function evogt_render_edit_page( $id ) {
     if ( ! $return || strpos( $return, 'page=evogt-works' ) === false || strpos( $return, 'action=edit' ) !== false ) {
         $return = isset( $_GET['return'] ) ? esc_url_raw( wp_unslash( $_GET['return'] ) ) : $list_url;
     }
-    $files = evogt_get_work_files( $id );
+    $files = evogt_get_work_files( $id, true );
     ?>
     <div class="wrap evogt-wrap">
         <h1 class="wp-heading-inline">Werk bearbeiten</h1>
@@ -57,9 +57,14 @@ function evogt_render_edit_page( $id ) {
                     <th scope="row">Originale (Scans)</th>
                     <td>
                         <?php if ( $files ) : ?>
+                            <input type="hidden" name="evogt_files_submitted" value="1">
                             <ul class="evogt-file-list">
                                 <?php foreach ( $files as $f ) : ?>
-                                    <li>
+                                    <li class="<?php echo $f['public'] ? '' : 'evogt-file-hidden'; ?>">
+                                        <label class="evogt-hide-toggle">
+                                            <input type="checkbox" name="evogt_hidden_files[]" value="<?php echo (int) $f['id']; ?>" <?php checked( ! $f['public'] ); ?>>
+                                            ausblenden
+                                        </label>
                                         <span class="dashicons <?php echo preg_match( '/^(jpg|jpeg|png)$/i', (string) $f['type'] ) ? 'dashicons-format-image' : 'dashicons-media-document'; ?>"></span>
                                         <a href="<?php echo esc_url( $f['url'] ); ?>" target="_blank" rel="noopener"><?php echo esc_html( $f['filename'] ); ?></a>
                                         <span class="evogt-muted">
@@ -72,21 +77,23 @@ function evogt_render_edit_page( $id ) {
                         <?php else : ?>
                             <p class="evogt-muted">Keine Dateien im Archiv vorhanden.</p>
                         <?php endif; ?>
-                        <p class="description">Die Originalscans werden über das Archiv-Verzeichnis verwaltet und können hier nur angesehen werden.</p>
+                        <p class="description">Die Originalscans werden über das Archiv-Verzeichnis verwaltet und können hier nicht ersetzt werden. Mit „ausblenden“ wird ein Scan im Werk-Dialog auf der Website nicht mehr angezeigt (die Datei selbst bleibt auf dem Server).</p>
                     </td>
                 </tr>
                 <tr>
                     <th scope="row">Neusatz (PDF)</th>
                     <td>
-                        <?php evogt_render_media_field( 'evogt_transcription_id', $work['transcription_attachment_id'], 'application/pdf', 'transcription' ); ?>
-                        <p class="description">Neu gesetzte Partitur als PDF. Wird im Werk-Dialog als „Neusatz (PDF)“ angezeigt.</p>
+                        <?php evogt_render_media_field( 'evogt_transcription_id', $work['transcription_attachment_id'], 'application/pdf', 'transcription', '1. PDF' ); ?>
+                        <?php evogt_render_media_field( 'evogt_transcription2_id', $work['transcription2_attachment_id'], 'application/pdf', 'transcription', '2. PDF' ); ?>
+                        <p class="description">Bis zu zwei neu gesetzte PDFs (z. B. Partitur und Stimmen). Sie erscheinen im Werk-Dialog als „Neusatz (PDF)“ mit dem Hinweis „Notensatz mit Capella 10 erstellt.“</p>
                     </td>
                 </tr>
                 <tr>
-                    <th scope="row">Aufnahme (MP3)</th>
+                    <th scope="row">Aufnahmen (MP3)</th>
                     <td>
-                        <?php evogt_render_media_field( 'evogt_audio_id', $work['audio_attachment_id'], 'audio', 'audio' ); ?>
-                        <p class="description">Tonaufnahme des Werks. Erscheint im Werk-Dialog und auf der Startseite unter „Aufnahmen“.</p>
+                        <?php evogt_render_media_field( 'evogt_audio_id', $work['audio_attachment_id'], 'audio', 'audio', '1. Aufnahme' ); ?>
+                        <?php evogt_render_media_field( 'evogt_audio2_id', $work['audio2_attachment_id'], 'audio', 'audio', '2. Aufnahme' ); ?>
+                        <p class="description">Bis zu zwei Tonaufnahmen. Sie erscheinen im Werk-Dialog und auf der Startseite unter „Aufnahmen“.</p>
                     </td>
                 </tr>
                 <tr>
@@ -110,11 +117,12 @@ function evogt_render_edit_page( $id ) {
 /**
  * Media picker field: hidden id + preview + select/remove buttons.
  */
-function evogt_render_media_field( $name, $attachment_id, $mime, $kind ) {
+function evogt_render_media_field( $name, $attachment_id, $mime, $kind, $label = '' ) {
     $item = evogt_attachment_item( $attachment_id, $kind );
     $icon = $kind === 'audio' ? 'dashicons-format-audio' : 'dashicons-media-document';
     ?>
     <div class="evogt-media-field" data-mime="<?php echo esc_attr( $mime ); ?>" data-title="<?php echo $kind === 'audio' ? 'Aufnahme auswählen' : 'Neusatz-PDF auswählen'; ?>">
+        <?php if ( $label ) : ?><span class="evogt-slot-label"><?php echo esc_html( $label ); ?></span><?php endif; ?>
         <input type="hidden" name="<?php echo esc_attr( $name ); ?>" class="evogt-media-id" value="<?php echo $item ? (int) $item['attachment_id'] : 0; ?>">
         <p class="evogt-media-preview">
             <?php if ( $item ) : ?>
@@ -163,22 +171,47 @@ function evogt_handle_save_work() {
 
     $comment = isset( $_POST['evogt_comment'] ) ? trim( wp_kses_post( wp_unslash( $_POST['evogt_comment'] ) ) ) : '';
 
-    $t_id = evogt_validate_attachment( isset( $_POST['evogt_transcription_id'] ) ? $_POST['evogt_transcription_id'] : 0, 'application/pdf' );
-    $a_id = evogt_validate_attachment( isset( $_POST['evogt_audio_id'] ) ? $_POST['evogt_audio_id'] : 0, 'audio/' );
-    foreach ( array( $t_id, $a_id ) as $check ) {
+    $slots = array(
+        'transcription_attachment_id'  => array( 'evogt_transcription_id', 'application/pdf' ),
+        'transcription2_attachment_id' => array( 'evogt_transcription2_id', 'application/pdf' ),
+        'audio_attachment_id'          => array( 'evogt_audio_id', 'audio/' ),
+        'audio2_attachment_id'         => array( 'evogt_audio2_id', 'audio/' ),
+    );
+    $ids = array();
+    foreach ( $slots as $col => $def ) {
+        $check = evogt_validate_attachment( isset( $_POST[ $def[0] ] ) ? $_POST[ $def[0] ] : 0, $def[1] );
         if ( is_wp_error( $check ) ) {
             wp_safe_redirect( add_query_arg( array( 'evogt_error' => 'attachment', 'evogt_detail' => rawurlencode( $check->get_error_message() ) ), $edit_url ) );
             exit;
         }
+        $ids[ $col ] = $check;
+    }
+
+    // Same file in both slots is pointless; a lone second slot moves up to the first.
+    foreach ( array( array( 'transcription_attachment_id', 'transcription2_attachment_id' ), array( 'audio_attachment_id', 'audio2_attachment_id' ) ) as $pair ) {
+        list( $first, $second ) = $pair;
+        if ( $ids[ $second ] && $ids[ $second ] === $ids[ $first ] ) {
+            wp_safe_redirect( add_query_arg( array( 'evogt_error' => 'attachment', 'evogt_detail' => rawurlencode( 'Dieselbe Datei ist zweimal ausgewählt.' ) ), $edit_url ) );
+            exit;
+        }
+        if ( ! $ids[ $first ] && $ids[ $second ] ) {
+            $ids[ $first ]  = $ids[ $second ];
+            $ids[ $second ] = 0;
+        }
+    }
+
+    // Visibility of the original scans (only when the list was part of the form).
+    $hidden_files = null;
+    if ( ! empty( $_POST['evogt_files_submitted'] ) ) {
+        $hidden_files = isset( $_POST['evogt_hidden_files'] ) ? array_map( 'absint', (array) $_POST['evogt_hidden_files'] ) : array();
     }
 
     try {
-        $result = evogt_update_work( $id, array(
-            'title'                       => $title,
-            'comment'                     => $comment,
-            'transcription_attachment_id' => $t_id,
-            'audio_attachment_id'         => $a_id,
-        ) );
+        $result = evogt_update_work( $id, array_merge( $ids, array(
+            'title'           => $title,
+            'comment'         => $comment,
+            'hidden_file_ids' => $hidden_files,
+        ) ) );
     } catch ( PDOException $e ) {
         error_log( 'evogt: save work ' . $id . ' failed: ' . $e->getMessage() );
         $result = new WP_Error( 'db', $e->getMessage() );

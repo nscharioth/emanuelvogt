@@ -121,13 +121,23 @@ function evogt_api_get_work( $request ) {
     $comment        = isset( $work['comment'] ) ? trim( (string) $work['comment'] ) : '';
     $out['comment'] = $comment !== '' ? wp_kses_post( wpautop( $comment ) ) : '';
 
-    // Arrays with 0 or 1 items: the front end already iterates over these.
-    $t = evogt_attachment_item( isset( $work['transcription_attachment_id'] ) ? $work['transcription_attachment_id'] : 0, 'transcription' );
-    $a = evogt_attachment_item( isset( $work['audio_attachment_id'] ) ? $work['audio_attachment_id'] : 0, 'audio' );
-    $out['transcriptions'] = $t ? array( $t ) : array();
-    $out['audio']          = $a ? array( $a ) : array();
+    // Up to two transcribed PDFs and two recordings, slot 1 first.
+    $out['transcriptions'] = evogt_work_attachments( $work, array( 'transcription_attachment_id', 'transcription2_attachment_id' ), 'transcription' );
+    $out['audio']          = evogt_work_attachments( $work, array( 'audio_attachment_id', 'audio2_attachment_id' ), 'audio' );
 
     return new WP_REST_Response( $out, 200 );
+}
+
+/**
+ * Attachment items for the given slot columns, skipping empty or dangling ids.
+ */
+function evogt_work_attachments( array $work, array $columns, $kind ) {
+    $items = array();
+    foreach ( $columns as $col ) {
+        $item = evogt_attachment_item( isset( $work[ $col ] ) ? $work[ $col ] : 0, $kind );
+        if ( $item ) $items[] = $item;
+    }
+    return $items;
 }
 
 /**
@@ -143,10 +153,11 @@ function evogt_api_get_recordings() {
     }
 
     try {
-        if ( ! in_array( 'audio_attachment_id', evogt_table_columns( $db, 'works' ), true ) ) {
+        if ( ! in_array( 'audio2_attachment_id', evogt_table_columns( $db, 'works' ), true ) ) {
             return new WP_REST_Response( array(), 200 ); // schema not migrated yet
         }
-        $rows = $db->query( 'SELECT id, work_number, title, genre, audio_attachment_id FROM works WHERE audio_attachment_id IS NOT NULL' )
+        $rows = $db->query( 'SELECT id, work_number, title, genre, audio_attachment_id, audio2_attachment_id FROM works
+                             WHERE audio_attachment_id IS NOT NULL OR audio2_attachment_id IS NOT NULL' )
                    ->fetchAll( PDO::FETCH_ASSOC );
     } catch ( PDOException $e ) {
         return evogt_rest_db_error( $e );
@@ -154,9 +165,11 @@ function evogt_api_get_recordings() {
 
     $recordings = array();
     foreach ( $rows as $row ) {
-        $audio = evogt_attachment_item( $row['audio_attachment_id'], 'audio' );
+      foreach ( array( 'audio_attachment_id', 'audio2_attachment_id' ) as $col ) {
+        if ( empty( $row[ $col ] ) ) continue;
+        $audio = evogt_attachment_item( $row[ $col ], 'audio' );
         if ( ! $audio ) {
-            error_log( 'evogt: work ' . $row['id'] . ' references missing audio attachment #' . $row['audio_attachment_id'] );
+            error_log( 'evogt: work ' . $row['id'] . ' references missing audio attachment #' . $row[ $col ] );
             continue;
         }
         $recordings[] = array(
@@ -168,6 +181,7 @@ function evogt_api_get_recordings() {
             'length_formatted' => $audio['length_formatted'],
             'date'             => $audio['date'],
         );
+      }
     }
 
     usort( $recordings, function ( $a, $b ) { return strcmp( $b['date'], $a['date'] ); } );

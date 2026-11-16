@@ -31,3 +31,12 @@
 .evogt-tool-actions form { max-width: 420px; }
 .evogt-log { margin: 12px 0 24px; max-width: 900px; }
 .evogt-log pre { background: #fff; border: 1px solid #c3c4c7; padding: 12px; max-height: 320px; overflow: auto; white-space: pre-wrap; }
+
+/* Two slots per media type */
+.evogt-media-field + .evogt-media-field { margin-top: 12px; padding-top: 12px; border-top: 1px solid #f0f0f1; }
+.evogt-slot-label { flex: 1 1 100%; font-weight: 600; }
+.evogt-wrap .evogt-count { font-weight: 600; color: #00a32a; }
+
+/* Hide toggle for original scans */
+.evogt-hide-toggle { display: inline-block; min-width: 105px; color: #646970; }
+.evogt-file-hidden a { color: #a7aaad; text-decoration: line-through; }

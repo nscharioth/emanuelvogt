@@ -20,8 +20,9 @@ function evogt_works_where( array $args ) {
     }
 
     switch ( isset( $args['filter'] ) ? $args['filter'] : 'all' ) {
-        case 'neusatz':      $where[] = 'w.transcription_attachment_id IS NOT NULL'; break;
-        case 'aufnahme':     $where[] = 'w.audio_attachment_id IS NOT NULL'; break;
+        case 'neusatz':      $where[] = '(w.transcription_attachment_id IS NOT NULL OR w.transcription2_attachment_id IS NOT NULL)'; break;
+        case 'aufnahme':     $where[] = '(w.audio_attachment_id IS NOT NULL OR w.audio2_attachment_id IS NOT NULL)'; break;
+        case 'ausgeblendet': $where[] = 'EXISTS (SELECT 1 FROM files f WHERE f.work_id = w.id AND f.is_public = 0)'; break;
         case 'kommentar':    $where[] = "w.comment IS NOT NULL AND TRIM(w.comment) <> ''"; break;
         case 'ohne_dateien': $where[] = 'NOT EXISTS (SELECT 1 FROM files f WHERE f.work_id = w.id)'; break;
     }
@@ -45,7 +46,9 @@ function evogt_works_list( array $args ) {
     $offset   = max( 0, (int) ( isset( $args['offset'] ) ? $args['offset'] : 0 ) );
 
     $select = "SELECT w.id, w.work_number, w.title, w.genre, w.instrumentation,
-                      w.transcription_attachment_id, w.audio_attachment_id,
+                      w.transcription_attachment_id, w.transcription2_attachment_id,
+                      w.audio_attachment_id, w.audio2_attachment_id,
+                      (SELECT COUNT(*) FROM files f WHERE f.work_id = w.id AND f.is_public = 0) AS hidden_count,
                       (w.comment IS NOT NULL AND TRIM(w.comment) <> '') AS has_comment,
                       (SELECT COUNT(*) FROM files f WHERE f.work_id = w.id) AS file_count
                FROM works w
@@ -92,7 +95,8 @@ function evogt_get_work( $id ) {
     if ( ! $db ) return null;
 
     $stmt = $db->prepare( 'SELECT id, work_number, title, genre, instrumentation, year, notes, comment,
-                                  transcription_attachment_id, audio_attachment_id, updated_at
+                                  transcription_attachment_id, transcription2_attachment_id,
+                                  audio_attachment_id, audio2_attachment_id, updated_at
                            FROM works WHERE id = ?' );
     $stmt->execute( array( (int) $id ) );
     $work = $stmt->fetch( PDO::FETCH_ASSOC );
@@ -110,18 +114,21 @@ function evogt_build_file_url( array $f ) {
 
 /**
  * Original scans of a work with their saved rotation.
- * Returns [ ['id','filename','url','type','size','rotation'], ... ]
+ * Returns [ ['id','filename','url','type','size','rotation','public'], ... ]
+ * Scans hidden in the admin area (files.is_public = 0) are left out unless
+ * $include_hidden is true (edit screen).
  */
-function evogt_get_work_files( $id ) {
+function evogt_get_work_files( $id, $include_hidden = false ) {
     $db = evogt_get_db();
     if ( ! $db ) return array();
 
     $stmt = $db->prepare( '
         SELECT f.id, f.filename, f.file_type, f.size_bytes, f.flat_path,
-               COALESCE(r.rotation, 0) AS rotation
+               COALESCE(r.rotation, 0) AS rotation,
+               COALESCE(f.is_public, 1) AS is_public
         FROM files f
         LEFT JOIN pdf_rotations r ON f.id = r.file_id
-        WHERE f.work_id = ?
+        WHERE f.work_id = ?' . ( $include_hidden ? '' : ' AND COALESCE(f.is_public, 1) = 1' ) . '
         ORDER BY f.id' );
     $stmt->execute( array( (int) $id ) );
 
@@ -134,6 +141,7 @@ function evogt_get_work_files( $id ) {
             'type'     => $f['file_type'],
             'size'     => $f['size_bytes'],
             'rotation' => (int) $f['rotation'],
+            'public'   => (int) $f['is_public'] === 1,
         );
     }
 
@@ -141,8 +149,11 @@ function evogt_get_work_files( $id ) {
 }
 
 /**
- * Save the editable fields of a work.
- * $data: title (string), comment (string|null), transcription_attachment_id (int|null), audio_attachment_id (int|null)
+ * Save the editable fields of a work in one transaction.
+ * $data: title (string), comment (string|null),
+ *        transcription_attachment_id, transcription2_attachment_id,
+ *        audio_attachment_id, audio2_attachment_id (int|null),
+ *        hidden_file_ids (int[]|null: ids of this work's scans to hide; null = leave unchanged)
  */
 function evogt_update_work( $id, array $data ) {
     $db = evogt_get_db();
@@ -150,23 +161,47 @@ function evogt_update_work( $id, array $data ) {
         return new WP_Error( 'no_db', 'Datenbank nicht gefunden: ' . EVOGT_DB_PATH );
     }
 
+    $int_or_null = function ( $key ) use ( $data ) {
+        return ! empty( $data[ $key ] ) ? (int) $data[ $key ] : null;
+    };
+    $comment = ( isset( $data['comment'] ) && $data['comment'] !== '' ) ? (string) $data['comment'] : null;
+
     $stmt = $db->prepare( "UPDATE works
                            SET title = :title,
                                comment = :comment,
-                               transcription_attachment_id = :t_id,
-                               audio_attachment_id = :a_id,
+                               transcription_attachment_id = :t1,
+                               transcription2_attachment_id = :t2,
+                               audio_attachment_id = :a1,
+                               audio2_attachment_id = :a2,
                                updated_at = datetime('now')
                            WHERE id = :id" );
-    $comment = ( isset( $data['comment'] ) && $data['comment'] !== '' ) ? (string) $data['comment'] : null;
-    $t_id    = ! empty( $data['transcription_attachment_id'] ) ? (int) $data['transcription_attachment_id'] : null;
-    $a_id    = ! empty( $data['audio_attachment_id'] ) ? (int) $data['audio_attachment_id'] : null;
-
     $stmt->bindValue( ':title', (string) $data['title'] );
     $stmt->bindValue( ':comment', $comment, $comment === null ? PDO::PARAM_NULL : PDO::PARAM_STR );
-    $stmt->bindValue( ':t_id', $t_id, $t_id === null ? PDO::PARAM_NULL : PDO::PARAM_INT );
-    $stmt->bindValue( ':a_id', $a_id, $a_id === null ? PDO::PARAM_NULL : PDO::PARAM_INT );
+    foreach ( array( ':t1' => 'transcription_attachment_id', ':t2' => 'transcription2_attachment_id', ':a1' => 'audio_attachment_id', ':a2' => 'audio2_attachment_id' ) as $param => $key ) {
+        $v = $int_or_null( $key );
+        $stmt->bindValue( $param, $v, $v === null ? PDO::PARAM_NULL : PDO::PARAM_INT );
+    }
     $stmt->bindValue( ':id', (int) $id, PDO::PARAM_INT );
-    $stmt->execute();
+
+    $db->beginTransaction();
+    try {
+        $stmt->execute();
+
+        if ( isset( $data['hidden_file_ids'] ) && is_array( $data['hidden_file_ids'] ) ) {
+            // Unticked checkboxes are not posted: make all scans of this work
+            // public first, then hide the ticked ones (scoped to this work).
+            $db->prepare( 'UPDATE files SET is_public = 1 WHERE work_id = ?' )->execute( array( (int) $id ) );
+            $hide = $db->prepare( 'UPDATE files SET is_public = 0 WHERE work_id = ? AND id = ?' );
+            foreach ( array_unique( array_map( 'intval', $data['hidden_file_ids'] ) ) as $file_id ) {
+                $hide->execute( array( (int) $id, $file_id ) );
+            }
+        }
+
+        $db->commit();
+    } catch ( PDOException $e ) {
+        if ( $db->inTransaction() ) $db->rollBack();
+        throw $e;
+    }
 
     delete_transient( 'evogt_all_works' );
     delete_transient( 'evogt_recordings' );
@@ -237,8 +272,10 @@ function evogt_detach_attachment( $attachment_id ) {
     try {
         $cols = evogt_table_columns( $db, 'works' );
         if ( ! in_array( 'audio_attachment_id', $cols, true ) ) return;
-        $db->prepare( "UPDATE works SET transcription_attachment_id = NULL, updated_at = datetime('now') WHERE transcription_attachment_id = ?" )->execute( array( (int) $attachment_id ) );
-        $db->prepare( "UPDATE works SET audio_attachment_id = NULL, updated_at = datetime('now') WHERE audio_attachment_id = ?" )->execute( array( (int) $attachment_id ) );
+        foreach ( array( 'transcription_attachment_id', 'transcription2_attachment_id', 'audio_attachment_id', 'audio2_attachment_id' ) as $col ) {
+            if ( ! in_array( $col, $cols, true ) ) continue;
+            $db->prepare( "UPDATE works SET $col = NULL, updated_at = datetime('now') WHERE $col = ?" )->execute( array( (int) $attachment_id ) );
+        }
         delete_transient( 'evogt_recordings' );
     } catch ( PDOException $e ) {
         error_log( 'evogt: detach attachment failed: ' . $e->getMessage() );
